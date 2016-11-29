@@ -19,7 +19,14 @@
     "url": "https://github.com/eneasgallego/encuestas-heineken/issues"
   },
   "homepage": "https://github.com/eneasgallego/encuestas-heineken#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "gulp-express": "^0.3.5",
+    "mkdirs": "0.0.2",
+    "mongodb": "^2.2.12"
+  },
   "devDependencies": {
-    "express": "^4.14.0"
+    "gulp": "^3.9.1",
+    "gulp-bower": "0.0.13"
   }
 }

@@ -1,16 +1,16 @@
 // importar
 var express = require('express');
+var path = require('path');
 
 // instanciar
 var app = express();
 
 // ruteo
 app.get('/', function(req, res){
-    res.sendfile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/index.html');
 });
-app.get('/about', function(req, res){
-    res.sendfile(__dirname + '/about.html');
-});
+app.use('/bower_components', express.static(path.join(__dirname, '/bower_components')));
+app.use('/src', express.static(path.join(__dirname, '/src')));
 
 // escuchar
 app.listen(9000);
