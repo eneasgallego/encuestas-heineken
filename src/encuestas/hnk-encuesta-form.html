@@ -1,0 +1,62 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-styles/default-theme.html">
+<link rel="import" href="../../bower_components/paper-styles/shadow.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="../util/hnk-base.html">
+
+<dom-module id="hnk-encuesta-form">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+
+            .form {
+                @apply(--mixin-panel);
+            }
+            .primary {
+                font-size: 1.25rem;
+            }
+
+        </style>
+
+        <form is="iron-form" id="form" class="form" on-iron-form-submit="_onSubmit">
+            <paper-input required name="local" label="Local"></paper-input>
+            <paper-button on-tap="_onVolver">Volver</paper-button>
+            <paper-button class="primary" on-tap="_onTap">Comenzar Test</paper-button>
+        </form>
+
+    </template>
+
+    <script>
+        Polymer({
+
+            is: 'hnk-encuesta-form',
+            behaviors: [hnk.BaseBehavior],
+            properties: {
+                estado: {
+                    type: Number,
+                    value: 0,
+                    readOnly: true
+                }
+            },
+            _onTap: function() {
+                this.$.form.submit();
+            },
+            _onSubmit: function(e) {
+                e.preventDefault();
+                this.fire('comenzar', this.$.form.serialize());
+            },
+            _onVolver: function() {
+                this.fire('volver');
+            }
+        });
+    </script>
+</dom-module>

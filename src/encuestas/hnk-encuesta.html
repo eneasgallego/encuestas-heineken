@@ -1,0 +1,60 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/shared-styles.html">
+
+<link rel="import" href="hnk-encuesta-form.html">
+
+<dom-module id="hnk-encuesta">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+
+            .titulo {
+                @apply(--mixin-panel);
+            }
+        </style>
+
+        <div class="titulo">[[usuario.nombre]]</div>
+
+        <template is="dom-if" if="[[_igual(estado, 0)]]">
+            <hnk-encuesta-form
+                    on-comenzar="_onAvanzar"
+                    on-volver="_onVolver"
+                    ></hnk-encuesta-form>
+        </template>
+        <template is="dom-if" if="[[_igual(estado, 1)]]">
+            [[estado]]
+        </template>
+
+    </template>
+
+    <script>
+        Polymer({
+
+            is: 'hnk-encuesta',
+            behaviors: [hnk.BaseBehavior],
+            properties: {
+                estado: {
+                    type: Number,
+                    value: 0,
+                    readOnly: true
+                },
+                usuario: Object
+            },
+            _onAvanzar: function() {
+                console.log('_onAvanzar');
+                this._setEstado(this.estado + 1);
+            },
+            _onVolver: function() {
+                if (this.estado) {
+                    this._setEstado(this.estado - 1);
+                } else {
+                    this.fire('volver');
+                }
+            }
+        });
+    </script>
+</dom-module>

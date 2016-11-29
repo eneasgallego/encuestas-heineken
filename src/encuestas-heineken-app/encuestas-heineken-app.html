@@ -6,34 +6,31 @@
 <link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
 
-<link rel="import" href="../../bower_components/paper-styles/color.html">
-<link rel="import" href="../../bower_components/paper-styles/default-theme.html">
-<link rel="import" href="../../bower_components/paper-styles/shadow.html">
-<link rel="import" href="../../bower_components/paper-styles/typography.html">
-
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 
+<link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/shared-styles.html">
+
+<link rel="import" href="../encuestas/hnk-encuesta.html">
+
 <dom-module id="encuestas-heineken-app">
     <template>
-        <style>
+        <style include="shared-styles">
             :host {
                 display: block;
                 --app-drawer-content-container: {
-                     background-color: green;
+                     background-color: var(--color-fuerte, green);
                 };
                 --paper-menu-background-color: none;
-                --paper-menu-color: white;
-
+                --paper-menu-color: var(--color-texto);
              }
 
             app-header {
-                background-color: green;
-                color: white;
-                @apply(--paper-font-common-base);
+                @apply(--mixin-fondo);
              }
             .menu-content {
                 padding-left: 1rem;
@@ -41,17 +38,19 @@
         </style>
 
         <app-drawer-layout>
-            <app-drawer>
+            <app-drawer id="drawer">
                 <paper-menu selected="{{menuSeleccionado}}" attr-for-selected="tag">
                     <paper-item tag="nueva">Nueva encuesta</paper-item>
                     <paper-item tag="mis">Mis encuestas</paper-item>
                     <paper-item tag="yo">Yo</paper-item>
+                    <template is="dom-if" if="[[isSupervisor(usuario)]]">
                         <paper-item tag="super">Supervisor</paper-item>
                         <paper-menu selected="{{menuSeleccionado}}" class="menu-content" attr-for-selected="tag">
                             <paper-item tag="estadisticas">Estadísticas</paper-item>
                             <paper-item tag="encuestadores">Encuestadores</paper-item>
                             <paper-item tag="encuestas">Encuestas</paper-item>
                         </paper-menu>
+                    </template>
                 </paper-menu>
             </app-drawer>
 
@@ -64,22 +63,25 @@
                 </app-header>
 
                 <div>
-                    <template is="dom-if" if="[[_esMenu(menuSeleccionado, 'nueva')]]">
+                    <template is="dom-if" if="[[_igual(menuSeleccionado, 'nueva')]]">
+                        <hnk-encuesta
+                            usuario="[[usuario]]"
+                            on-volver="_onVolver"
+                        ></hnk-encuesta>
+                    </template>
+                    <template is="dom-if" if="[[_igual(menuSeleccionado, 'mis')]]">
                         [[menuSeleccionado]]
                     </template>
-                    <template is="dom-if" if="[[_esMenu(menuSeleccionado, 'mis')]]">
+                    <template is="dom-if" if="[[_igual(menuSeleccionado, 'yo')]]">
                         [[menuSeleccionado]]
                     </template>
-                    <template is="dom-if" if="[[_esMenu(menuSeleccionado, 'yo')]]">
+                    <template is="dom-if" if="[[_igual(menuSeleccionado, 'estadisticas')]]">
                         [[menuSeleccionado]]
                     </template>
-                    <template is="dom-if" if="[[_esMenu(menuSeleccionado, 'estadisticas')]]">
+                    <template is="dom-if" if="[[_igual(menuSeleccionado, 'encuestadores')]]">
                         [[menuSeleccionado]]
                     </template>
-                    <template is="dom-if" if="[[_esMenu(menuSeleccionado, 'encuestadores')]]">
-                        [[menuSeleccionado]]
-                    </template>
-                    <template is="dom-if" if="[[_esMenu(menuSeleccionado, 'encuestas')]]">
+                    <template is="dom-if" if="[[_igual(menuSeleccionado, 'encuestas')]]">
                         [[menuSeleccionado]]
                     </template>
                 </div>
@@ -92,14 +94,31 @@
         Polymer({
 
             is: 'encuestas-heineken-app',
-
+            behaviors: [hnk.BaseBehavior],
             properties: {
-                menuSeleccionado: String
+                menuSeleccionado: String,
+                usuario: {
+                    type: Object,
+                    value: function() {
+                        return {
+                            id: 1,
+                            nombre: 'Saúl Gutiérrez Santamaría',
+                            supervisor: false
+                        };
+                    }
+                }
             },
-            _esMenu: function(menuSeleccionado, tag) {
-                console.log(menuSeleccionado);
-                return menuSeleccionado == tag;
+            observers: ['_observerMenuSeleccionado(menuSeleccionado)'],
+            _observerMenuSeleccionado: function(menuSeleccionado) {
+                this.$.drawer.close();
+            },
+            isSupervisor: function(usuario) {
+                return usuario.supervisor;
+            },
+            _onVolver: function() {
+                this.menuSeleccionado = '';
             }
         });
     </script>
-</dom-module>
+</dom-module>,
+

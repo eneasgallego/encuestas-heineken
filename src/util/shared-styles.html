@@ -1,0 +1,46 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-styles/default-theme.html">
+<link rel="import" href="../../bower_components/paper-styles/shadow.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+
+<dom-module id="shared-styles">
+  <template>
+    <style>
+        :host {
+            --color-fuerte: green;
+            --color-claro: greenyellow;
+            --color-texto: white;
+
+            --primary-text-color: var(--color-texto);
+            --primary-background-color: var(--color-fuerte);
+            --secondary-text-color: var(--color-claro);
+            --disabled-text-color: var(--light-theme-disabled-color);
+            --divider-color: var(--color-claro);
+            --error-color: var(--paper-deep-orange-a700);
+
+            --primary-color: var(--color-claro);
+
+            --mixin-texto: {
+                color: var(--color-texto);
+                @apply(--paper-font-common-base);
+            };
+            --mixin-fondo: {
+                background-color: var(--color-fuerte);
+                @apply(--mixin-texto);
+            };
+            --mixin-panel: {
+                margin: 4px;
+                text-align: center;
+                padding: 4px 0;
+                border-radius: 5px;
+                @apply(--mixin-fondo);
+            };
+            .hidden {
+                display: none;
+            }
+        }
+    </style>
+  </template>
+</dom-module>
