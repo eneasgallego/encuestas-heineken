@@ -1,0 +1,6 @@
+{
+  "name": "encuestas-heineken",
+  "short_name": "encuestas-heineken",
+  "start_url": "/",
+  "display": "standalone"
+}
