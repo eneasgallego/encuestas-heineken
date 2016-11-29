@@ -1,0 +1,25 @@
+{
+  "name": "encuestas-heineken",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eneasgallego/encuestas-heineken.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eneasgallego/encuestas-heineken/issues"
+  },
+  "homepage": "https://github.com/eneasgallego/encuestas-heineken#readme",
+  "devDependencies": {
+    "express": "^4.14.0"
+  }
+}
