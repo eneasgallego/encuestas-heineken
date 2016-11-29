@@ -11,6 +11,7 @@ app.get('/', function(req, res){
 });
 app.use('/bower_components', express.static(path.join(__dirname, '/bower_components')));
 app.use('/src', express.static(path.join(__dirname, '/src')));
+app.use('/images', express.static(path.join(__dirname, '/images')));
 
 // escuchar
 app.listen(9000);

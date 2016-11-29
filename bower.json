@@ -2,7 +2,10 @@
   "name": "encuestas-heineken",
   "main": "index.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.4.0"
+    "polymer": "Polymer/polymer#^1.4.0",
+    "app-layout": "^0.10.6",
+    "paper-menu": "^1.2.2",
+    "paper-item": "^1.2.1"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
