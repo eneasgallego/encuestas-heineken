@@ -4,6 +4,7 @@
 <link rel="import" href="../util/shared-styles.html">
 
 <link rel="import" href="hnk-encuesta-form.html">
+<link rel="import" href="hnk-encuesta-test.html">
 
 <dom-module id="hnk-encuesta">
     <template>
@@ -17,16 +18,21 @@
             }
         </style>
 
-        <div class="titulo">[[usuario.nombre]]</div>
+        <h2 class="titulo">[[encuesta.usuario.nombre]]</h2>
 
         <template is="dom-if" if="[[_igual(estado, 0)]]">
             <hnk-encuesta-form
+                    datos="{{encuesta.datos}}"
                     on-comenzar="_onAvanzar"
                     on-volver="_onVolver"
                     ></hnk-encuesta-form>
         </template>
         <template is="dom-if" if="[[_igual(estado, 1)]]">
-            [[estado]]
+            <hnk-encuesta-test
+                    encuesta="{{encuesta.encuesta}}"
+                    on-enviar="_onAvanzar"
+                    on-volver="_onVolver"
+                    ></hnk-encuesta-test>
         </template>
 
     </template>
@@ -42,13 +48,16 @@
                     value: 0,
                     readOnly: true
                 },
-                usuario: Object
+                encuesta: {
+                    type: Object,
+                    notify: true
+                }
             },
             _onAvanzar: function() {
-                console.log('_onAvanzar');
                 this._setEstado(this.estado + 1);
             },
-            _onVolver: function() {
+            _onVolver: function(e) {
+                e.stopPropagation();
                 if (this.estado) {
                     this._setEstado(this.estado - 1);
                 } else {

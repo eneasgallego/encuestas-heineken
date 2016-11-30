@@ -28,7 +28,7 @@
         </style>
 
         <form is="iron-form" id="form" class="form" on-iron-form-submit="_onSubmit">
-            <paper-input required name="local" label="Local"></paper-input>
+            <paper-input required name="local" label="Local" value="{{datos.local}}"></paper-input>
             <paper-button on-tap="_onVolver">Volver</paper-button>
             <paper-button class="primary" on-tap="_onTap">Comenzar Test</paper-button>
         </form>
@@ -45,6 +45,10 @@
                     type: Number,
                     value: 0,
                     readOnly: true
+                },
+                datos: {
+                    type: Object,
+                    notify: true
                 }
             },
             _onTap: function() {
@@ -54,7 +58,8 @@
                 e.preventDefault();
                 this.fire('comenzar', this.$.form.serialize());
             },
-            _onVolver: function() {
+            _onVolver: function(e) {
+                e.stopPropagation();
                 this.fire('volver');
             }
         });

@@ -65,6 +65,7 @@
                 <div>
                     <template is="dom-if" if="[[_igual(menuSeleccionado, 'nueva')]]">
                         <hnk-encuesta
+                            encuesta="{{encuesta}}"
                             usuario="[[usuario]]"
                             on-volver="_onVolver"
                         ></hnk-encuesta>
@@ -106,6 +107,13 @@
                             supervisor: false
                         };
                     }
+                },
+                encuesta: {
+                    type: Object,
+                    value: function(){return {id: 1, datos: {local: 'Garito'}, usuario: {id: 1, nombre: 'Saúl Gutiérrez Santamaría', supervisor: false}, encuesta: [{id: 1, titulo: 'Grupo 1', preguntas: [{id:1, titulo:'Pregunta 1', respuestas: [{"id":1,"texto":"Uno"},{"id":2,"texto":"Dos"}], respuesta: 0},
+                        {id:2, titulo:'Pregunta 2', respuestas: [{"id":3,"texto":"Tres"},{"id":4,"texto":"Cuatro"}], respuesta: 0}]},
+                        {id: 2, titulo: 'Grupo 2', preguntas: [{id:3, titulo:'Pregunta 3', respuestas: [{"id":5,"texto":"Cinco"},{"id":6,"texto":"Seis"}], respuesta: 0},
+                            {id:4, titulo:'Pregunta 4', respuestas: [{"id":7,"texto":"Siete"},{"id":8,"texto":"Ocho"}], respuesta: 0}]}]}}
                 }
             },
             observers: ['_observerMenuSeleccionado(menuSeleccionado)'],

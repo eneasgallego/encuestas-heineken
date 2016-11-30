@@ -1,0 +1,46 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+
+<link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/shared-styles.html">
+
+<dom-module id="hnk-encuesta-test-prg">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+        </style>
+
+        <iron-label>[[titulo]]</iron-label>
+        <paper-radio-group selected="{{respuesta}}" allow-empty-selection>
+            <template is="dom-repeat" items="[[respuestas]]">
+                <paper-radio-button name="[[item.id]]">[[item.texto]]</paper-radio-button>
+            </template>
+        </paper-radio-group>
+    </template>
+
+    <script>
+        Polymer({
+
+            is: 'hnk-encuesta-test-prg',
+            behaviors: [hnk.BaseBehavior],
+            properties: {
+                titulo: {
+                    type: String,
+                    value: 'Título'
+                },
+                respuesta: {
+                    type: String,
+                    notify: true
+                },
+                respuestas: {
+                    type: Array,
+                    value: function(){return[]}
+                }
+            }
+        });
+    </script>
+</dom-module>
