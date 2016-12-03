@@ -11,7 +11,24 @@
         <style include="shared-styles">
             :host {
                 display: block;
+                color: var(--primary-background-color);
+                --paper-radio-button-label-color: var(--primary-background-color);
+                --paper-radio-button-unchecked-color: var(--primary-background-color);
+                --paper-radio-button-checked-color: var(--primary-background-color);
             }
+            iron-label {
+                display: block;
+                margin: 4px 0 0 4px;
+                text-align: left;
+            }
+            paper-radio-group {
+                display: block;
+                text-align: left;
+            }
+            paper-radio-button {
+                display: block;
+            }
+
         </style>
 
         <iron-label>[[titulo]]</iron-label>
