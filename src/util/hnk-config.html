@@ -1,0 +1,19 @@
+<script>
+    (function(){
+        var config = {};
+
+        window.hnk = window.hnk || {};
+        window.hnk.ConfigBehavior = {
+            getConfig: function(path) {
+                var arrPath = path.split('.');
+                var ret = config;
+
+                for (var i = 0 ; i < arrPath.length ; i++) {
+                    ret = ret[arrPath[i]];
+                }
+
+                return ret;
+            }
+        };
+    })();
+</script>

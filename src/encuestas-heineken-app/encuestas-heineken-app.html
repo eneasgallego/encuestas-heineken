@@ -1,103 +1,51 @@
-<link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="../../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
-<link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
+<link rel="import" href="../polymer/polymer.html">
 
-<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../app-route/app-location.html">
+<link rel="import" href="../app-route/app-route.html">
+<link rel="import" href="../iron-pages/iron-pages.html">
 
-<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+
+<link rel="import" href="../paper-menu/paper-menu.html">
+<link rel="import" href="../paper-item/paper-item.html">
 
 <link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/hnk-config.html">
 <link rel="import" href="../util/shared-styles.html">
 
-<link rel="import" href="../encuestas/hnk-encuesta.html">
+<link rel="import" href="../pages/hnk-encuesta-page.html">
 
 <dom-module id="encuestas-heineken-app">
     <template>
         <style include="shared-styles">
             :host {
                 display: block;
-                --app-drawer-content-container: {
-                     background-color: var(--color-fuerte, green);
-                };
-                --paper-menu-background-color: none;
-                --paper-menu-color: var(--color-texto);
              }
 
-            app-header {
-                @apply(--mixin-fondo);
-             }
-            .menu-content {
-                padding-left: 1rem;
-            }
         </style>
 
-        <app-drawer-layout>
-            <app-drawer id="drawer">
-                <paper-menu selected="{{menuSeleccionado}}" attr-for-selected="tag">
-                    <paper-item tag="nueva">Nueva encuesta</paper-item>
-                    <paper-item tag="mis">Mis encuestas</paper-item>
-                    <paper-item tag="yo">Yo</paper-item>
-                    <template is="dom-if" if="[[isSupervisor(usuario)]]">
-                        <paper-item tag="super">Supervisor</paper-item>
-                        <paper-menu selected="{{menuSeleccionado}}" class="menu-content" attr-for-selected="tag">
-                            <paper-item tag="estadisticas">Estadísticas</paper-item>
-                            <paper-item tag="encuestadores">Encuestadores</paper-item>
-                            <paper-item tag="encuestas">Encuestas</paper-item>
-                        </paper-menu>
-                    </template>
-                </paper-menu>
-            </app-drawer>
+        <!-- app-location binds to the app's URL -->
+        <app-location route="{{route}}"></app-location>
 
-            <app-header-layout>
-                <app-header condenses effects="waterfall">
-                    <app-toolbar>
-                        <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-                        <app-toolbar sticky> Encuestas Heineken </app-toolbar>
-                    </app-toolbar>
-                </app-header>
+        <!-- this app-route manages the top-level routes -->
+        <app-route
+                route="{{route}}"
+                pattern="/:view"
+                data="{{routeData}}"
+                tail="{{subroute}}"></app-route>
 
-                <div>
-                    <template is="dom-if" if="[[_igual(menuSeleccionado, 'nueva')]]">
-                        <hnk-encuesta
-                            encuesta="{{encuesta}}"
-                            usuario="[[usuario]]"
-                            on-volver="_onVolver"
-                        ></hnk-encuesta>
-                    </template>
-                    <template is="dom-if" if="[[_igual(menuSeleccionado, 'mis')]]">
-                        [[menuSeleccionado]]
-                    </template>
-                    <template is="dom-if" if="[[_igual(menuSeleccionado, 'yo')]]">
-                        [[menuSeleccionado]]
-                    </template>
-                    <template is="dom-if" if="[[_igual(menuSeleccionado, 'estadisticas')]]">
-                        [[menuSeleccionado]]
-                    </template>
-                    <template is="dom-if" if="[[_igual(menuSeleccionado, 'encuestadores')]]">
-                        [[menuSeleccionado]]
-                    </template>
-                    <template is="dom-if" if="[[_igual(menuSeleccionado, 'encuestas')]]">
-                        [[menuSeleccionado]]
-                    </template>
-                </div>
-            </app-header-layout>
-        </app-drawer-layout>
-
+        <iron-pages selected="[[routeData.view]]" attr-for-selected="name">
+            <hnk-encuesta-page usuario="[[usuario]]" route="{{subroute}}"></hnk-encuesta-page>
+        </iron-pages>
     </template>
 
     <script>
         Polymer({
 
             is: 'encuestas-heineken-app',
-            behaviors: [hnk.BaseBehavior],
+            behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior],
             properties: {
-                menuSeleccionado: String,
                 usuario: {
                     type: Object,
                     value: function() {
@@ -107,24 +55,7 @@
                             supervisor: true
                         };
                     }
-                },
-                encuesta: {
-                    type: Object,
-                    value: function(){return {id: 1, datos: {local: 'Garito'}, usuario: {id: 1, nombre: 'Saúl Gutiérrez Santamaría', supervisor: false}, encuesta: [{id: 1, titulo: 'Grupo 1', preguntas: [{id:1, titulo:'Pregunta 1', respuestas: [{"id":1,"texto":"Uno"},{"id":2,"texto":"Dos"}], respuesta: null},
-                        {id:2, titulo:'Pregunta 2', respuestas: [{"id":3,"texto":"Tres"},{"id":4,"texto":"Cuatro"}], respuesta: null}]},
-                        {id: 2, titulo: 'Grupo 2', preguntas: [{id:3, titulo:'Pregunta 3', respuestas: [{"id":5,"texto":"Cinco"},{"id":6,"texto":"Seis"}], respuesta: null},
-                            {id:4, titulo:'Pregunta 4', respuestas: [{"id":7,"texto":"Siete"},{"id":8,"texto":"Ocho"}], respuesta: null}]}]}}
                 }
-            },
-            observers: ['_observerMenuSeleccionado(menuSeleccionado)'],
-            _observerMenuSeleccionado: function(menuSeleccionado) {
-                (!this.$.drawer.persistent) && this.$.drawer.close();
-            },
-            isSupervisor: function(usuario) {
-                return usuario.supervisor;
-            },
-            _onVolver: function() {
-                this.menuSeleccionado = '';
             }
         });
     </script>

@@ -1,44 +1,50 @@
 var gulp = require('gulp');
 var bower = require('gulp-bower');
-var exec = require('child_process').exec;
-var mkdirs = require('mkdirs');
 var express = require('gulp-express');
+var rename = require('gulp-rename');
 
 var config = {
-    bowerDir: './bower_components',
-    dataDir: './data',
-    dataLogDir: './data/log'
+    srcDir: './src',
+    staticDir: './static',
+    destDir: './public/',
+    distDir: 'dist/',
+    configDev: './config-dev.json',
+    configPro: './config-pro.json',
+    configDist: 'config.json'
 }
 
-gulp.task('bower', function() {
-    return bower()
-        .pipe(gulp.dest(config.bowerDir))
+gulp.task('bower', bower);
+
+gulp.task('build-static', function() {
+    return gulp.src([config.staticDir + '/**'])
+        .pipe(gulp.dest(config.destDir));
+});
+gulp.task('build-src', function() {
+    return gulp.src([config.srcDir + '/**'])
+        .pipe(gulp.dest(config.destDir + config.distDir));
+});
+
+var doConfig = function(src){
+    return gulp.src(src)
+        .pipe(rename(config.configDist))
+        .pipe(gulp.dest(config.destDir));
+};
+gulp.task('config-dev', function(){
+    return doConfig(config.configDev);
+});
+gulp.task('config-pro', function(){
+    return doConfig(config.configPro);
 });
 
 gulp.task('express', function() {
     express.run(['server.js']);
 });
 
-var runCommand = function(command) {
-    exec(command, function (err, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-        if (err !== null) {
-            console.log('exec error: ' + err);
-        }
-    });
-}
+gulp.task('build',      ['build-static', 'build-src']);
+gulp.task('build-all',  ['bower', 'build']);
+gulp.task('dev',        ['build', 'config-dev']);
+gulp.task('pro',        ['build', 'config-pro']);
+gulp.task('dev-all',    ['build-all', 'config-dev']);
+gulp.task('pro-all',    ['build-all', 'config-pro']);
 
-gulp.task("mongo-start", function() {
-    var command = "mongod --fork --dbpath "+config.dataDir+"/ --logpath "+config.dataLogDir+"/mongo.log";
-    mkdirs(config.dataDir);
-    mkdirs(config.dataLogDir);
-    runCommand(command);
-});
-
-gulp.task("mongo-stop", function() {
-    var command = 'mongo admin --eval "db.shutdownServer();"'
-    runCommand(command);
-});
-
-gulp.task('default', ['bower', 'express']);
+gulp.task('default',    ['dev', 'express']);
