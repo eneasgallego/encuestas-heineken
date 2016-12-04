@@ -19,6 +19,7 @@
 
                         if (v != n) {
                             if (typeof(v) === 'object' &&
+                                typeof(n) === 'object' &&
                                 !(v instanceof Array)) {
                                 parse(n, v);
                             } else {

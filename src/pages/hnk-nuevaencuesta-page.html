@@ -9,7 +9,10 @@
 <link rel="import" href="hnk-page.html">
 
 <link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/hnk-config.html">
 <link rel="import" href="../util/shared-styles.html">
+
+<link rel="import" href="../data-behaviors/hnk-data-encuesta-behavior.html">
 
 <dom-module id="hnk-nuevaencuesta-page">
     <template>
@@ -26,24 +29,48 @@
 
         <hnk-encuesta
             encuesta="{{encuesta}}"
+            on-comenzar="_onComenzar"
             on-volver="_onVolver"
         ></hnk-encuesta>
-<!--
-        <iron-ajax url="[[_profileUrlForUser(routeData.user_id)]]"
-           on-response="handleResponse" auto>
--->
+
+        <iron-ajax
+            id="ajax"
+            method="post"
+            url="[[url]]"
+            content-type="application/json"
+            body="[[encuesta]]"
+            on-response="_onResponse"
+        ></iron-ajax>
+
     </template>
 
     <script>
         Polymer({
             is: 'hnk-nuevaencuesta-page',
-            behaviors: [hnk.BaseBehavior],
+            behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior, hnk.data.DataEncuestaBehavior],
             properties: {
                 usuario: Object,
                 encuesta: {
                     type: Object,
                     value: function(){return {}}
-                }
+                },
+                url: String
+            },
+            observers: ['_observerUsuario(usuario)'],
+            _observerUsuario: function(usuario) {
+                this.encuesta = this._crearEncuesta(usuario._id);
+            },
+            ready: function() {
+                this.getUrl(this, 'encuestas')
+                        .then(function(url) {
+                            this.url = url;
+                        }.bind(this));
+            },
+            _onComenzar: function() {
+                this.$.ajax.generateRequest();
+            },
+            _onResponse: function(e) {
+                window.location.hash = '#/encuesta/' + e.detail.response._id + '/preguntas';
             }
         });
     </script>

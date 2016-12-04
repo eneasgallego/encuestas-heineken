@@ -1,9 +1,10 @@
 // importar
 var express = require('express');
+var bodyParser = require('body-parser')
 var path = require('path');
 var config = require('./dirs.json');
 //console.log(config);
-var mongo = require('./server/hnk-mongo')(config.db);
+var mongo = require('./server/mongo')(config.db);
 var api = require('./server/api.js')(mongo);
 
 mongo.conectar().then(function(){
@@ -11,6 +12,12 @@ mongo.conectar().then(function(){
 
     // instanciar
     var app = express();
+
+    // parse application/x-www-form-urlencoded
+    app.use(bodyParser.urlencoded({ extended: false }))
+
+    // parse application/json
+    app.use(bodyParser.json())
 
     // ruteo estatico
     app.use('/', express.static(path.join(__dirname, config.destDir)));

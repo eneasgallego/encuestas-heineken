@@ -1,14 +1,16 @@
 {
-  "urlBase": "",
+  "urlBase": "http://localhost:9000/api",
   "endpoints": {
-
+    "usuarios"  : "usuarios",
+    "preguntas" : "preguntas",
+    "encuestas" : "encuestas"
   },
   "menu": [{
     "texto": "Inicio",
     "href": "#/"
   },{
     "texto": "Nueva Encuesta",
-    "href": "#/nueva"
+    "href": "#/nueva_encuesta"
   },{
     "texto": "Mis Encuestas",
     "href": "#/encuestas"

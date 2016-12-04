@@ -11,7 +11,19 @@
             return usuario.supervisor;
         },
         getUrl: function (config, tag) {
-
+            return new Promise(function(resolve, reject) {
+                config.getConfig('urlBase').then(function(urlBase) {
+                    config.getConfig('endpoints.' + tag).then(function(endpoint) {
+                        if (endpoint) {
+                            resolve(urlBase + '/' + endpoint);
+                        } else {
+                            reject();
+                        }
+                    }.bind(this))
+                    .catch(reject);
+                }.bind(this))
+                .catch(reject);
+            }.bind(this));
         }
     };
 </script>

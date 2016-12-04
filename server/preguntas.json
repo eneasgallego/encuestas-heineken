@@ -1,0 +1,49 @@
+[{
+  "_id": 1,
+  "grupo": "Grupo 1",
+  "preguntas": [{
+    "_id": 1,
+    "grupo": "Pregunta 1",
+    "respuestas": [{
+      "_id": 1,
+      "respuesta": "Respuesta 1"
+    },{
+      "_id": 2,
+      "respuesta": "Respuesta 2"
+    }]
+  },{
+    "_id": 2,
+    "grupo": "Pregunta 2",
+    "respuestas": [{
+      "_id": 3,
+      "respuesta": "Respuesta 3"
+    },{
+      "_id": 4,
+      "respuesta": "Respuesta 4"
+    }]
+  }]
+},{
+  "_id": 2,
+  "grupo": "Grupo 2",
+  "preguntas": [{
+    "_id": 1,
+    "grupo": "Pregunta 3",
+    "respuestas": [{
+      "_id": 5,
+      "respuesta": "Respuesta 5"
+    },{
+      "_id": 6,
+      "respuesta": "Respuesta 6"
+    }]
+  },{
+    "_id": 4,
+    "grupo": "Pregunta 4",
+    "respuestas": [{
+      "_id": 7,
+      "respuesta": "Respuesta 7"
+    },{
+      "_id": 8,
+      "respuesta": "Respuesta 8"
+    }]
+  }]
+}]
