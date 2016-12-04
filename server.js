@@ -2,19 +2,53 @@
 var express = require('express');
 var path = require('path');
 var config = require('./dirs.json');
+//console.log(config);
+var mongo = require('./server/hnk-mongo')(config.db);
+var api = require('./server/api.js')(mongo);
 
-// instanciar
-var app = express();
+mongo.conectar().then(function(){
+    mongo.getData('usuarios').then(console.log);
 
-// ruteo
-app.use('/', express.static(path.join(__dirname, config.destDir)));
-app.use('/', express.static(path.join(__dirname, config.destDir + '/' + config.distDir)));
+    // instanciar
+    var app = express();
 
-app.get('/config', function(req, res){
-    res.sendFile(__dirname + config.destDir + '/' + config.configDist);
+    // ruteo estatico
+    app.use('/', express.static(path.join(__dirname, config.destDir)));
+    app.use('/', express.static(path.join(__dirname, config.destDir + '/' + config.distDir)));
+    app.get('/config', function(req, res){
+        res.sendFile(__dirname + config.destDir + '/' + config.configDist);
+    });
+
+    //ruteo dinámico
+    var methods = ['_get','_post','_put','_delete'];
+    var createApi = function(obj, path) {
+        console.log('obj', obj);
+        if (!path) {
+            path = '';
+        }
+        path += '/' + obj._path;
+        console.log('path', path);
+        for (var i = 0 ; i < methods.length ; i++) {
+            var method = methods[i];
+            console.log('method', method);
+            var fn = obj[method];
+            if (typeof(fn) === 'function') {
+                console.log('se crea ' + method + ' para ' + path);
+                app[method.substring(1)](path, fn);
+            }
+        }
+        for (var key in obj) {
+            if (key !== '_path' && !~methods.indexOf(key)) {
+                console.log('createApi', key);
+                createApi(api[key], path);
+            }
+        }
+    }
+    console.log('createApi');
+    createApi(api);
+
+    // escuchar
+    app.listen(config.server.port);
+
+    console.log("Servidor Express escuchando en modo %s", app.settings.env);
 });
-
-// escuchar
-app.listen(9000);
-
-console.log("Servidor Express escuchando en modo %s", app.settings.env);

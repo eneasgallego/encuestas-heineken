@@ -55,14 +55,7 @@
             behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior],
             properties: {
                 usuario: {
-                    type: Object,
-                    value: function () {
-                        return {
-                            id: 1,
-                            nombre: 'Saúl Gutiérrez Santamaría',
-                            supervisor: true
-                        };
-                    }
+                    type: Object
                 },
                 menu: {
                     type: Array,
@@ -82,7 +75,10 @@
                     }.bind(this))
                     .catch(function() {
                         console.error('No hay menú')
-                    }.bind(this))
+                    }.bind(this));
+
+                //Cargar usuario
+
             },
             _observerMenuSeleccionado: function(menuSeleccionado) {
                 if (menuSeleccionado.href) {

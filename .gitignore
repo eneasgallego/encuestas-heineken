@@ -1,4 +1,5 @@
 .idea
-bower_components
 node_modules
 static/js
+data/log/*
+data/mongod.lock

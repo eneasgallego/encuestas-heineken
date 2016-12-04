@@ -5,5 +5,12 @@
     "distDir": "dist",
     "configDev": "/config-dev.json",
     "configPro": "/config-pro.json",
-    "configDist": "config.json"
+    "configDist": "config.json",
+    "db": {
+        "host": "localhost:27017",
+        "name": "heineken"
+    },
+    "server": {
+        "port": 9000
+    }
 }

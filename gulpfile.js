@@ -48,10 +48,8 @@ function runCommand(command) {
     }
 }
 
-//Running mongo
-//http://stackoverflow.com/a/28048696/46810
-gulp.task('start-mongo', runCommand('mongod --dbpath data'));
-gulp.task('stop-mongo', runCommand('mongo --eval "use admin; db.shutdownServer();"'));
+gulp.task('start-mongo', runCommand('mongod --dbpath ./data --fork --logpath ./data/log/mongodb.log'));
+gulp.task('stop-mongo', runCommand('mongod --dbpath ./data --shutdown'));
 
 
 gulp.task('build',      ['build-static', 'build-src']);
@@ -61,4 +59,4 @@ gulp.task('pro',        ['build', 'config-pro']);
 gulp.task('dev-all',    ['build-all', 'config-dev']);
 gulp.task('pro-all',    ['build-all', 'config-pro']);
 
-gulp.task('default',    ['dev', 'start-mongo', 'express']);
+gulp.task('default',    ['dev', 'express']);
