@@ -7,7 +7,7 @@ var mongo = require('./server/hnk-mongo')(config.db);
 var api = require('./server/api.js')(mongo);
 
 mongo.conectar().then(function(){
-    mongo.getData('usuarios').then(console.log);
+    //mongo.getData('usuarios').then(console.log);
 
     // instanciar
     var app = express();
@@ -22,15 +22,12 @@ mongo.conectar().then(function(){
     //ruteo dinámico
     var methods = ['_get','_post','_put','_delete'];
     var createApi = function(obj, path) {
-        console.log('obj', obj);
         if (!path) {
             path = '';
         }
         path += '/' + obj._path;
-        console.log('path', path);
         for (var i = 0 ; i < methods.length ; i++) {
             var method = methods[i];
-            console.log('method', method);
             var fn = obj[method];
             if (typeof(fn) === 'function') {
                 console.log('se crea ' + method + ' para ' + path);
@@ -44,7 +41,6 @@ mongo.conectar().then(function(){
             }
         }
     }
-    console.log('createApi');
     createApi(api);
 
     // escuchar

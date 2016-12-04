@@ -31,6 +31,22 @@
             .menu-content {
                 padding-left: 1rem;
             }
+            .usuario {
+                font-size: 0.5rem;
+                display: block;
+                height: auto;
+                text-align: right;
+            }
+            #toolbar {
+                flex-direction: column;
+                padding-left: 0;
+                width: 100%;
+            }
+            #toolbar app-toolbar {
+                padding-left: 0;
+                width: 100%;
+                padding-right: 0;
+            }
         </style>
 
         <app-drawer-layout>
@@ -44,8 +60,19 @@
             <app-header-layout>
                 <app-header condenses effects="waterfall">
                     <app-toolbar>
-                        <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-                        <app-toolbar sticky> Encuestas Heineken </app-toolbar>
+                        <app-toolbar id="toolbar" sticky>
+                            <app-toolbar>
+                                <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+                                <app-toolbar>
+                                    <app-toolbar>
+                                        <div>Encuestas Heineken</div>
+                                    </app-toolbar>
+                                </app-toolbar>
+                            </app-toolbar>
+                            <app-toolbar class="usuario">
+                                [[usuario.nombre]]
+                            </app-toolbar>
+                        </app-toolbar>
                     </app-toolbar>
                 </app-header>
 
