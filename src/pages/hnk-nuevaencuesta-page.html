@@ -1,0 +1,50 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../app-route/app-route.html">
+
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<link rel="import" href="../encuestas/hnk-encuesta.html">
+
+<link rel="import" href="hnk-page.html">
+
+<link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/shared-styles.html">
+
+<dom-module id="hnk-nuevaencuesta-page">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+        </style>
+
+        <app-route
+            route="{{route}}"
+            pattern="/nueva_encuesta"
+        ></app-route>
+
+        <hnk-encuesta
+            encuesta="{{encuesta}}"
+            on-volver="_onVolver"
+        ></hnk-encuesta>
+<!--
+        <iron-ajax url="[[_profileUrlForUser(routeData.user_id)]]"
+           on-response="handleResponse" auto>
+-->
+    </template>
+
+    <script>
+        Polymer({
+            is: 'hnk-nuevaencuesta-page',
+            behaviors: [hnk.BaseBehavior],
+            properties: {
+                usuario: Object,
+                encuesta: {
+                    type: Object,
+                    value: function(){return {}}
+                }
+            }
+        });
+    </script>
+</dom-module>

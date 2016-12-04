@@ -4,6 +4,8 @@
 <link rel="import" href="../app-route/app-route.html">
 <link rel="import" href="../iron-pages/iron-pages.html">
 
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 
@@ -14,7 +16,8 @@
 <link rel="import" href="../util/hnk-config.html">
 <link rel="import" href="../util/shared-styles.html">
 
-<link rel="import" href="../pages/hnk-encuesta-page.html">
+<link rel="import" href="../pages/hnk-page.html">
+<link rel="import" href="../pages/hnk-nuevaencuesta-page.html">
 
 <dom-module id="encuestas-heineken-app">
     <template>
@@ -26,18 +29,23 @@
         </style>
 
         <!-- app-location binds to the app's URL -->
-        <app-location route="{{route}}"></app-location>
+        <app-location use-hash-as-path route="{{route}}"></app-location>
 
         <!-- this app-route manages the top-level routes -->
         <app-route
+                id="router"
                 route="{{route}}"
                 pattern="/:view"
                 data="{{routeData}}"
                 tail="{{subroute}}"></app-route>
 
-        <iron-pages selected="[[routeData.view]]" attr-for-selected="name">
-            <hnk-encuesta-page usuario="[[usuario]]" route="{{subroute}}"></hnk-encuesta-page>
-        </iron-pages>
+        <iron-ajax id="ajaxConfig" url="/config" handle-as="json" last-response="{{config}}" auto></iron-ajax>
+
+        <hnk-page usuario="[[usuario]]" menu="[[menu]]" menu-seleccionado="{{menuSeleccionado}}">
+            <iron-pages selected="[[routeData.view]]" attr-for-selected="name">
+                <hnk-nuevaencuesta-page name="nueva" usuario="[[usuario]]" route="{{subroute}}"></hnk-nuevaencuesta-page>
+            </iron-pages>
+        </hnk-page>
     </template>
 
     <script>
@@ -48,13 +56,37 @@
             properties: {
                 usuario: {
                     type: Object,
-                    value: function() {
+                    value: function () {
                         return {
                             id: 1,
                             nombre: 'Saúl Gutiérrez Santamaría',
                             supervisor: true
                         };
                     }
+                },
+                menu: {
+                    type: Array,
+                    value: function () {
+                        return [];
+                    }
+                },
+                menuSeleccionado: {
+                    type: Object,
+                    observer: '_observerMenuSeleccionado'
+                }
+            },
+            ready: function() {
+                this.getConfig('menu')
+                    .then(function(menu) {
+                        this.menu = menu;
+                    }.bind(this))
+                    .catch(function() {
+                        console.error('No hay menú')
+                    }.bind(this))
+            },
+            _observerMenuSeleccionado: function(menuSeleccionado) {
+                if (menuSeleccionado.href) {
+                    //this.$.router.go(menuSeleccionado.href);
                 }
             }
         });

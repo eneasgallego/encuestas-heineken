@@ -2,5 +2,31 @@
   "urlBase": "",
   "endpoints": {
 
-  }
+  },
+  "menu": [{
+    "texto": "Inicio",
+    "href": "#/"
+  },{
+    "texto": "Nueva Encuesta",
+    "href": "#/nueva"
+  },{
+    "texto": "Mis Encuestas",
+    "href": "#/encuestas"
+  },{
+    "texto": "Yo",
+    "href": "#/encuestador"
+  },{
+    "texto": "Supervisor",
+    "supervisor": true,
+    "menu": [{
+      "texto": "Estadísticas",
+      "href": "#/estadisticas"
+    },{
+      "texto": "Encuestadores",
+      "href": "#/encuestadores"
+    },{
+      "texto": "Encuestas",
+      "href": "#/encuestas"
+    }]
+  }]
 }

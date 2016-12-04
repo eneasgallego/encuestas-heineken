@@ -1,0 +1,80 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/shared-styles.html">
+
+<dom-module id="hnk-menu">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                --paper-menu-background-color: none;
+                --paper-menu-color: var(--color-texto);
+            }
+
+            .menu-content {
+                padding-left: 1rem;
+            }
+            a{
+                color: var(--paper-menu-color);
+                text-decoration: none;
+            }
+        </style>
+
+        <paper-menu selected="{{menuSeleccionado}}" attr-for-selected="tag">
+            <template is="dom-repeat" items="[[menu]]">
+                <template is="dom-if" if="[[mostrar(item)]]">
+                    <paper-item tag="[[item]]">
+                        <template is="dom-if" if="[[_hasField(item, 'href')]]">
+                            <a href$="[[item.href]]">
+                                [[item.texto]]
+                            </a>
+                        </template>
+                        <template is="dom-if" if="[[!_hasField(item, 'href')]]">
+                            [[item.texto]]
+                        </template>
+                    </paper-item>
+                    <template is="dom-if" if="[[_hasField(item, 'menu')]]">
+                        <hnk-menu
+                            class="menu-content"
+                            menu-seleccionado="{{menuSeleccionado}}"
+                            menu="[[item.menu]]"
+                            mostrar="[[mostrar]]"
+                        ></hnk-menu>
+                        <!--
+                        <paper-menu selected="{{menuSeleccionado}}" attr-for-selected="tag" class="menu-content">
+                            <template is="dom-repeat" items="[[item.menu]]">
+                                <template is="dom-if" if="[[mostrar(item)]]">
+                                    <paper-item tag="[[item]]">[[item.texto]]</paper-item>
+                                </template>
+                            </template>
+                        </paper-menu>
+                        -->
+                    </template>
+                </template>
+            </template>
+        </paper-menu>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'hnk-menu',
+            behaviors: [hnk.BaseBehavior],
+            properties: {
+                menuSeleccionado: {
+                    type: Object,
+                    notify: true
+                },
+                menu: {
+                    type: Array,
+                    value: function(){return []}
+                },
+                mostrar: {
+                    type: Function,
+                    value: function(){return function(){return true}}
+                }
+            }
+        });
+    </script>
+</dom-module>

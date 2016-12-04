@@ -4,6 +4,9 @@
         _igual: function (a, b) {
             return a == b;
         },
+        _hasField: function(item, field) {
+            return !!(item[field]);
+        },
         _isSupervisor: function(usuario) {
             return usuario.supervisor;
         },

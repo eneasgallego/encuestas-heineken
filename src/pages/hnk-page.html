@@ -7,6 +7,8 @@
 <link rel="import" href="../app-layout/app-header/app-header.html">
 <link rel="import" href="../app-layout/app-scroll-effects/effects/waterfall.html">
 
+<link rel="import" href="hnk-menu.html">
+
 <link rel="import" href="../util/hnk-base.html">
 <link rel="import" href="../util/shared-styles.html">
 
@@ -33,19 +35,10 @@
 
         <app-drawer-layout>
             <app-drawer id="drawer">
-                <paper-menu selected="{{menuSeleccionado}}" attr-for-selected="tag">
-                    <paper-item tag="nueva">Nueva encuesta</paper-item>
-                    <paper-item tag="mis">Mis encuestas</paper-item>
-                    <paper-item tag="yo">Yo</paper-item>
-                    <template is="dom-if" if="[[_isSupervisor(usuario)]]">
-                        <paper-item tag="super">Supervisor</paper-item>
-                        <paper-menu selected="{{menuSeleccionado}}" class="menu-content" attr-for-selected="tag">
-                            <paper-item tag="estadisticas">Estadísticas</paper-item>
-                            <paper-item tag="encuestadores">Encuestadores</paper-item>
-                            <paper-item tag="encuestas">Encuestas</paper-item>
-                        </paper-menu>
-                    </template>
-                </paper-menu>
+                <hnk-menu
+                    menu="[[menu]]"
+                    menu-seleccionado="{{menuSeleccionado}}"
+                ></hnk-menu>
             </app-drawer>
 
             <app-header-layout>
@@ -70,17 +63,18 @@
             behaviors: [hnk.BaseBehavior],
             properties: {
                 usuario: Object,
+                menu: {
+                    type: Array,
+                    value: function(){return []}
+                },
                 menuSeleccionado: {
-                    type: String,
+                    type: Object,
+                    notify: true,
                     observer: '_observerMenuSeleccionado'
                 }
             },
             _observerMenuSeleccionado: function(menuSeleccionado) {
-
                 (!this.$.drawer.persistent) && this.$.drawer.close();
-            },
-            _onVolver: function() {
-                this.menuSeleccionado = '';
             }
         });
     </script>

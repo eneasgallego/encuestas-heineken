@@ -1,0 +1,9 @@
+{
+    "srcDir": "/src",
+    "staticDir": "/static",
+    "destDir": "/public",
+    "distDir": "dist",
+    "configDev": "/config-dev.json",
+    "configPro": "/config-pro.json",
+    "configDist": "config.json"
+}

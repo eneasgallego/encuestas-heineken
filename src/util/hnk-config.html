@@ -1,18 +1,62 @@
 <script>
     (function(){
-        var config = {};
+        var _config = {};
 
         window.hnk = window.hnk || {};
         window.hnk.ConfigBehavior = {
-            getConfig: function(path) {
-                var arrPath = path.split('.');
-                var ret = config;
-
-                for (var i = 0 ; i < arrPath.length ; i++) {
-                    ret = ret[arrPath[i]];
+            properties: {
+                config: {
+                    type: Object,
+                    observer: '_observerConfig'
                 }
+            },
+            _observerConfig: function(config) {
+                _config.loaded = false;
+                var parse = function(a, b) {
+                    for (var k in b) {
+                        var v = b[k];
+                        var n = a[k];
 
-                return ret;
+                        if (v != n) {
+                            if (typeof(v) === 'object' &&
+                                !(v instanceof Array)) {
+                                parse(n, v);
+                            } else {
+                                a[k] = v;
+                            }
+                        }
+                    }
+                };
+
+                parse(_config, config);
+                _config.loaded = true;
+            },
+            getConfig: function(path, timeout) {
+                if (!timeout) {
+                    timeout = 5000;
+                }
+                var espera = 500;
+                var intentos = 0;
+                return new Promise(function(resolve, reject) {
+                    var t = setInterval(function(){
+                        if (_config.loaded) {
+                            clearInterval(t);
+                            var arrPath = path.split('.');
+                            var ret = _config;
+
+                            for (var i = 0 ; i < arrPath.length ; i++) {
+                                ret = ret[arrPath[i]];
+                            }
+
+                            resolve(ret);
+                        } else if (espera * intentos > timeout) {
+                            clearInterval(t);
+                            reject();
+                        } else {
+                            intentos++;
+                        }
+                    }.bind(this), espera)
+                }.bind(this));
             }
         };
     })();
