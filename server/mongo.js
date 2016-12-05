@@ -1,7 +1,7 @@
 module.exports = function(config) {
 //    console.log(config);
     var _db;
-    var MongoClient = require('mongodb').MongoClient;
+    var mongodb = require('mongodb');
 
     var _doAction = function(action, params) {
         //console.log('new Promise');
@@ -26,15 +26,18 @@ module.exports = function(config) {
     };
 
     return {
+        ObjectID: mongodb.ObjectID,
         conectar: function() {
-            return _doAction(MongoClient.connect, ['mongodb://' + config.host + '/' + config.name])
+            return _doAction(mongodb.MongoClient.connect, ['mongodb://' + config.host + '/' + config.name])
                 .then(function(result){
                     _db = result;
                 });
         },
         getData: function(collection, find) {
-            //console.log('getData');
-            return _db.collection(collection).find(find).toArray();
+            console.log('getData find', find);
+            var ret = _db.collection(collection).find(find);
+            //console.log('getData 2', ret);
+            return ret.toArray();
         },
         createData: function(collection, data) {
             console.log('createData', data)

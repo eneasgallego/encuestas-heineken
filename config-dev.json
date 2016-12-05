@@ -3,7 +3,8 @@
   "endpoints": {
     "usuarios"  : "usuarios",
     "preguntas" : "preguntas",
-    "encuestas" : "encuestas"
+    "encuestas" : "encuestas",
+    "encuesta" : "encuestas/####"
   },
   "menu": [{
     "texto": "Inicio",

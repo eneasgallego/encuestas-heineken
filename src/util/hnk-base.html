@@ -11,11 +11,17 @@
             return usuario.supervisor;
         },
         getUrl: function (config, tag) {
+            var args = Array.prototype.slice.call(arguments, 2);
             return new Promise(function(resolve, reject) {
                 config.getConfig('urlBase').then(function(urlBase) {
                     config.getConfig('endpoints.' + tag).then(function(endpoint) {
                         if (endpoint) {
-                            resolve(urlBase + '/' + endpoint);
+                            var url = urlBase + '/' + endpoint;
+                            for (var i = 0 ; i < args.length ; i++) {
+                                url = url.replace('####', args[i]);
+                            }
+
+                            resolve(url);
                         } else {
                             reject();
                         }

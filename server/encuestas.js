@@ -32,26 +32,23 @@ module.exports = function(mongo) {
         _path: 'encuestas',
         _get: function(req, res) {
             encuestasDao.getEncuestas().then(res.send);
-            /*
-            mongo.getData('encuestas').then(function(encuestas){
-                res.send(encuestas);
-            });
-            */
         },
         _post: function(req, res) {
-            console.log('postEncuesta', req.body);
             encuestasDao.createEncuesta(req.body).then(function(encuesta){
-                console.log('_parseEncuesta', encuesta.ops[0]);
-                _parseEncuesta(encuesta.ops[0]).then(function(usuarios) {
-                    console.log('_parseEncuesta cb', usuarios);
-                    res.send(usuarios);
+                _parseEncuesta(encuesta.ops[0]).then(function(encuesta) {
+                    res.send(encuesta);
                 });
             });
-            /*
-            mongo.createData('encuestas', req.body).then(function(encuesta){
-                res.send(_parseEncuesta(encuesta.ops[0]));
-            });
-            */
+        },
+        encuesta: {
+            _path: ':_id',
+            _get: function(req, res) {
+                encuestasDao.getEncuesta(req.params._id).then(function(encuesta){
+                    _parseEncuesta(encuesta).then(function(encuesta) {
+                        res.send(encuesta);
+                    });
+                });
+            }
         }
     };
 };

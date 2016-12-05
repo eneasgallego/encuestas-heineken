@@ -29,9 +29,11 @@ mongo.conectar().then(function(){
     //ruteo dinámico
     var methods = ['_get','_post','_put','_delete'];
     var createApi = function(obj, path) {
+        //console.log('path', path);
         if (!path) {
             path = '';
         }
+        //console.log('obj', obj);
         path += '/' + obj._path;
         for (var i = 0 ; i < methods.length ; i++) {
             var method = methods[i];
@@ -43,8 +45,8 @@ mongo.conectar().then(function(){
         }
         for (var key in obj) {
             if (key !== '_path' && !~methods.indexOf(key)) {
-                console.log('createApi', key);
-                createApi(api[key], path);
+                //console.log('createApi', key);
+                createApi(obj[key], path);
             }
         }
     }

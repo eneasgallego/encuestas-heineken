@@ -9,6 +9,7 @@
 <link rel="import" href="hnk-page.html">
 
 <link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/hnk-config.html">
 <link rel="import" href="../util/shared-styles.html">
 
 <dom-module id="hnk-encuesta-page">
@@ -21,25 +22,31 @@
 
         <app-route
                 route="{{route}}"
-                pattern="/:encuesta_id"
+                pattern="/:_id"
                 data="{{routeData}}"></app-route>
 
         <hnk-encuesta
             encuesta="{{encuesta}}"
             on-volver="_onVolver"
         ></hnk-encuesta>
-<!--
-        <iron-ajax url="[[_profileUrlForUser(routeData.user_id)]]"
-           on-response="handleResponse" auto>
--->
+
+        <iron-ajax
+            id="ajax"
+            method="get"
+            url="[[url]]"
+            content-type="application/json"
+            last-response="{{encuesta}}"
+            auto
+        ></iron-ajax>
+
     </template>
 
     <script>
         Polymer({
             is: 'hnk-encuesta-page',
-            behaviors: [hnk.BaseBehavior],
+            behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior],
             properties: {
-                usuario: Object,
+                url: String,
                 encuesta: {
                     type: Object,
                     value: function(){return {id: 1, datos: {local: 'Garito'}, usuario: {id: 1, nombre: 'Saúl Gutiérrez Santamaría', supervisor: false}, encuesta: [{id: 1, titulo: 'Grupo 1', preguntas: [{id:1, titulo:'Pregunta 1', respuestas: [{"id":1,"texto":"Uno"},{"id":2,"texto":"Dos"}], respuesta: null},
@@ -48,9 +55,16 @@
                             {id:4, titulo:'Pregunta 4', respuestas: [{"id":7,"texto":"Siete"},{"id":8,"texto":"Ocho"}], respuesta: null}]}]}}
                 }
             },
-            observers: ['_observerrouteData(routeData.*)'],
-            _observerrouteData: function(routeData) {
-                console.log(routeData.base);
+            observers: ['_observerrouteData(routeData)'],
+            _observerrouteData: function(routeData, routeData2) {
+                console.log('1', routeData);
+                console.log('2', routeData2);
+                if (routeData._id) {
+                    this.getUrl(this, 'encuesta', routeData._id)
+                            .then(function(url) {
+                                this.url = url;
+                            }.bind(this));
+                }
             },
             _onAvanzar: function() {
                 this._setEstado(this.estado + 1);
