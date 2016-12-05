@@ -24,12 +24,10 @@
                 pattern="/:encuesta_id"
                 data="{{routeData}}"></app-route>
 
-        <hnk-page usuario="[[usuario]]">
-            <hnk-encuesta
-                encuesta="{{encuesta}}"
-                on-volver="_onVolver"
-            ></hnk-encuesta>
-        </hnk-page>
+        <hnk-encuesta
+            encuesta="{{encuesta}}"
+            on-volver="_onVolver"
+        ></hnk-encuesta>
 <!--
         <iron-ajax url="[[_profileUrlForUser(routeData.user_id)]]"
            on-response="handleResponse" auto>
@@ -49,6 +47,10 @@
                         {id: 2, titulo: 'Grupo 2', preguntas: [{id:3, titulo:'Pregunta 3', respuestas: [{"id":5,"texto":"Cinco"},{"id":6,"texto":"Seis"}], respuesta: null},
                             {id:4, titulo:'Pregunta 4', respuestas: [{"id":7,"texto":"Siete"},{"id":8,"texto":"Ocho"}], respuesta: null}]}]}}
                 }
+            },
+            observers: ['_observerrouteData(routeData.*)'],
+            _observerrouteData: function(routeData) {
+                console.log(routeData.base);
             },
             _onAvanzar: function() {
                 this._setEstado(this.estado + 1);

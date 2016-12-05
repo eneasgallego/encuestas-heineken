@@ -18,6 +18,7 @@
 
 <link rel="import" href="../pages/hnk-page.html">
 <link rel="import" href="../pages/hnk-nuevaencuesta-page.html">
+<link rel="import" href="../pages/hnk-encuesta-page.html">
 
 <dom-module id="encuestas-heineken-app">
     <template>
@@ -45,6 +46,7 @@
         <hnk-page usuario="[[usuario]]" menu="[[menu]]" menu-seleccionado="{{menuSeleccionado}}">
             <iron-pages selected="[[routeData.view]]" attr-for-selected="name">
                 <hnk-nuevaencuesta-page name="nueva_encuesta" usuario="[[usuario]]" route="{{subroute}}"></hnk-nuevaencuesta-page>
+                <hnk-encuesta-page name="encuesta" usuario="[[usuario]]" route="{{subroute}}"></hnk-encuesta-page>
             </iron-pages>
         </hnk-page>
     </template>

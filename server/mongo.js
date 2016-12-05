@@ -37,7 +37,7 @@ module.exports = function(config) {
             return _db.collection(collection).find(find).toArray();
         },
         createData: function(collection, data) {
-            console.log('createData')
+            console.log('createData', data)
             return _db.collection(collection).insert(data);
             /*
             return _doAction(_db.collection(collection).insert, [data])

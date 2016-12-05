@@ -1,7 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<link rel="import" href="../app-route/app-route.html">
-
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 
 <link rel="import" href="../encuestas/hnk-encuesta.html">
@@ -21,11 +19,6 @@
                 display: block;
             }
         </style>
-
-        <app-route
-            route="{{route}}"
-            pattern="/nueva_encuesta"
-        ></app-route>
 
         <hnk-encuesta
             encuesta="{{encuesta}}"
@@ -58,7 +51,7 @@
             },
             observers: ['_observerUsuario(usuario)'],
             _observerUsuario: function(usuario) {
-                this.encuesta = this._crearEncuesta(usuario._id);
+                this.encuesta = this._crearEncuesta(usuario);
             },
             ready: function() {
                 this.getUrl(this, 'encuestas')

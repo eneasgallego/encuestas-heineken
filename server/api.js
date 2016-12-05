@@ -1,8 +1,10 @@
 module.exports = function(mongo) {
-    return {
-        _path: 'api',
-        usuarios: require('./usuarios.js')(mongo),
-        preguntas: require('./preguntas.js')(mongo),
-        encuestas: require('./encuestas.js')(mongo)
+    var api = {
+        _path: 'api'
     };
+    api.usuarios = require('./usuarios.js')(mongo);
+    api.preguntas = require('./preguntas.js')(mongo);
+    api.encuestas = require('./encuestas.js')(mongo);
+
+    return api;
 };
