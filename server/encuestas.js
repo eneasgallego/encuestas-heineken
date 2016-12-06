@@ -49,7 +49,7 @@ module.exports = function(mongo) {
                 });
             },
             _put: function(req, res) {
-                encuestasDao.updateEncuesta(req.params._id, _invertParseEncuesta(req.body)).then(function(encuesta){
+                encuestasDao.updateEncuesta(req.params._id, _invertParseEncuesta(req.body), req.query.cambio).then(function(encuesta){
                     _parseEncuesta(encuesta).then(function(encuesta) {
                         res.send(encuesta);
                     });

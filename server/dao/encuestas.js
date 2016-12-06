@@ -17,9 +17,13 @@ module.exports = function(mongo) {
             });
         },
         createEncuesta: function(encuesta) {
+            encuesta.datos.fechaCreacion = new Date();
+            encuesta.datos.fechaDatos = encuesta.datos.fechaCreacion;
+            encuesta.datos.fechaTest = encuesta.datos.fechaCreacion;
             return mongo.createData('encuestas', encuesta);
         },
-        updateEncuesta: function(_id, encuesta) {
+        updateEncuesta: function(_id, encuesta, cambio) {
+            encuesta.datos['fecha' + cambio] = new Date();
             return mongo.updateObj('encuestas', _id, encuesta);
         }
     };

@@ -16,9 +16,18 @@
             .titulo {
                 @apply(--mixin-panel);
             }
+            .titulo h2 {
+                margin: 0;
+            }
+            .subtitulo {
+                font-size: 0.9rem;
+            }
         </style>
 
-        <h2 class="titulo">[[encuesta.usuario.nombre]]</h2>
+        <div class="titulo">
+            <h2>[[encuesta.datos.local]]</h2>
+            <div class="subtitulo">[[encuesta.usuario.nombre]]</div>
+        </div>
 
         <template is="dom-if" if="[[_igual(vista, '')]]">
             <hnk-encuesta-form

@@ -40,6 +40,7 @@
             url="[[urlEncuesta]]"
             content-type="application/json"
             body="[[encuesta]]"
+            params="[[_getParams(subroute.path)]]"
             on-response="_onResponseEncuesta"
         ></iron-ajax>
 
@@ -89,10 +90,22 @@
                                 this.urlPreguntas = urlPreguntas;
                             }.bind(this));
                 },
+                _getParams: function(vista) {
+                    var ret = {};
+
+                    if (vista === '') {
+                        ret.cambio = 'Datos';
+                    } else if (vista === '/test') {
+                        ret.cambio = 'Test';
+                    }
+
+                    return ret;
+                },
                 _onEnviar: function() {
                     this.$.ajaxEncuesta.generateRequest();
                 },
                 _onResponseEncuesta: function(e) {
+                    this.encuesta = e.detail.response;
                     navegar.call(this);
                 },
                 _onVolver: function(e) {
