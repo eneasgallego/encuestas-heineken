@@ -10,6 +10,7 @@
 
 <link rel="import" href="../util/hnk-base.html">
 <link rel="import" href="../util/hnk-config.html">
+<link rel="import" href="../util/hnk-spinner.html">
 <link rel="import" href="../util/shared-styles.html">
 
 <dom-module id="hnk-encuesta-page">
@@ -31,7 +32,7 @@
             url="[[urlEncuesta]]"
             content-type="application/json"
             last-response="{{encuesta}}"
-            loading="{{mostrarSpinner}}"
+            loading="{{_cargando.get}}"
             auto
         ></iron-ajax>
 
@@ -42,7 +43,7 @@
             content-type="application/json"
             body="[[encuesta]]"
             params="[[_getParams(subroute.path)]]"
-            loading="{{mostrarSpinner}}"
+            loading="{{_cargando.put}}"
             on-response="_onResponseEncuesta"
         ></iron-ajax>
 
@@ -72,27 +73,27 @@
 
             Polymer({
                 is: 'hnk-encuesta-page',
-                behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior],
+                behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior, hnk.SpinnerBehavior],
                 properties: {
                     urlEncuesta: String,
                     urlPreguntas: String,
                     encuesta: Object,
-                    preguntas: Array,
-                    mostrarSpinner: {
-                        type: Boolean,
-                        notify: true
-                    }
+                    preguntas: Array
                 },
-                observers: ['_observerrouteData(routeData)'],
-                _observerrouteData: function(routeData, routeData2) {
+                observers: ['_observerRouteData(routeData)'],
+                _observerRouteData: function(routeData) {
                     if (routeData._id) {
+                        this._cargando.get = true;
                         this.getUrl(this, 'encuesta', routeData._id)
                                 .then(function(urlEncuesta) {
+                                    this._cargando.get = false;
                                     this.urlEncuesta = urlEncuesta;
                                 }.bind(this));
                     }
+                    this._cargando.put = true;
                     this.getUrl(this, 'preguntas')
                             .then(function(urlPreguntas) {
+                                this._cargando.put = false;
                                 this.urlPreguntas = urlPreguntas;
                             }.bind(this));
                 },

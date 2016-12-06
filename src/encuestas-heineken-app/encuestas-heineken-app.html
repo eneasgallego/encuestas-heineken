@@ -50,12 +50,17 @@
             mostrar-spinner="[[mostrarSpinner]]"
         >
             <iron-pages selected="[[routeData.view]]" attr-for-selected="name">
-                <hnk-nuevaencuesta-page name="nueva_encuesta" usuario="[[usuario]]" route="{{subroute}}"></hnk-nuevaencuesta-page>
+                <hnk-nuevaencuesta-page
+                    name="nueva_encuesta"
+                    usuario="[[usuario]]"
+                    route="{{subroute}}"
+                    cargando="{{mostrarSpinner}}"
+                ></hnk-nuevaencuesta-page>
                 <hnk-encuesta-page
                     name="encuesta"
                     usuario="[[usuario]]"
                     route="{{subroute}}"
-                    mostrar-spinner="{{mostrarSpinner}}"
+                    cargando="{{mostrarSpinner}}"
                 ></hnk-encuesta-page>
             </iron-pages>
         </hnk-page>

@@ -8,6 +8,7 @@
 
 <link rel="import" href="../util/hnk-base.html">
 <link rel="import" href="../util/hnk-config.html">
+<link rel="import" href="../util/hnk-spinner.html">
 <link rel="import" href="../util/shared-styles.html">
 
 <link rel="import" href="../data-behaviors/hnk-data-encuesta-behavior.html">
@@ -32,7 +33,7 @@
             url="[[urlEncuesta]]"
             content-type="application/json"
             body="[[encuesta]]"
-            loading="{{mostrarSpinner}}"
+            loading="{{_cargando.encuesta}}"
             on-response="_onResponseEncuesta"
         ></iron-ajax>
 
@@ -41,7 +42,7 @@
             url="[[urlPreguntas]]"
             content-type="application/json"
             last-response="{{preguntas}}"
-            loading="{{mostrarSpinner}}"
+            loading="{{_cargando.preguntas}}"
             auto
         ></iron-ajax>
 
@@ -50,29 +51,29 @@
     <script>
         Polymer({
             is: 'hnk-nuevaencuesta-page',
-            behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior, hnk.data.DataEncuestaBehavior],
+            behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior, hnk.data.DataEncuestaBehavior, hnk.SpinnerBehavior],
             properties: {
                 usuario: Object,
                 encuesta: Object,
                 preguntas: Array,
                 urlEncuesta: String,
-                urlPreguntas: String,
-                mostrarSpinner: {
-                    type: Boolean,
-                    notify: true
-                }
+                urlPreguntas: String
             },
             observers: ['_observerEncuesta(usuario, preguntas)'],
             _observerEncuesta: function(usuario, preguntas) {
                 this.encuesta = this._crearEncuesta(usuario, preguntas);
             },
             ready: function() {
+                this._cargando.encuesta = true;
                 this.getUrl(this, 'encuestas')
                         .then(function(urlEncuesta) {
+                            this._cargando.encuesta = false;
                             this.urlEncuesta = urlEncuesta;
                         }.bind(this));
+                this._cargando.preguntas = true;
                 this.getUrl(this, 'preguntas')
                         .then(function(urlPreguntas) {
+                            this._cargando.preguntas = false;
                             this.urlPreguntas = urlPreguntas;
                         }.bind(this));
             },

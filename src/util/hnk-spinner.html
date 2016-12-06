@@ -1,0 +1,26 @@
+<script>
+    window.hnk = window.hnk || {};
+    window.hnk.SpinnerBehavior = {
+        properties: {
+            cargando: {
+                type: Boolean,
+                notify: true
+            },
+            _cargando: {
+                type: Object,
+                value: function(){return {}}
+            }
+        },
+        observers: ['_observerSpinner(_cargando.*)'],
+        _observerSpinner: function(_cargando) {
+            var ret = false;
+            for (var key in _cargando.base) {
+                if (_cargando.base[key]) {
+                    ret = true;
+                    break;
+                }
+            }
+            this.cargando = ret;
+        }
+    };
+</script>
