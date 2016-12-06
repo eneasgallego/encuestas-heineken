@@ -31,6 +31,7 @@
             url="[[urlEncuesta]]"
             content-type="application/json"
             last-response="{{encuesta}}"
+            loading="{{mostrarSpinner}}"
             auto
         ></iron-ajax>
 
@@ -41,6 +42,7 @@
             content-type="application/json"
             body="[[encuesta]]"
             params="[[_getParams(subroute.path)]]"
+            loading="{{mostrarSpinner}}"
             on-response="_onResponseEncuesta"
         ></iron-ajax>
 
@@ -75,7 +77,11 @@
                     urlEncuesta: String,
                     urlPreguntas: String,
                     encuesta: Object,
-                    preguntas: Array
+                    preguntas: Array,
+                    mostrarSpinner: {
+                        type: Boolean,
+                        notify: true
+                    }
                 },
                 observers: ['_observerrouteData(routeData)'],
                 _observerrouteData: function(routeData, routeData2) {

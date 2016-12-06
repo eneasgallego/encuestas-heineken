@@ -43,10 +43,20 @@
         <iron-ajax id="ajaxConfig" url="/config" handle-as="json" last-response="{{config}}" auto></iron-ajax>
         <iron-ajax id="ajaxUsuario" url="[[url]]" handle-as="json" on-response="_onResponseUsuarios" auto></iron-ajax>
 
-        <hnk-page usuario="[[usuario]]" menu="[[menu]]" menu-seleccionado="{{menuSeleccionado}}">
+        <hnk-page
+            usuario="[[usuario]]"
+            menu="[[menu]]"
+            menu-seleccionado="{{menuSeleccionado}}"
+            mostrar-spinner="[[mostrarSpinner]]"
+        >
             <iron-pages selected="[[routeData.view]]" attr-for-selected="name">
                 <hnk-nuevaencuesta-page name="nueva_encuesta" usuario="[[usuario]]" route="{{subroute}}"></hnk-nuevaencuesta-page>
-                <hnk-encuesta-page name="encuesta" usuario="[[usuario]]" route="{{subroute}}"></hnk-encuesta-page>
+                <hnk-encuesta-page
+                    name="encuesta"
+                    usuario="[[usuario]]"
+                    route="{{subroute}}"
+                    mostrar-spinner="{{mostrarSpinner}}"
+                ></hnk-encuesta-page>
             </iron-pages>
         </hnk-page>
     </template>
