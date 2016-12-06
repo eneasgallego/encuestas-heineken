@@ -3,6 +3,7 @@ module.exports = function(mongo) {
     return {
         _path: 'usuarios',
         _get: function(req, res) {
+            console.log('get usuarios');
             usuariosDao.getUsuarios().then(function(usuarios){
                 res.send(usuarios);
             });

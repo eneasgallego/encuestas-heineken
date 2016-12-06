@@ -1,0 +1,60 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../paper-styles/color.html">
+<link rel="import" href="../paper-styles/default-theme.html">
+<link rel="import" href="../paper-styles/shadow.html">
+<link rel="import" href="../paper-styles/typography.html">
+
+<link rel="import" href="../iron-form/iron-form.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../paper-button/paper-button.html">
+
+<link rel="import" href="../util/hnk-base.html">
+
+<dom-module id="hnk-imagen">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                padding: 4px;
+            }
+
+            iron-image {
+                --iron-image-placeholder: {
+                     @apply(--image-size);
+                };
+                @apply(--image-size);
+            }
+            h5 {
+                margin: 4px 0;
+            }
+        </style>
+
+        <div>
+            <h5>[[texto]]</h5>
+            <iron-image src="[[imagen]]" sizing="contain" preload placeholder="[[imagenDefecto]]" ></iron-image>
+        </div>
+
+    </template>
+
+    <script>
+        Polymer({
+
+            is: 'hnk-imagen',
+            behaviors: [hnk.BaseBehavior],
+            properties: {
+                texto: String,
+                imagen: {
+                    type: String,
+                    notify: true
+                },
+                imagenDefecto: {
+                    type: String,
+                    value: '/images/heineken-mini.png',
+                    notify: true
+                }
+            }
+        });
+    </script>
+</dom-module>

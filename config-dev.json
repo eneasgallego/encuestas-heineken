@@ -1,5 +1,5 @@
 {
-  "urlBase": "http://localhost:9000/api",
+  "urlBase": "/api",
   "endpoints": {
     "usuarios"  : "usuarios",
     "preguntas" : "preguntas",

@@ -7,7 +7,10 @@
 
 <link rel="import" href="../iron-form/iron-form.html">
 <link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../iron-image/iron-image.html">
 <link rel="import" href="../paper-button/paper-button.html">
+
+<link rel="import" href="../ui/hnk-imagen.html">
 
 <link rel="import" href="../util/hnk-base.html">
 
@@ -24,11 +27,24 @@
             .primary {
                 font-size: 1.25rem;
             }
-
+            .imagenes {
+                display: flex;
+                justify-content: space-around;
+            }
         </style>
 
         <form is="iron-form" id="form" class="form" on-iron-form-submit="_onSubmit">
             <paper-input required name="local" label="Local" value="{{datos.local}}"></paper-input>
+            <div class="imagenes">
+                <hnk-imagen
+                    texto="Local"
+                    imagen="[[datos.fotoLocal]]"
+                ></hnk-imagen>
+                <hnk-imagen
+                    texto="Ticket"
+                    imagen="[[datos.fotoTicket]]"
+                ></hnk-imagen>
+            </div>
             <paper-button on-tap="_onVolver">Volver</paper-button>
             <paper-button class="primary" on-tap="_onTap">comenzar Test</paper-button>
         </form>
