@@ -6,9 +6,6 @@ module.exports = function(mongo) {
             usuariosDao.getUsuarios().then(function(usuarios){
                 res.send(usuarios);
             });
-            /*mongo.getData('usuarios').then(function(usuarios){
-                res.send(usuarios);
-            });*/
         }
     };
 };

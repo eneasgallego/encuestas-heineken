@@ -1,18 +1,28 @@
 module.exports = function(mongo) {
     var usuariosDao = require('./dao/usuarios.js')(mongo);
     var encuestasDao = require('./dao/encuestas.js')(mongo);
-    var _parseEncuesta = function(encuesta, usuarios) {
+    var _parseEncuesta = function(encuestas, usuarios) {
         return new Promise(function(resolve, reject) {
             if (usuarios) {
-                var usuario = usuarios.find(function(usuario) {
-                    return usuario._id == encuesta.usuario;
-                });
-                encuesta.usuario = usuario;
-                resolve(encuesta);
+                var parse = function(encuesta) {
+                    var usuario = usuarios.find(function(usuario) {
+                        return usuario._id == encuesta.usuario;
+                    });
+                    encuesta.usuario = usuario;
+                };
+                if (encuestas instanceof Array) {
+                    for (var i = 0 ; i < encuestas.length ; i++) {
+                        parse(encuestas[i]);
+                    }
+                } else {
+                    parse(encuestas);
+                }
+
+                resolve(encuestas);
             } else {
                 usuariosDao.getUsuarios()
                     .then(function(usuarios) {
-                        var prom = _parseEncuesta(encuesta, usuarios);
+                        var prom = _parseEncuesta(encuestas, usuarios);
                         prom.then(function(usuarios) {
                             resolve(usuarios);
                         });
@@ -30,7 +40,11 @@ module.exports = function(mongo) {
     return {
         _path: 'encuestas',
         _get: function(req, res) {
-            encuestasDao.getEncuestas().then(res.send);
+            encuestasDao.getEncuestas().then(function(encuestas){
+                _parseEncuesta(encuestas).then(function(encuestas) {
+                    res.send(encuestas);
+                });
+            });
         },
         _post: function(req, res) {
             encuestasDao.createEncuesta(_invertParseEncuesta(req.body)).then(function(encuesta){

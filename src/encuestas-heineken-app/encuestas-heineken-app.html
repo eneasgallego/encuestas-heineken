@@ -19,6 +19,7 @@
 <link rel="import" href="../pages/hnk-page.html">
 <link rel="import" href="../pages/hnk-nuevaencuesta-page.html">
 <link rel="import" href="../pages/hnk-encuesta-page.html">
+<link rel="import" href="../pages/hnk-encuestas-page.html">
 
 <dom-module id="encuestas-heineken-app">
     <template>
@@ -62,7 +63,14 @@
                     route="{{subroute}}"
                     cargando="{{mostrarSpinner}}"
                 ></hnk-encuesta-page>
-            </iron-pages>
+                <hnk-encuestas-page
+                    name="encuestas"
+                    usuario="[[usuario]]"
+                    route="{{subroute}}"
+                    cargando="{{mostrarSpinner}}"
+                    on-encuesta-changed="_onEncuestaChanged"
+                ></hnk-encuestas-page>
+        </iron-pages>
         </hnk-page>
     </template>
 
@@ -81,10 +89,7 @@
                         return [];
                     }
                 },
-                menuSeleccionado: {
-                    type: Object,
-                    observer: '_observerMenuSeleccionado'
-                },
+                menuSeleccionado: Object,
                 url: String
             },
             ready: function() {
@@ -100,10 +105,8 @@
                             this.url = url;
                         }.bind(this));
             },
-            _observerMenuSeleccionado: function(menuSeleccionado) {
-                if (menuSeleccionado.href) {
-                    //this.$.router.go(menuSeleccionado.href);
-                }
+            _onEncuestaChanged: function () {
+                this.menuSeleccionado = null;
             },
             _onResponseUsuarios: function(e, detail) {
                 this.usuario = e.detail.response[0];

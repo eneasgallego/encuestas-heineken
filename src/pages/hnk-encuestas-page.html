@@ -1,0 +1,106 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<link rel="import" href="../paper-menu/paper-menu.html">
+
+<link rel="import" href="hnk-page.html">
+<link rel="import" href="hnk-lista.html">
+
+<link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/hnk-config.html">
+<link rel="import" href="../util/hnk-spinner.html">
+<link rel="import" href="../util/shared-styles.html">
+
+<dom-module id="hnk-encuestas-page">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+        </style>
+
+        <iron-ajax
+            method="get"
+            url="[[urlEncuestas]]"
+            content-type="application/json"
+            last-response="{{encuestas}}"
+            loading="{{_cargando.get}}"
+            auto
+        ></iron-ajax>
+
+        <iron-ajax
+            id="ajaxEncuesta"
+            method="put"
+            url="[[urlEncuesta]]"
+            content-type="application/json"
+            body="[[encuesta]]"
+            params="[[_getParams(subroute.path)]]"
+            loading="{{_cargando.put}}"
+            on-response="_onResponseEncuesta"
+        ></iron-ajax>
+
+        <hnk-lista
+            class="panel"
+            items="[[encuestasLista]]"
+            item-seleccionado="{{encuesta}}"
+        ></hnk-lista>
+
+    </template>
+
+    <script>
+        (function(){
+            Polymer({
+                is: 'hnk-encuestas-page',
+                behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior, hnk.SpinnerBehavior],
+                properties: {
+                    urlEncuestas: String,
+                    encuestas: Array,
+                    encuestasLista: {
+                        type: Array,
+                        computed: '_getEncuestasLista(encuestas.splices)'
+                    },
+                    encuesta: {
+                        type: Object,
+                        observer: '_observerEncuesta',
+                        notify: true
+                    }
+                },
+                _getEncuestasLista: function(encuestas) {
+                    var ret = [];
+
+                    for (var i = 0 ; i < this.encuestas.length ; i++) {
+                        ret.push({
+                            titulo: this.encuestas[i].datos.local,
+                            texto: this.encuestas[i].usuario.nombre + ' (' + this._getFecha(this.encuestas[i]) + ')',
+                            raw: this.encuestas[i]
+                        });
+                    }
+
+                    return ret;
+                },
+                _observerEncuesta: function(encuesta) {
+                    if (encuesta) {
+                        this.encuesta = null;
+                        window.location.hash = '#/encuesta/' + encuesta._id + '/test';
+                    }
+                },
+                ready: function() {
+                    this._cargando.get = true;
+                    this.getUrl(this, 'encuestas')
+                            .then(function(urlEncuesta) {
+                                this._cargando.get = false;
+                                this.urlEncuestas = urlEncuesta;
+                            }.bind(this));
+                },
+                _getFecha: function(encuesta) {
+                    var fechaDatos = new Date(encuesta.datos.fechaDatos);
+                    var fechaTest = new Date(encuesta.datos.fechaTest);
+                    var fecha = fechaDatos > fechaTest ? fechaDatos : fechaTest;
+
+                    return fecha.getDate() + '/' + (fecha.getMonth() + 1) + '/' + fecha.getFullYear() + ' ' + fecha.getHours() + ':' + fecha.getMinutes();
+                }
+            });
+        })();
+    </script>
+</dom-module>
