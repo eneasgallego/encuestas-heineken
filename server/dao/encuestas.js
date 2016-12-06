@@ -3,14 +3,12 @@ module.exports = function(mongo) {
         getEncuestas: function() {
             return mongo.getData('encuestas');
         },
-        getEncuesta: function(id) {
-            console.log('getEncuesta', id);
+        getEncuesta: function(_id) {
             return new Promise(function(resolve, reject) {
-                mongo.getData('encuestas', {_id: mongo.ObjectID.createFromHexString(id)})
+                mongo.getData('encuestas', {_id: mongo.ObjectID.createFromHexString(_id)})
                     .then(function(encuestas) {
-                        console.log('getData encuestas', encuestas);
                         if (encuestas.length) {
-                            console.log('resolve', encuestas[0]);
+                            //console.log('resolve', encuestas[0]);
                             resolve(encuestas[0]);
                         } else {
                             reject();
@@ -19,11 +17,10 @@ module.exports = function(mongo) {
             });
         },
         createEncuesta: function(encuesta) {
-            console.log('createEncuesta', encuesta);
-            if (typeof(encuesta.usuario) === 'object') {
-                encuesta.usuario = encuesta.usuario._id;
-            }
             return mongo.createData('encuestas', encuesta);
+        },
+        updateEncuesta: function(_id, encuesta) {
+            return mongo.updateObj('encuestas', _id, encuesta);
         }
     };
 };

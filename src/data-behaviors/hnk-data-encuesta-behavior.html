@@ -2,12 +2,21 @@
     window.hnk = window.hnk || {};
     window.hnk.data = window.hnk.data || {};
     window.hnk.data.DataEncuestaBehavior = {
-        _crearEncuesta: function (usuario) {
+        _crearEncuesta: function (usuario, preguntas) {
+            for (var i = 0 ; i < preguntas.length ; i++) {
+                var grupo = preguntas[i];
+                for (var j = 0 ; j < grupo.preguntas.length ; j++) {
+                    var pregunta = grupo.preguntas[j];
+                    pregunta.respuesta = -1;
+                }
+            }
+
             return {
                 usuario: usuario,
                 datos: {
                     local: ''
-                }
+                },
+                test: preguntas
             };
         }
     };

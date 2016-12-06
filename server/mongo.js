@@ -4,23 +4,17 @@ module.exports = function(config) {
     var mongodb = require('mongodb');
 
     var _doAction = function(action, params) {
-        //console.log('new Promise');
         return new Promise(function(resolve, reject) {
-            //console.log('check params');
             if (!(params instanceof Array)) {
                 params = [];
             }
-            //console.log('add callback', params);
             params.push(function (err, result) {
-                //console.log('callback');
                 if (err) {
-                    reject(err);save
+                    reject(err);
                     throw err;
                 }
-                console.log('resolve');
                 resolve(result);
             });
-            console.log('apply');
             action.apply(this, params);
         });
     };
@@ -34,20 +28,37 @@ module.exports = function(config) {
                 });
         },
         getData: function(collection, find) {
-            console.log('getData find', find);
             var ret = _db.collection(collection).find(find);
-            //console.log('getData 2', ret);
             return ret.toArray();
         },
         createData: function(collection, data) {
-            console.log('createData', data)
-            return _db.collection(collection).insert(data);
-            /*
-            return _doAction(_db.collection(collection).insert, [data])
-                .then(function(result){
-                    console.log(result)
-                });
-                */
+            return new Promise(function(resolve, reject) {
+                _db.collection(collection).insert(data)
+                    .then(function(obj) {
+                        resolve(obj.ops[0]);
+                    }).catch(reject);
+            });
+        },
+        updateObj: function(collection, _id, data) {
+            return new Promise(function(resolve, reject) {
+                var find = {_id:mongodb.ObjectID.createFromHexString(_id)};
+                delete data._id;
+                //console.log('db.' + collection + '.update(' + JSON.stringify(find) + ',' + JSON.stringify(data) + ')')
+                _db.collection(collection).update(find, data)
+                    .then(function() {
+                        this.getData(collection, find).then(function(data) {
+                            resolve(data[0]);
+                        })
+                    }.bind(this)).catch(reject);
+            }.bind(this));
+        },
+        updateData: function(collection, find, data) {
+            return new Promise(function(resolve, reject) {
+                _db.collection(collection).update(find, data, false, true)
+                    .then(function(obj) {
+                        resolve(obj);
+                    }).catch(reject);
+            });
         }
     };
 };

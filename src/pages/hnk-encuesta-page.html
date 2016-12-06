@@ -23,60 +23,82 @@
         <app-route
                 route="{{route}}"
                 pattern="/:_id"
-                data="{{routeData}}"></app-route>
-
-        <hnk-encuesta
-            encuesta="{{encuesta}}"
-            on-volver="_onVolver"
-        ></hnk-encuesta>
+                data="{{routeData}}"
+                tail="{{subroute}}"></app-route>
 
         <iron-ajax
-            id="ajax"
             method="get"
-            url="[[url]]"
+            url="[[urlEncuesta]]"
             content-type="application/json"
             last-response="{{encuesta}}"
             auto
         ></iron-ajax>
 
+        <iron-ajax
+            id="ajaxEncuesta"
+            method="put"
+            url="[[urlEncuesta]]"
+            content-type="application/json"
+            body="[[encuesta]]"
+            on-response="_onResponseEncuesta"
+        ></iron-ajax>
+
+        <hnk-encuesta
+                encuesta="{{encuesta}}"
+                vista="{{subroute.path}}"
+                on-comenzar="_onEnviar"
+                on-enviar="_onEnviar"
+                on-volver="_onVolver"
+                ></hnk-encuesta>
+
     </template>
 
     <script>
-        Polymer({
-            is: 'hnk-encuesta-page',
-            behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior],
-            properties: {
-                url: String,
-                encuesta: {
-                    type: Object,
-                    value: function(){return {id: 1, datos: {local: 'Garito'}, usuario: {id: 1, nombre: 'Saúl Gutiérrez Santamaría', supervisor: false}, encuesta: [{id: 1, titulo: 'Grupo 1', preguntas: [{id:1, titulo:'Pregunta 1', respuestas: [{"id":1,"texto":"Uno"},{"id":2,"texto":"Dos"}], respuesta: null},
-                        {id:2, titulo:'Pregunta 2', respuestas: [{"id":3,"texto":"Tres"},{"id":4,"texto":"Cuatro"}], respuesta: null}]},
-                        {id: 2, titulo: 'Grupo 2', preguntas: [{id:3, titulo:'Pregunta 3', respuestas: [{"id":5,"texto":"Cinco"},{"id":6,"texto":"Seis"}], respuesta: null},
-                            {id:4, titulo:'Pregunta 4', respuestas: [{"id":7,"texto":"Siete"},{"id":8,"texto":"Ocho"}], respuesta: null}]}]}}
-                }
-            },
-            observers: ['_observerrouteData(routeData)'],
-            _observerrouteData: function(routeData, routeData2) {
-                console.log('1', routeData);
-                console.log('2', routeData2);
-                if (routeData._id) {
-                    this.getUrl(this, 'encuesta', routeData._id)
-                            .then(function(url) {
-                                this.url = url;
-                            }.bind(this));
-                }
-            },
-            _onAvanzar: function() {
-                this._setEstado(this.estado + 1);
-            },
-            _onVolver: function(e) {
-                e.stopPropagation();
-                if (this.estado) {
-                    this._setEstado(this.estado - 1);
+        (function(){
+            var navegacion = ['', '/test', '/resumen'];
+            var navegar = function(atras) {
+                var index = navegacion.indexOf(this.subroute.path);
+                if (atras && index > 0) {
+                    window.location.hash = '#/encuesta/' + this.encuesta._id + navegacion[index-1];
+                } else if ((!atras) && index < navegacion.length - 1) {
+                    window.location.hash = '#/encuesta/' + this.encuesta._id + navegacion[index+1];
                 } else {
-                    this.fire('volver');
+                    window.location.href = '';
                 }
-            }
-        });
+            };
+
+            Polymer({
+                is: 'hnk-encuesta-page',
+                behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior],
+                properties: {
+                    urlEncuesta: String,
+                    urlPreguntas: String,
+                    encuesta: Object,
+                    preguntas: Array
+                },
+                observers: ['_observerrouteData(routeData)'],
+                _observerrouteData: function(routeData, routeData2) {
+                    if (routeData._id) {
+                        this.getUrl(this, 'encuesta', routeData._id)
+                                .then(function(urlEncuesta) {
+                                    this.urlEncuesta = urlEncuesta;
+                                }.bind(this));
+                    }
+                    this.getUrl(this, 'preguntas')
+                            .then(function(urlPreguntas) {
+                                this.urlPreguntas = urlPreguntas;
+                            }.bind(this));
+                },
+                _onEnviar: function() {
+                    this.$.ajaxEncuesta.generateRequest();
+                },
+                _onResponseEncuesta: function(e) {
+                    navegar.call(this);
+                },
+                _onVolver: function(e) {
+                    navegar.call(this, true);
+                }
+            });
+        })();
     </script>
 </dom-module>

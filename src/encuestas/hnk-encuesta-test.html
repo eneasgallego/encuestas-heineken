@@ -28,7 +28,7 @@
         <form is="iron-form" id="form" class="form" on-iron-form-submit="_onSubmit">
             <template is="dom-repeat" items="{{encuesta}}">
                 <hnk-encuesta-test-grp
-                    titulo="[[item.titulo]]"
+                    titulo="[[item.grupo]]"
                     preguntas="{{item.preguntas}}"
                 ></hnk-encuesta-test-grp>
             </template>
@@ -44,11 +44,6 @@
             is: 'hnk-encuesta-test',
             behaviors: [hnk.BaseBehavior],
             properties: {
-                estado: {
-                    type: Number,
-                    value: 0,
-                    readOnly: true
-                },
                 encuesta: {
                     type: Array,
                     notify: true

@@ -32,9 +32,9 @@
         </style>
 
         <iron-label>[[titulo]]</iron-label>
-        <paper-radio-group selected="{{respuesta}}" allow-empty-selection>
+        <paper-radio-group selected="{{respuesta}}" attr-for-selected="tag" allow-empty-selection>
             <template is="dom-repeat" items="[[respuestas]]">
-                <paper-radio-button name="[[item]]">[[item.texto]]</paper-radio-button>
+                <paper-radio-button tag="[[item._id]]">[[item.respuesta]]</paper-radio-button>
             </template>
         </paper-radio-group>
     </template>

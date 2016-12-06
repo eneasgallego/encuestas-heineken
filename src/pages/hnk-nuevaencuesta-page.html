@@ -27,12 +27,20 @@
         ></hnk-encuesta>
 
         <iron-ajax
-            id="ajax"
+            id="ajaxEncuesta"
             method="post"
-            url="[[url]]"
+            url="[[urlEncuesta]]"
             content-type="application/json"
             body="[[encuesta]]"
-            on-response="_onResponse"
+            on-response="_onResponseEncuesta"
+        ></iron-ajax>
+
+        <iron-ajax
+            method="get"
+            url="[[urlPreguntas]]"
+            content-type="application/json"
+            last-response="{{preguntas}}"
+            auto
         ></iron-ajax>
 
     </template>
@@ -43,27 +51,33 @@
             behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior, hnk.data.DataEncuestaBehavior],
             properties: {
                 usuario: Object,
-                encuesta: {
-                    type: Object,
-                    value: function(){return {}}
-                },
-                url: String
+                encuesta: Object,
+                preguntas: Array,
+                urlEncuesta: String,
+                urlPreguntas: String
             },
-            observers: ['_observerUsuario(usuario)'],
-            _observerUsuario: function(usuario) {
-                this.encuesta = this._crearEncuesta(usuario);
+            observers: ['_observerEncuesta(usuario, preguntas)'],
+            _observerEncuesta: function(usuario, preguntas) {
+                this.encuesta = this._crearEncuesta(usuario, preguntas);
             },
             ready: function() {
                 this.getUrl(this, 'encuestas')
-                        .then(function(url) {
-                            this.url = url;
+                        .then(function(urlEncuesta) {
+                            this.urlEncuesta = urlEncuesta;
+                        }.bind(this));
+                this.getUrl(this, 'preguntas')
+                        .then(function(urlPreguntas) {
+                            this.urlPreguntas = urlPreguntas;
                         }.bind(this));
             },
             _onComenzar: function() {
-                this.$.ajax.generateRequest();
+                this.$.ajaxEncuesta.generateRequest();
             },
-            _onResponse: function(e) {
-                window.location.hash = '#/encuesta/' + e.detail.response._id + '/preguntas';
+            _onResponseEncuesta: function(e) {
+                window.location.hash = '#/encuesta/' + e.detail.response._id + '/test';
+            },
+            _onVolver: function() {
+                window.location.href = '/';
             }
         });
     </script>
