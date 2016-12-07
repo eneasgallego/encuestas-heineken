@@ -27,6 +27,7 @@
     "gulp-express": "^0.3.5",
     "gulp-rename": "^1.2.2",
     "gulp-util": "^3.0.7",
-    "mongodb": "^2.2.12"
+    "mongodb": "^2.2.12",
+    "multer": "^1.2.0"
   }
 }

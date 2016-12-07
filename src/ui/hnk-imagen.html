@@ -1,16 +1,10 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<link rel="import" href="../paper-styles/color.html">
-<link rel="import" href="../paper-styles/default-theme.html">
-<link rel="import" href="../paper-styles/shadow.html">
-<link rel="import" href="../paper-styles/typography.html">
-
-<link rel="import" href="../iron-form/iron-form.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../iron-image/iron-image.html">
-<link rel="import" href="../paper-button/paper-button.html">
 
 <link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/shared-styles.html">
 
 <dom-module id="hnk-imagen">
     <template>
@@ -33,7 +27,22 @@
 
         <div>
             <h5>[[texto]]</h5>
-            <iron-image src="[[imagen]]" sizing="contain" preload placeholder="[[imagenDefecto]]" ></iron-image>
+            <div>[[imageValue]]</div>
+            <iron-image
+                src="[[imagen]]"
+                sizing="contain"
+                placeholder="[[imagenDefecto]]"
+                preload
+                on-tap="_onTap"
+            ></iron-image>
+            <paper-input
+                id="input"
+                class="hidden"
+                name="upl"
+                type="file"
+                accept="image/*"
+                on-change="_onChange"
+            ></paper-input>
         </div>
 
     </template>
@@ -53,7 +62,36 @@
                     type: String,
                     value: '/images/heineken-mini.png',
                     notify: true
-                }
+                },
+                editable: Boolean
+            },
+            _onTap: function() {
+                this.editable && this.$.input.$.input.click();
+            },
+            _onResponse: function(imagen) {
+                console.log(imagen);
+                this.imagen = imagen;
+            },
+            uploadFile: function(file) {
+                var formData = new FormData();
+                formData.append("upl", file);
+                var xhr = this.xhr = new XMLHttpRequest();
+                xhr.open('POST', '/api/imagen', true);
+                xhr.onload = function(e) {
+                    if(xhr.status == 200) {
+                        this._onResponse(e.currentTarget.response);
+                    } else {
+                        console.log('error');
+                        this.fire('error', {xhr:xhr});
+                    }
+                }.bind(this);
+                xhr.send(formData);
+            },
+            _onChange: function(e) {
+                //this.$.form.submit();
+
+                var file = e.target.files[0];
+                this.uploadFile(file);
             }
         });
     </script>

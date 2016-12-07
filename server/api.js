@@ -5,6 +5,7 @@ module.exports = function(mongo) {
     api.usuarios = require('./usuarios.js')(mongo);
     api.preguntas = require('./preguntas.js')(mongo);
     api.encuestas = require('./encuestas.js')(mongo);
+    //api.imagen = require('./imagen.js')(mongo);
 
     return api;
 };

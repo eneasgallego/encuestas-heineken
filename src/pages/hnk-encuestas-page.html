@@ -72,6 +72,7 @@
                     for (var i = 0 ; i < this.encuestas.length ; i++) {
                         ret.push({
                             titulo: this.encuestas[i].datos.local,
+                            imagen: this.encuestas[i].datos.fotoLocal,
                             texto: this.encuestas[i].usuario.nombre + ' (' + this._getFecha(this.encuestas[i]) + ')',
                             raw: this.encuestas[i]
                         });

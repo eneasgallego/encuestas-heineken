@@ -6,6 +6,7 @@ var config = require('./dirs.json');
 //console.log(config);
 var mongo = require('./server/mongo')(config.db);
 var api = require('./server/api.js')(mongo);
+var imagen = require('./server/imagen.js');
 
 mongo.conectar().then(function(){
     //mongo.getData('usuarios').then(console.log);
@@ -39,6 +40,7 @@ mongo.conectar().then(function(){
     // ruteo estatico
     app.use('/', express.static(path.join(__dirname, config.destDir)));
     app.use('/', express.static(path.join(__dirname, config.destDir + '/' + config.distDir)));
+    app.use('/uploads', express.static(path.join(__dirname, './uploads')));
     app.get('/config', function(req, res){
         res.sendFile(__dirname + config.destDir + '/' + config.configDist);
     });
@@ -68,6 +70,8 @@ mongo.conectar().then(function(){
         }
     }
     createApi(api);
+
+    imagen(app);
 
     // escuchar
     app.listen(config.server.port);

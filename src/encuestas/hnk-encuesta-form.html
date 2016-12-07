@@ -38,11 +38,12 @@
             <div class="imagenes">
                 <hnk-imagen
                     texto="Local"
-                    imagen="[[datos.fotoLocal]]"
+                    imagen="{{datos.fotoLocal}}"
+                    editable
                 ></hnk-imagen>
                 <hnk-imagen
                     texto="Ticket"
-                    imagen="[[datos.fotoTicket]]"
+                    imagen="{{datos.fotoTicket}}"
                 ></hnk-imagen>
             </div>
             <paper-button on-tap="_onVolver">Volver</paper-button>
