@@ -50,7 +50,7 @@
             menu-seleccionado="{{menuSeleccionado}}"
             mostrar-spinner="[[mostrarSpinner]]"
         >
-            <iron-pages selected="[[routeData.view]]" attr-for-selected="name">
+            <iron-pages selected="[[routeData.view]]" attr-for-selected="name" on-iron-select="_onPageSelected">
                 <hnk-nuevaencuesta-page
                     name="nueva_encuesta"
                     usuario="[[usuario]]"
@@ -104,6 +104,9 @@
                         .then(function(url) {
                             this.url = url;
                         }.bind(this));
+            },
+            _onPageSelected: function(e, model) {
+                model.item.reiniciar && model.item.reiniciar();
             },
             _onEncuestaChanged: function () {
                 this.menuSeleccionado = null;

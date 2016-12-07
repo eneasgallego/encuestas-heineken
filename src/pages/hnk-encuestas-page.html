@@ -21,6 +21,7 @@
         </style>
 
         <iron-ajax
+            id="ajaxEncuestas"
             method="get"
             url="[[urlEncuestas]]"
             content-type="application/json"
@@ -69,13 +70,15 @@
                 _getEncuestasLista: function(encuestas) {
                     var ret = [];
 
-                    for (var i = 0 ; i < this.encuestas.length ; i++) {
-                        ret.push({
-                            titulo: this.encuestas[i].datos.local,
-                            imagen: this.encuestas[i].datos.fotoLocal,
-                            texto: this.encuestas[i].usuario.nombre + ' (' + this._getFecha(this.encuestas[i]) + ')',
-                            raw: this.encuestas[i]
-                        });
+                    if (this.encuestas) {
+                        for (var i = 0 ; i < this.encuestas.length ; i++) {
+                            ret.push({
+                                titulo: this.encuestas[i].datos.local,
+                                imagen: this.encuestas[i].datos.fotoLocal,
+                                texto: this.encuestas[i].usuario.nombre + ' (' + this._getFecha(this.encuestas[i]) + ')',
+                                raw: this.encuestas[i]
+                            });
+                        }
                     }
 
                     return ret;
@@ -87,6 +90,7 @@
                     }
                 },
                 ready: function() {
+                    console.log('ready')
                     this._cargando.get = true;
                     this.getUrl(this, 'encuestas')
                             .then(function(urlEncuesta) {
@@ -100,6 +104,9 @@
                     var fecha = fechaDatos > fechaTest ? fechaDatos : fechaTest;
 
                     return fecha.getDate() + '/' + (fecha.getMonth() + 1) + '/' + fecha.getFullYear() + ' ' + fecha.getHours() + ':' + fecha.getMinutes();
+                },
+                reiniciar: function() {
+                    this.$.ajaxEncuestas.generateRequest();
                 }
             });
         })();
