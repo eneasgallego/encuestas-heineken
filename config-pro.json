@@ -1,6 +1,36 @@
 {
-  "urlBase": "",
+  "titulo": "Encuestas Heineken",
+  "urlBase": "/api",
   "endpoints": {
-
-  }
+    "usuarios"  : "usuarios",
+    "preguntas" : "preguntas",
+    "encuestas" : "encuestas",
+    "encuesta" : "encuestas/####"
+  },
+  "menu": [{
+    "texto": "Inicio",
+    "href": "#/"
+  },{
+    "texto": "Nueva Encuesta",
+    "href": "#/nueva_encuesta"
+  },{
+    "texto": "Mis Encuestas",
+    "href": "#/encuestas"
+  },{
+    "texto": "Yo",
+    "href": "#/encuestador"
+  },{
+    "texto": "Supervisor",
+    "supervisor": true,
+    "menu": [{
+      "texto": "Estadísticas",
+      "href": "#/estadisticas"
+    },{
+      "texto": "Encuestadores",
+      "href": "#/encuestadores"
+    },{
+      "texto": "Encuestas",
+      "href": "#/encuestas"
+    }]
+  }]
 }

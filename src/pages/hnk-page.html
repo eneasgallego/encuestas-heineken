@@ -10,6 +10,7 @@
 <link rel="import" href="hnk-menu.html">
 
 <link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/hnk-config.html">
 <link rel="import" href="../util/hnk-spinner.html">
 <link rel="import" href="../util/shared-styles.html">
 
@@ -47,10 +48,19 @@
                 font-size: 1.2rem;
                 margin: 0;
             }
+            #drawer h1 {
+                font-size: 1rem;
+                margin: 0;
+            }
         </style>
 
         <app-drawer-layout>
             <app-drawer id="drawer">
+                <app-header condenses effects="waterfall">
+                    <app-toolbar>
+                        <h1>[[titulo]]</h1>
+                    </app-toolbar>
+                </app-header>
                 <hnk-menu
                     menu="[[menu]]"
                     menu-seleccionado="{{menuSeleccionado}}"
@@ -65,7 +75,7 @@
                                 <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
                                 <app-toolbar>
                                     <app-toolbar>
-                                        <h1>Encuestas Heineken</h1>
+                                        <h1>[[titulo]]</h1>
                                     </app-toolbar>
                                 </app-toolbar>
                             </app-toolbar>
@@ -89,21 +99,31 @@
     <script>
         Polymer({
             is: 'hnk-page',
-            behaviors: [hnk.BaseBehavior],
+            behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior],
             properties: {
+                titulo: String,
                 usuario: Object,
                 mostrarSpinner: Boolean,
                 menu: {
                     type: Array,
                     value: function(){return []}
                 },
-                menuSeleccionado: {
-                    type: Object,
-                    notify: true,
-                    observer: '_observerMenuSeleccionado'
-                }
+                menuSeleccionado: Object
             },
-            _observerMenuSeleccionado: function(menuSeleccionado) {
+            ready: function() {
+                this.getConfig('menu')
+                        .then(function(menu) {
+                            this.menu = menu;
+                        }.bind(this))
+                        .catch(function() {
+                            console.error('No hay menú')
+                        }.bind(this));
+                this.getConfig('titulo')
+                        .then(function(titulo) {
+                            this.titulo = titulo;
+                        }.bind(this));
+            },
+            reiniciar: function() {
                 (!this.$.drawer.persistent) && this.$.drawer.close();
             }
         });
