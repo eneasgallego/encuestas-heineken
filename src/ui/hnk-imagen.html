@@ -36,7 +36,7 @@
                 src="[[imagen]]"
                 sizing="contain"
                 placeholder="[[imagenDefecto]]"
-                preload="[[!vacio]]"
+                preload
                 on-tap="_onTap"
             ></iron-image>
             <paper-input
@@ -67,8 +67,7 @@
                     value: '/images/heineken-mini.png',
                     notify: true
                 },
-                editable: Boolean,
-                vacio: Boolean
+                editable: Boolean
             },
             _onTap: function() {
                 this.editable && this.$.input.$.input.click();

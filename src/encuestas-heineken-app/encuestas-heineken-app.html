@@ -6,9 +6,6 @@
 
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 
-<link rel="import" href="../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
-
 <link rel="import" href="../paper-menu/paper-menu.html">
 <link rel="import" href="../paper-item/paper-item.html">
 
@@ -47,8 +44,9 @@
             id="pagina"
             usuario="[[usuario]]"
             mostrar-spinner="[[mostrarSpinner]]"
+            route="[[route]]"
         >
-            <iron-pages selected="[[routeData.view]]" attr-for-selected="name" on-iron-select="_onPageSelected">
+            <iron-pages selected="[[routeData.view]]" attr-for-selected="name" on-iron-select="_onPageSelected" on-iron-deselect="_onPageDeselected">
                 <hnk-nuevaencuesta-page
                     name="nueva_encuesta"
                     usuario="[[usuario]]"
@@ -62,7 +60,7 @@
                     cargando="{{mostrarSpinner}}"
                 ></hnk-encuesta-page>
                 <hnk-encuestas-page
-                    name="encuestas"
+                    name="mis_encuestas"
                     usuario="[[usuario]]"
                     route="{{subroute}}"
                     cargando="{{mostrarSpinner}}"
@@ -91,6 +89,9 @@
             _onPageSelected: function(e, model) {
                 this.$.pagina.reiniciar();
                 model.item.reiniciar && model.item.reiniciar();
+            },
+            _onPageDeselected: function() {
+                this.$.pagina.reiniciar();
             },
             _onResponseUsuarios: function(e, detail) {
                 this.usuario = e.detail.response[0];

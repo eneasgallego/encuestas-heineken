@@ -3,6 +3,12 @@
 <link rel="import" href="../paper-menu/paper-menu.html">
 <link rel="import" href="../paper-item/paper-item.html">
 
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icons/social-icons.html">
+<link rel="import" href="../iron-icons/editor-icons.html">
+<link rel="import" href="../vaadin-icons/vaadin-icons.html">
+
 <link rel="import" href="../util/hnk-base.html">
 <link rel="import" href="../util/shared-styles.html">
 
@@ -13,7 +19,8 @@
                 display: block;
 
                 --paper-menu-background-color: none;
-                --paper-menu-color: var(--color-texto);
+                --paper-menu-color: var(--secondary-text-color);
+                --hnk-menu-icon-size: 32px;
             }
 
             .menu-content {
@@ -23,6 +30,11 @@
                 color: var(--paper-menu-color);
                 text-decoration: none;
             }
+            iron-icon {
+                margin-right: var(--hnk-menu-icon-size);
+                --iron-icon-height: var(--hnk-menu-icon-size);
+                --iron-icon-width: var(--hnk-menu-icon-size);
+            }
         </style>
 
         <paper-menu selected="{{menuSeleccionado}}" attr-for-selected="tag">
@@ -31,10 +43,12 @@
                     <paper-item tag="[[item]]">
                         <template is="dom-if" if="[[_hasField(item, 'href')]]">
                             <a href$="[[item.href]]">
+                                <iron-icon icon="[[item.icono]]"></iron-icon>
                                 [[item.texto]]
                             </a>
                         </template>
                         <template is="dom-if" if="[[!_hasField(item, 'href')]]">
+                            <iron-icon icon="[[item.icono]]"></iron-icon>
                             [[item.texto]]
                         </template>
                     </paper-item>

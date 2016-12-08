@@ -9,28 +9,35 @@
   },
   "menu": [{
     "texto": "Inicio",
+    "mostrarTitulo": true,
+    "icono": "home",
     "href": "#/"
   },{
     "texto": "Nueva Encuesta",
+    "icono": "vaadin-icons:file-add",
     "href": "#/nueva_encuesta"
   },{
     "texto": "Mis Encuestas",
-    "href": "#/encuestas"
+    "icono": "vaadin-icons:file-o",
+    "href": "#/mis_encuestas"
   },{
     "texto": "Yo",
+    "icono": "social:person",
     "href": "#/encuestador"
   },{
-    "texto": "Supervisor",
+    "texto": "Estadísticas",
     "supervisor": true,
-    "menu": [{
-      "texto": "Estadísticas",
-      "href": "#/estadisticas"
-    },{
-      "texto": "Encuestadores",
-      "href": "#/encuestadores"
-    },{
-      "texto": "Encuestas",
-      "href": "#/encuestas"
-    }]
+    "icono": "editor:insert-chart",
+    "href": "#/estadisticas"
+  },{
+    "texto": "Encuestadores",
+    "supervisor": true,
+    "icono": "social:people",
+    "href": "#/encuestadores"
+  },{
+    "texto": "Encuestas",
+    "supervisor": true,
+    "icono": "vaadin-icons:file-o",
+    "href": "#/encuestas"
   }]
 }

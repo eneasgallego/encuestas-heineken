@@ -16,10 +16,9 @@
     <template>
         <style include="shared-styles">
             :host {
-                --hnk-image-size: {
-                     width: 128px;
-                     height: 128px;
-                };
+                --iron-icon-width: 128px;
+                --iron-icon-height: 128px;
+                --iron-icon-fill-color: #f00008;
             }
             @font-face {
                 font-family: 'Heineken';
@@ -38,14 +37,16 @@
                 width: 100%;
                 height: 100%;
                 margin: 0;
+                @apply(--mixin-fondo);
             }
-            paper-dialog>*{
-                text-align: center;
+            iron-icon {
+                margin: 0 auto;
             }
             h3 {
                 font-family: Heineken;
-                color: var(--color-texto);
+                color: black;
                 font-size: 2rem;
+                text-align: center;
                 height: 128px;
             }
         </style>
@@ -55,11 +56,17 @@
                 modal
                 opened="[[mostrar]]"
                 >
-            <hnk-imagen
+            <iron-icon
+                id="imagen"
+                icon="star"
+
+            ></iron-icon>
+<!--            <hnk-imagen
                 id="imagen"
                 imagen="/images/estrella.png"
                 vacio
             ></hnk-imagen>
+            -->
             <h3>CARGANDO<span id="punto1">.</span><span id="punto2">.</span><span id="punto3">.</span></h3>
         </paper-dialog>
     </template>

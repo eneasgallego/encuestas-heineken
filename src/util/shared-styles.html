@@ -10,26 +10,28 @@
   <template>
     <style>
         :host {
-            --color-fuerte: #1b6d37;
-            --color-claro: white;
-            --color-texto: white;
-
-            --primary-text-color: var(--color-texto);
-            --primary-background-color: var(--color-fuerte);
-            --secondary-text-color: var(--color-claro);
-            --disabled-text-color: var(--light-theme-disabled-color);
-            --divider-color: var(--color-claro);
-            --error-color: var(--paper-deep-orange-a700);
-
-            --primary-color: var(--color-claro);
+            --primary-color: #1b6d37;
+            --primary-text-color: white;
+            --primary-background-color: red;
+            --secondary-text-color: black;
+//            --disabled-text-color: white;
+//            --divider-color: white;
+//            --error-color: white;
 
             --mixin-texto: {
-                color: var(--color-texto);
-                @apply(--paper-font-common-base);
-            };
+                 @apply(--paper-font-common-base);
+             };
+            --mixin-color-principal: {
+                 background-color: var(--primary-color);
+                 color: var(--primary-text-color);
+             };
+            --mixin-color-secundario: {
+                 background-color: var(--primary-background-color);
+                 color: var(--secondary-text-color);
+             };
             --mixin-fondo: {
-                background-color: var(--color-fuerte);
-                @apply(--mixin-texto);
+                @apply(--mixin-color-principal);
+                 @apply(--mixin-texto);
             };
             --mixin-panel: {
                 margin: 4px;
@@ -41,13 +43,20 @@
             --image-size: {
                  width: 64px;
                  height: 64px;
-            };
+             };
+            --scrollable: {
+                 height: 100%;
+                 overflow: auto;
+             };
         }
         .hidden {
             display: none;
         }
         .panel {
             @apply(--mixin-panel);
+        }
+        .scrollable {
+            @apply(--scrollable);
         }
     </style>
   </template>

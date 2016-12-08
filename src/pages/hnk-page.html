@@ -6,6 +6,10 @@
 <link rel="import" href="../app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../app-layout/app-header/app-header.html">
 <link rel="import" href="../app-layout/app-scroll-effects/effects/waterfall.html">
+<link rel="import" href="../paper-toolbar/paper-toolbar.html">
+
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
 
 <link rel="import" href="hnk-menu.html">
 
@@ -19,15 +23,12 @@
         <style include="shared-styles">
             :host {
                 display: block;
-
-                --app-drawer-content-container: {
-                     background-color: var(--color-fuerte, green);
-                 };
             }
 
             app-header {
-            @apply(--mixin-fondo);
+                @apply(--mixin-fondo);
             }
+
             .usuario {
                 font-size: 0.5rem;
                 display: block;
@@ -44,45 +45,30 @@
                 width: 100%;
                 padding-right: 0;
             }
-            h1 {
-                font-size: 1.2rem;
-                margin: 0;
-            }
-            #drawer h1 {
-                font-size: 1rem;
-                margin: 0;
-            }
         </style>
 
         <app-drawer-layout>
             <app-drawer id="drawer">
-                <app-header condenses effects="waterfall">
-                    <app-toolbar>
-                        <h1>[[titulo]]</h1>
-                    </app-toolbar>
-                </app-header>
-                <hnk-menu
-                    menu="[[menu]]"
-                    menu-seleccionado="{{menuSeleccionado}}"
-                ></hnk-menu>
+                <div class="scrollable">
+                    <paper-toolbar class="tall">
+                        <span class="bottom title">[[titulo]]</span>
+                    </paper-toolbar>
+                    <hnk-menu
+                        menu="[[menu]]"
+                        menu-seleccionado="{{menuSeleccionado}}"
+                        mostrar="[[_getMostrar(usuario)]]"
+                    ></hnk-menu>
+                </div>
             </app-drawer>
 
             <app-header-layout>
-                <app-header condenses effects="waterfall">
-                    <app-toolbar>
-                        <app-toolbar id="toolbar" sticky>
-                            <app-toolbar>
-                                <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-                                <app-toolbar>
-                                    <app-toolbar>
-                                        <h1>[[titulo]]</h1>
-                                    </app-toolbar>
-                                </app-toolbar>
-                            </app-toolbar>
-                            <app-toolbar class="usuario">
-                                [[usuario.nombre]]
-                            </app-toolbar>
-                        </app-toolbar>
+                <app-header id="toolbar" fixed condenses effects="waterfall">
+<!--                    <app-toolbar class="usuario">
+                        [[usuario.nombre]]
+                    </app-toolbar>-->
+                    <app-toolbar bottom-item sticky>
+                        <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+                        <span class="title">[[tituloPagina]]</span>
                     </app-toolbar>
                 </app-header>
 
@@ -102,13 +88,43 @@
             behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior],
             properties: {
                 titulo: String,
+                tituloPagina: {
+                    type: String,
+                    computed: '_getTitulo(titulo,menuSeleccionado)'
+                },
                 usuario: Object,
                 mostrarSpinner: Boolean,
                 menu: {
                     type: Array,
                     value: function(){return []}
                 },
-                menuSeleccionado: Object
+                menuSeleccionado: {
+                    type: Object,
+                    value: null
+                },
+                route: String
+            },
+            observers: ['_observerRoute(route,menu)'],
+            _observerRoute: function(route,menu) {
+                var path = '#' + route.path;
+                var item = this.menu.find(function(a) {
+                    return a.href == path;
+                });
+                console.log('_observerRoute', item)
+                this.menuSeleccionado = item || null;
+            },
+            _getMostrar: function(usuario) {
+                return function(item) {
+                    return (!item.supervisor) ||
+                            (item.supervisor && usuario.supervisor);
+                }.bind(this);
+            },
+            _getTitulo: function(titulo,menuSeleccionado) {
+                console.log('_getTitulo');
+                console.log(titulo);
+                console.log(menuSeleccionado);
+                console.log('**********');
+                return menuSeleccionado && !menuSeleccionado.mostrarTitulo ? menuSeleccionado.texto : titulo;
             },
             ready: function() {
                 this.getConfig('menu')
@@ -120,6 +136,7 @@
                         }.bind(this));
                 this.getConfig('titulo')
                         .then(function(titulo) {
+                            console.log('loadtitulo')
                             this.titulo = titulo;
                         }.bind(this));
             },
