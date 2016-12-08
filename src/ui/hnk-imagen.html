@@ -74,7 +74,6 @@
                 this.editable && this.$.input.$.input.click();
             },
             _onResponse: function(imagen) {
-                console.log(imagen);
                 this.imagen = imagen;
             },
             uploadFile: function(file) {
@@ -86,7 +85,7 @@
                     if(xhr.status == 200) {
                         this._onResponse(e.currentTarget.response);
                     } else {
-                        console.log('error');
+                        console.error('error');
                         this.fire('error', {xhr:xhr});
                     }
                 }.bind(this);

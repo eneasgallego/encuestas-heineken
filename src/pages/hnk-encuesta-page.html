@@ -47,12 +47,13 @@
         ></iron-ajax>
 
         <hnk-encuesta
-                encuesta="{{encuesta}}"
-                vista="{{subroute.path}}"
-                on-comenzar="_onEnviar"
-                on-enviar="_onEnviar"
-                on-volver="_onVolver"
-                ></hnk-encuesta>
+            encuesta="{{encuesta}}"
+            vista="{{subroute.path}}"
+            on-comenzar="_onEnviar"
+            on-enviar="_onEnviar"
+            on-volver="_onVolver"
+            cargando="{{_cargando.encuesta}}"
+        ></hnk-encuesta>
 
     </template>
 
@@ -75,12 +76,11 @@
                 behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior, hnk.SpinnerBehavior],
                 properties: {
                     urlEncuesta: String,
-                    urlPreguntas: String,
                     encuesta: Object,
-                    preguntas: Array
                 },
                 observers: ['_observerRouteData(routeData)'],
                 _observerRouteData: function(routeData) {
+                    this.cargando = true;
                     if (routeData._id) {
                         this._cargando.get = true;
                         this.getUrl(this, 'encuesta', routeData._id)
@@ -89,12 +89,6 @@
                                     this.urlEncuesta = urlEncuesta;
                                 }.bind(this));
                     }
-                    this._cargando.put = true;
-                    this.getUrl(this, 'preguntas')
-                            .then(function(urlPreguntas) {
-                                this._cargando.put = false;
-                                this.urlPreguntas = urlPreguntas;
-                            }.bind(this));
                 },
                 _getParams: function(vista) {
                     var ret = {};

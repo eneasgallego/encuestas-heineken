@@ -1,10 +1,11 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<link rel="import" href="../util/hnk-base.html">
-<link rel="import" href="../util/shared-styles.html">
-
 <link rel="import" href="hnk-encuesta-form.html">
 <link rel="import" href="hnk-encuesta-test.html">
+
+<link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/hnk-config.html">
+<link rel="import" href="../util/shared-styles.html">
 
 <dom-module id="hnk-encuesta">
     <template>
@@ -32,11 +33,13 @@
         <template is="dom-if" if="[[_igual(vista, '')]]">
             <hnk-encuesta-form
                 datos="{{encuesta.datos}}"
+                cargando="{{_cargando.form}}"
             ></hnk-encuesta-form>
         </template>
         <template is="dom-if" if="[[_igual(vista, '/test')]]">
             <hnk-encuesta-test
                 encuesta="{{encuesta.test}}"
+                cargando="{{_cargando.test}}"
             ></hnk-encuesta-test>
         </template>
 
@@ -46,7 +49,7 @@
         Polymer({
 
             is: 'hnk-encuesta',
-            behaviors: [hnk.BaseBehavior],
+            behaviors: [hnk.BaseBehavior, hnk.SpinnerBehavior],
             properties: {
                 vista: {
                     type: String,

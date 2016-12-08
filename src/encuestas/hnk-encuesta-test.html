@@ -26,7 +26,7 @@
         </style>
 
         <form is="iron-form" id="form" class="form" on-iron-form-submit="_onSubmit">
-            <template is="dom-repeat" items="{{encuesta}}">
+            <template is="dom-repeat" items="{{encuesta}}" on-dom-change="_onChange">
                 <hnk-encuesta-test-grp
                     titulo="[[item.grupo]]"
                     preguntas="{{item.preguntas}}"
@@ -47,7 +47,18 @@
                 encuesta: {
                     type: Array,
                     notify: true
+                },
+                cargando: {
+                    type: Boolean,
+                    notify: true
                 }
+            },
+            observers: ['_observerEncuesta(encuesta.splices)'],
+            _observerEncuesta: function(change) {
+                this.cargando = true;
+            },
+            _onChange: function() {
+                this.cargando = false;
             },
             _onTap: function() {
                 this.$.form.submit();

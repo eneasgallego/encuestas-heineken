@@ -3,6 +3,7 @@
 <link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="../neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="../neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../neon-animation/animations/cascaded-animation.html">
 
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 
@@ -59,7 +60,7 @@
                 imagen="/images/estrella.png"
                 vacio
             ></hnk-imagen>
-            <h3>CARGANDO[[puntos]]</h3>
+            <h3>CARGANDO<span id="punto1">.</span><span id="punto2">.</span><span id="punto3">.</span></h3>
         </paper-dialog>
     </template>
 
@@ -93,7 +94,7 @@
                 }
             };
             var animationImagen = {
-                duration: 3000,
+                duration: 1000,
                 fill: 'both'
             };
             Polymer({
@@ -101,24 +102,52 @@
                 behaviors: [hnk.BaseBehavior, Polymer.NeonAnimationRunnerBehavior],
                 properties: {
                     mostrar: Boolean,
-                    puntos: {
-                        type: String,
-                        value: '.',
-                        readOnly: true
-                    },
                     animationConfig: {
                         value: function() {
                             return {
                                 entra: {
                                     name: 'fade-in-animation',
                                     node: this.$.imagen,
-                                    animationTiming: animationImagen
+                                    timing: animationImagen
                                 },
                                 sale: {
                                     name: 'fade-out-animation',
                                     node: this.$.imagen,
+                                    timing: animationImagen
+                                },
+                                puntos: {
+                                    name: 'cascaded-animation',
+                                    animation: 'fade-in-animation',
+                                    nodes: [this.$.punto1, this.$.punto2, this.$.punto3],
+                                    nodeDelay: animationImagen.duration / 6,
+                                    timing: animationImagen
+                                },
+                                salePunto: {
+                                    name: 'fade-out-animation',
+                                    node: this.$.punto1,
+                                    animationTiming: animationImagen
+                                },
+                                entra2: {
+                                    name: 'fade-in-animation',
+                                    node: this.$.punto2,
+                                    animationTiming: animationImagen
+                                },
+                                sale2: {
+                                    name: 'fade-out-animation',
+                                    node: this.$.punto2,
+                                    animationTiming: animationImagen
+                                },
+                                entra3: {
+                                    name: 'fade-in-animation',
+                                    node: this.$.punto3,
+                                    animationTiming: animationImagen
+                                },
+                                sale3: {
+                                    name: 'fade-out-animation',
+                                    node: this.$.punto3,
                                     animationTiming: animationImagen
                                 }
+
                             }
                         }
                     }
@@ -129,23 +158,49 @@
                 },
                 ready: function() {
                     this._avanzarImagen();
+                    /*
+                    var punto = 1;
+                    var animarPunto = function() {
+                        var d = new Date();
+                        console.log('animarPunto', d.getSeconds());
+                        if (this.$['punto' + punto]) {
+                            this._avanzarImagen(punto);
+                            punto++;
+                            setTimeout(animarPunto, animationImagen.duration / 3);
+                        }
+                    }.bind(this);
+                    animarPunto();
+                    */
                 },
                 _avanzarImagen: function() {
                     this.saleImagen = !this.saleImagen;
                     this.playAnimation(this.saleImagen ? 'sale' : 'entra');
+                    this.playAnimation('puntos');
+                },
+                _avanzarPunto: function(punto) {
+                    //this['salePunto' + punto] = !this['salePunto' + punto];
+                    //this.playAnimation(this['salePunto' + punto] ? 'sale' + punto : 'entra' + punto);
                 },
                 _onNeonAnimationFinish: function() {
-                    var puntos = this.puntos;
-                    if (puntos.length == 3) {
-                        puntos = '';
-                    }
-                    puntos += '.';
-                    this._setPuntos(puntos);
-
                     if (this.saleImagen) {
                         this.$.imagen.style.opacity = 0;
                     }
                     this._avanzarImagen();
+/*
+                    var punto = 1;
+                    while (true) {
+                        var el = this.$['punto' + punto];
+                        if (el) {
+                            if (this['salePunto' + punto]) {
+                                el.style.opacity = 0;
+                            }
+                            this._avanzarPunto(punto);
+                        } else {
+                            break;
+                        }
+                        punto++;
+                    }
+                    */
                 }
             });
         })();
