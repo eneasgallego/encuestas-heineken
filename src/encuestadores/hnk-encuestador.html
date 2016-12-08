@@ -1,0 +1,53 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-form/iron-form.html">
+<link rel="import" href="../iron-label/iron-label.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-button/paper-button.html">
+
+<link rel="import" href="../ui/hnk-imagen.html">
+
+<link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/hnk-spinner.html">
+<link rel="import" href="../util/shared-styles.html">
+
+<dom-module id="hnk-encuestador">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+
+        </style>
+
+        <form is="iron-form" id="form" class="form" on-iron-form-submit="_onSubmit">
+            <hnk-imagen
+                imagen="{{encuestador.foto}}"
+                editable
+            ></hnk-imagen>
+            <iron-label>[[encuestador.usuario]]</iron-label>
+            <paper-input name="nombre" label="Nombre" value="{{encuestador.nombre}}"></paper-input>
+            <paper-input name="email" label="E-Mail" type="email" value="{{encuestador.email}}"></paper-input>
+            <paper-button>Cambiar contraseña</paper-button>
+            <iron-label>[[_getTextoSupervisor(encuestador.supervisor)]]</iron-label>
+        </form>
+
+        </form>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'hnk-encuestador',
+            behaviors: [hnk.BaseBehavior, hnk.SpinnerBehavior],
+            properties: {
+                encuestador: {
+                    type: Object,
+                    notify: true
+                }
+            },
+            _getTextoSupervisor: function(supervisor) {
+                return supervisor ? 'Supervisor' : '';
+            }
+        });
+    </script>
+</dom-module>

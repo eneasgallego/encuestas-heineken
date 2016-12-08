@@ -1,0 +1,103 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../app-route/app-route.html">
+
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<link rel="import" href="../encuestadores/hnk-encuestador.html">
+
+<link rel="import" href="hnk-page.html">
+
+<link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/hnk-config.html">
+<link rel="import" href="../util/hnk-spinner.html">
+<link rel="import" href="../util/shared-styles.html">
+
+<dom-module id="hnk-encuestador-page">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+        </style>
+
+        <app-route
+                route="{{route}}"
+                pattern="/:_id"
+                data="{{routeData}}"
+                tail="{{subroute}}"></app-route>
+
+        <iron-ajax
+            method="get"
+            url="[[urlEncuestador]]"
+            content-type="application/json"
+            last-response="{{encuestador}}"
+            auto
+        ></iron-ajax>
+
+        <iron-ajax
+            id="ajaxEncuestador"
+            method="put"
+            url="[[urlEncuestador]]"
+            content-type="application/json"
+            body="[[encuestador]]"
+            loading="{{_cargando.put}}"
+            on-response="_onResponseEncuestador"
+        ></iron-ajax>
+
+        <hnk-encuestador
+            encuestador="{{encuestador}}"
+            cargando="{{_cargando.encuestador}}"
+        ></hnk-encuestador>
+
+    </template>
+
+    <script>
+        (function(){
+            Polymer({
+                is: 'hnk-encuestador-page',
+                behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior, hnk.SpinnerBehavior],
+                properties: {
+                    vista: String,
+                    usuario: Object,
+                    urlEncuestador: String,
+                    encuestador: Object
+                },
+                observers: ['_observerEncuestador(encuestador)','_observerRouteData(routeData,vista,usuario)'],
+                _observerEncuestador: function(encuestador) {
+                    this.set('_cargando.get', false);
+                },
+                _observerRouteData: function(routeData, vista, usuario) {
+                    console.log(this.vista)
+                    var _id;
+                    if (vista == 'mi_perfil') {
+                        _id = usuario._id;
+                    } else {
+                        _id = routeData._id;
+                    }
+                    if (_id) {
+                        //this.cargando = true;
+                        this.set('_cargando.get', true);
+                        this.getUrl(this, 'encuestador', _id)
+                                .then(function(urlEncuestador) {
+                                    this.set('_cargando.get', false);
+                                    this.urlEncuestador = urlEncuestador;
+                                }.bind(this));
+                    }
+                },
+                _observerVista: function(vista) {
+                    if (vista == 'mi_perfil') {
+                        this.encuestador = this.usuario;
+                    }
+                },
+                _onEnviar: function() {
+                    this.$.ajaxEncuestador.generateRequest();
+                },
+                _onResponseEncuesta: function(e) {
+                    this.encuestador = e.detail.response;
+                    window.location.href = '';
+                }
+            });
+        })();
+    </script>
+</dom-module>

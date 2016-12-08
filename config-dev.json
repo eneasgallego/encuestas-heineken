@@ -2,10 +2,11 @@
   "titulo": "Encuestas Heineken",
   "urlBase": "/api",
   "endpoints": {
-    "usuarios"  : "usuarios",
-    "preguntas" : "preguntas",
-    "encuestas" : "encuestas",
-    "encuesta" : "encuestas/####"
+    "usuarios"    : "usuarios",
+    "preguntas"   : "preguntas",
+    "encuestas"   : "encuestas",
+    "encuesta"    : "encuestas/####",
+    "encuestador" : "usuarios/####"
   },
   "menu": [{
     "texto": "Inicio",
@@ -21,9 +22,9 @@
     "icono": "vaadin-icons:file-o",
     "href": "#/mis_encuestas"
   },{
-    "texto": "Yo",
+    "texto": "Mi perfil",
     "icono": "social:person",
-    "href": "#/encuestador"
+    "href": "#/mi_perfil"
   },{
     "texto": "Estadísticas",
     "supervisor": true,

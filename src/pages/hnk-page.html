@@ -110,7 +110,6 @@
                 var item = this.menu.find(function(a) {
                     return a.href == path;
                 });
-                console.log('_observerRoute', item)
                 this.menuSeleccionado = item || null;
             },
             _getMostrar: function(usuario) {
@@ -120,10 +119,6 @@
                 }.bind(this);
             },
             _getTitulo: function(titulo,menuSeleccionado) {
-                console.log('_getTitulo');
-                console.log(titulo);
-                console.log(menuSeleccionado);
-                console.log('**********');
                 return menuSeleccionado && !menuSeleccionado.mostrarTitulo ? menuSeleccionado.texto : titulo;
             },
             ready: function() {
@@ -136,7 +131,6 @@
                         }.bind(this));
                 this.getConfig('titulo')
                         .then(function(titulo) {
-                            console.log('loadtitulo')
                             this.titulo = titulo;
                         }.bind(this));
             },
