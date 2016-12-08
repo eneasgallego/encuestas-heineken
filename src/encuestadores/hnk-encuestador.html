@@ -1,7 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 
 <link rel="import" href="../iron-form/iron-form.html">
-<link rel="import" href="../iron-label/iron-label.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-button/paper-button.html">
 
@@ -16,6 +15,8 @@
         <style include="shared-styles">
             :host {
                 display: block;
+                --paper-input-container-color: var(--disabled-text-color);
+                --paper-input-container-input-color: var(--disabled-text-color);
             }
 
         </style>
@@ -25,11 +26,11 @@
                 imagen="{{encuestador.foto}}"
                 editable
             ></hnk-imagen>
-            <iron-label>[[encuestador.usuario]]</iron-label>
+            <h5>[[encuestador.nick]]</h5>
             <paper-input name="nombre" label="Nombre" value="{{encuestador.nombre}}"></paper-input>
             <paper-input name="email" label="E-Mail" type="email" value="{{encuestador.email}}"></paper-input>
             <paper-button>Cambiar contraseña</paper-button>
-            <iron-label>[[_getTextoSupervisor(encuestador.supervisor)]]</iron-label>
+            <h5>[[_getTextoSupervisor(encuestador.supervisor)]]</h5>
         </form>
 
         </form>
