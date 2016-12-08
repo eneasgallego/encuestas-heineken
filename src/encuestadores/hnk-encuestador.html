@@ -15,10 +15,23 @@
         <style include="shared-styles">
             :host {
                 display: block;
+            }
+            fieldset {
+                margin-left: 20%;
+                border: none 0px;
+                padding: 0;
+            }
+            h5 {
+                margin: 0;
+                @apply(--mixin-texto);
+            }
+            paper-input {
                 --paper-input-container-color: var(--disabled-text-color);
                 --paper-input-container-input-color: var(--disabled-text-color);
             }
-
+            paper-input[readOnly] {
+                --paper-input-container-input-color: var(--secondary-text-color);
+            }
         </style>
 
         <form is="iron-form" id="form" class="form" on-iron-form-submit="_onSubmit">
@@ -26,11 +39,15 @@
                 imagen="{{encuestador.foto}}"
                 editable
             ></hnk-imagen>
-            <h5>[[encuestador.nick]]</h5>
-            <paper-input name="nombre" label="Nombre" value="{{encuestador.nombre}}"></paper-input>
-            <paper-input name="email" label="E-Mail" type="email" value="{{encuestador.email}}"></paper-input>
-            <paper-button>Cambiar contraseña</paper-button>
-            <h5>[[_getTextoSupervisor(encuestador.supervisor)]]</h5>
+            <fieldset>
+                <paper-input label="Nick" readOnly value="[[encuestador.nick]]"></paper-input>
+                <paper-input name="nombre" label="Nombre" value="{{encuestador.nombre}}"></paper-input>
+                <paper-input name="email" label="E-Mail" type="email" value="{{encuestador.email}}"></paper-input>
+                <paper-input readOnly value="Cambiar contraseña"></paper-input>
+                <template is="dom-if" if="[[encuestador.supervisor]]">
+                    <paper-input readOnly value="Supervisor"></paper-input>
+                </template>
+            </fieldset>
         </form>
 
         </form>
