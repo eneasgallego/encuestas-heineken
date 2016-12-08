@@ -1,26 +1,153 @@
-<script>
-    window.hnk = window.hnk || {};
-    window.hnk.SpinnerBehavior = {
-        properties: {
-            cargando: {
-                type: Boolean,
-                notify: true
-            },
-            _cargando: {
-                type: Object,
-                value: function(){return {}}
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../neon-animation/animations/fade-in-animation.html">
+
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+
+<link rel="import" href="../ui/hnk-imagen.html">
+
+<link rel="import" href="hnk-base.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="hnk-spinner">
+    <template>
+        <style include="shared-styles">
+            :host {
+                --hnk-image-size: {
+                     width: 128px;
+                     height: 128px;
+                };
             }
-        },
-        observers: ['_observerSpinner(_cargando.*)'],
-        _observerSpinner: function(_cargando) {
-            var ret = false;
-            for (var key in _cargando.base) {
-                if (_cargando.base[key]) {
-                    ret = true;
-                    break;
+            @font-face {
+                font-family: 'Heineken';
+                src: url('fonts/heineken/Heineken.eot');
+                src: url('fonts/heineken/Heineken.eot?#iefix') format('embedded-opentype'),
+                url('fonts/heineken/Heineken.woff') format('woff'),
+                url('fonts/heineken/Heineken.ttf') format('truetype'),
+                url('fonts/heineken/Heineken.svg#Heineken') format('svg');
+                font-weight: normal;
+                font-style: normal;
+            }
+            paper-dialog {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+            }
+            paper-dialog>*{
+                text-align: center;
+            }
+            h3 {
+                font-family: Heineken;
+                color: var(--color-texto);
+                font-size: 2rem;
+                height: 128px;
+            }
+        </style>
+
+        <paper-dialog
+                id="spinner"
+                modal
+                opened="[[mostrar]]"
+                >
+            <hnk-imagen
+                id="imagen"
+                imagen="/images/estrella.png"
+                vacio
+            ></hnk-imagen>
+            <h3>CARGANDO[[puntos]]</h3>
+        </paper-dialog>
+    </template>
+
+    <script>
+        (function(){
+            window.hnk = window.hnk || {};
+            window.hnk.SpinnerBehavior = {
+                properties: {
+                    cargando: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
+                    },
+                    _cargando: {
+                        type: Object,
+                        value: function(){return {}}
+                    }
+                },
+                observers: ['_observerSpinner(_cargando.*)'],
+                _observerSpinner: function(_cargando) {
+                    if (_cargando.path != '_cargando') {
+                        var ret = false;
+                        for (var key in _cargando.base) {
+                            if (_cargando.base[key]) {
+                                ret = true;
+                                break;
+                            }
+                        }
+                        this.cargando = ret;
+                    }
                 }
-            }
-            this.cargando = ret;
-        }
-    };
-</script>
+            };
+            var animationImagen = {
+                duration: 3000,
+                fill: 'both'
+            };
+            Polymer({
+                is: 'hnk-spinner',
+                behaviors: [hnk.BaseBehavior, Polymer.NeonAnimationRunnerBehavior],
+                properties: {
+                    mostrar: Boolean,
+                    puntos: {
+                        type: String,
+                        value: '.',
+                        readOnly: true
+                    },
+                    animationConfig: {
+                        value: function() {
+                            return {
+                                entra: {
+                                    name: 'fade-in-animation',
+                                    node: this.$.imagen,
+                                    animationTiming: animationImagen
+                                },
+                                sale: {
+                                    name: 'fade-out-animation',
+                                    node: this.$.imagen,
+                                    animationTiming: animationImagen
+                                }
+                            }
+                        }
+                    }
+                },
+                listeners: {
+                    // this event is fired when the animation finishes
+                    'neon-animation-finish': '_onNeonAnimationFinish'
+                },
+                ready: function() {
+                    this._avanzarImagen();
+                },
+                _avanzarImagen: function() {
+                    this.saleImagen = !this.saleImagen;
+                    this.playAnimation(this.saleImagen ? 'sale' : 'entra');
+                },
+                _onNeonAnimationFinish: function() {
+                    var puntos = this.puntos;
+                    if (puntos.length == 3) {
+                        puntos = '';
+                    }
+                    puntos += '.';
+                    this._setPuntos(puntos);
+
+                    if (this.saleImagen) {
+                        this.$.imagen.style.opacity = 0;
+                    }
+                    this._avanzarImagen();
+                }
+            });
+        })();
+    </script>
+</dom-module>

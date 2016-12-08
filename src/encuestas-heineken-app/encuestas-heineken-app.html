@@ -92,6 +92,11 @@
                 menuSeleccionado: Object,
                 url: String
             },
+            observers: ['_mostrarSpinner(mostrarSpinner)'],
+            _mostrarSpinner: function (mostrarSpinner) {
+                console.log('mostrarSpinner', mostrarSpinner);
+                console.log('mostrarSpinner', new Date().getMilliseconds());
+            },
             ready: function() {
                 this.getConfig('menu')
                         .then(function(menu) {

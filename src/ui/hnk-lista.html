@@ -1,5 +1,8 @@
 <link rel="import" href="../polymer/polymer.html">
 
+<link rel="import" href="../paper-menu/paper-menu.html">
+<link rel="import" href="../paper-item/paper-item.html">
+
 <link rel="import" href="hnk-imagen.html">
 
 <link rel="import" href="../util/hnk-base.html">
@@ -36,7 +39,7 @@
         </style>
 
         <paper-menu selected="{{itemSeleccionado}}" attr-for-selected="tag">
-            <template is="dom-repeat" items="[[items]]">
+            <template is="dom-repeat" items="[[items]]" on-dom-change="_onChange">
                 <paper-item tag="[[item.raw]]">
                     <div class="imagen">
                         <hnk-imagen imagen="[[item.imagen]]"></hnk-imagen>
@@ -62,7 +65,18 @@
                 items: {
                     type: Array,
                     value: function(){return []}
+                },
+                cargando: {
+                    type: Boolean,
+                    notify: true
                 }
+            },
+            observers: ['_observerItems(items.splices)'],
+            _observerItems: function(change) {
+                this.cargando = true;
+            },
+            _onChange: function() {
+                this.cargando = false;
             }
         });
     </script>

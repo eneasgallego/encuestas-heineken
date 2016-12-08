@@ -1,5 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 
+<link rel="import" href="../neon-animation/neon-animatable-behavior.html">
+
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../iron-image/iron-image.html">
 
@@ -17,8 +19,10 @@
             iron-image {
                 --iron-image-placeholder: {
                      @apply(--image-size);
+                     @apply(--hnk-image-size);
                 };
                 @apply(--image-size);
+                @apply(--hnk-image-size);
             }
             h5 {
                 margin: 4px 0;
@@ -32,7 +36,7 @@
                 src="[[imagen]]"
                 sizing="contain"
                 placeholder="[[imagenDefecto]]"
-                preload
+                preload="[[!vacio]]"
                 on-tap="_onTap"
             ></iron-image>
             <paper-input
@@ -63,7 +67,8 @@
                     value: '/images/heineken-mini.png',
                     notify: true
                 },
-                editable: Boolean
+                editable: Boolean,
+                vacio: Boolean
             },
             _onTap: function() {
                 this.editable && this.$.input.$.input.click();

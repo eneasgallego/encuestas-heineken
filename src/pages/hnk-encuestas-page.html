@@ -26,25 +26,14 @@
             url="[[urlEncuestas]]"
             content-type="application/json"
             last-response="{{encuestas}}"
-            loading="{{_cargando.get}}"
             auto
-        ></iron-ajax>
-
-        <iron-ajax
-            id="ajaxEncuesta"
-            method="put"
-            url="[[urlEncuesta]]"
-            content-type="application/json"
-            body="[[encuesta]]"
-            params="[[_getParams(subroute.path)]]"
-            loading="{{_cargando.put}}"
-            on-response="_onResponseEncuesta"
         ></iron-ajax>
 
         <hnk-lista
             class="panel"
             items="[[encuestasLista]]"
             item-seleccionado="{{encuesta}}"
+            cargando="{{_cargando.lista}}"
         ></hnk-lista>
 
     </template>
@@ -90,7 +79,6 @@
                     }
                 },
                 ready: function() {
-                    console.log('ready')
                     this._cargando.get = true;
                     this.getUrl(this, 'encuestas')
                             .then(function(urlEncuesta) {
@@ -106,6 +94,7 @@
                     return fecha.getDate() + '/' + (fecha.getMonth() + 1) + '/' + fecha.getFullYear() + ' ' + fecha.getHours() + ':' + fecha.getMinutes();
                 },
                 reiniciar: function() {
+                    this.cargando = true;
                     this.$.ajaxEncuestas.generateRequest();
                 }
             });

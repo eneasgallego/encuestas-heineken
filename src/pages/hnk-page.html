@@ -7,12 +7,10 @@
 <link rel="import" href="../app-layout/app-header/app-header.html">
 <link rel="import" href="../app-layout/app-scroll-effects/effects/waterfall.html">
 
-<link rel="import" href="../paper-dialog/paper-dialog.html">
-<link rel="import" href="../paper-spinner/paper-spinner.html">
-
 <link rel="import" href="hnk-menu.html">
 
 <link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/hnk-spinner.html">
 <link rel="import" href="../util/shared-styles.html">
 
 <dom-module id="hnk-page">
@@ -24,15 +22,10 @@
                 --app-drawer-content-container: {
                      background-color: var(--color-fuerte, green);
                  };
-                --paper-menu-background-color: none;
-                --paper-menu-color: var(--color-texto);
             }
 
             app-header {
             @apply(--mixin-fondo);
-            }
-            .menu-content {
-                padding-left: 1rem;
             }
             .usuario {
                 font-size: 0.5rem;
@@ -49,9 +42,6 @@
                 padding-left: 0;
                 width: 100%;
                 padding-right: 0;
-            }
-            paper-dialog {
-                text-align: center;
             }
             h1 {
                 font-size: 1.2rem;
@@ -91,15 +81,10 @@
                 </div>
             </app-header-layout>
         </app-drawer-layout>
-        <paper-dialog
-                id="spinner"
-                modal
-                opened="[[mostrarSpinner]]"
-               >
-            <h3>CARGANDO...</h3>
-            <paper-spinner active="[[mostrarSpinner]]"></paper-spinner>
-        </paper-dialog>
 
+        <hnk-spinner
+            mostrar="[[mostrarSpinner]]"
+        ></hnk-spinner>
     </template>
 
     <script>
@@ -108,6 +93,7 @@
             behaviors: [hnk.BaseBehavior],
             properties: {
                 usuario: Object,
+                mostrarSpinner: Boolean,
                 menu: {
                     type: Array,
                     value: function(){return []}
