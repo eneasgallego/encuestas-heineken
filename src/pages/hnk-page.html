@@ -45,6 +45,9 @@
                 width: 100%;
                 padding-right: 0;
             }
+            .title {
+                flex-grow: 2;
+            }
         </style>
 
         <app-drawer-layout>
@@ -69,6 +72,9 @@
                     <app-toolbar bottom-item sticky>
                         <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
                         <span class="title">[[tituloPagina]]</span>
+                        <template is="dom-repeat" items="[[menuAcciones]]">
+                            <paper-icon-button icon="[[item.icono]]" on-tap="_onTapAccion"></paper-icon-button>
+                        </template>
                     </app-toolbar>
                 </app-header>
 
@@ -102,6 +108,10 @@
                     type: Object,
                     value: null
                 },
+                menuAcciones: {
+                    type: Array,
+                    value: function(){return[]}
+                },
                 route: String
             },
             observers: ['_observerRoute(route,menu)'],
@@ -120,6 +130,9 @@
             },
             _getTitulo: function(titulo,menuSeleccionado) {
                 return menuSeleccionado && !menuSeleccionado.mostrarTitulo ? menuSeleccionado.texto : titulo;
+            },
+            _onTapAccion: function(e) {
+                e.model.item.accion && e.model.item.accion();
             },
             ready: function() {
                 this.getConfig('menu')

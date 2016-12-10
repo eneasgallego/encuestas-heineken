@@ -46,8 +46,10 @@
         ></iron-ajax>
 
         <hnk-encuestador
+            id="encuestador"
             encuestador="{{encuestador}}"
             cargando="{{_cargando.encuestador}}"
+            on-enviar="_onEnviar"
         ></hnk-encuestador>
 
     </template>
@@ -61,7 +63,12 @@
                     vista: String,
                     usuario: Object,
                     urlEncuestador: String,
-                    encuestador: Object
+                    encuestador: Object,
+                    menuAcciones: {
+                        type: Array,
+                        value: function(){return[]},
+                        notify: true
+                    }
                 },
                 observers: ['_observerEncuestador(encuestador)','_observerRouteData(routeData,vista,usuario)'],
                 _observerEncuestador: function(encuestador) {
@@ -84,6 +91,10 @@
                                     this.urlEncuestador = urlEncuestador;
                                 }.bind(this));
                     }
+                    this.menuAcciones = [{
+                        icono: 'save',
+                        accion: this._guardar.bind(this)
+                    }];
                 },
                 _observerVista: function(vista) {
                     if (vista == 'mi_perfil') {
@@ -93,7 +104,10 @@
                 _onEnviar: function() {
                     this.$.ajaxEncuestador.generateRequest();
                 },
-                _onResponseEncuesta: function(e) {
+                _guardar: function() {
+                    this.$.encuestador.enviar();
+                },
+                _onResponseEncuestador: function(e) {
                     this.encuestador = e.detail.response;
                     window.location.href = '';
                 }

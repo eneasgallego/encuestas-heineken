@@ -49,6 +49,7 @@
             usuario="[[usuario]]"
             mostrar-spinner="[[mostrarSpinner]]"
             route="[[route]]"
+            menu-acciones="[[_getField(menuAcciones.*,routeData.view)]]"
         >
             <iron-pages selected="[[routeData.view]]" attr-for-selected="name" on-iron-select="_onPageSelected" on-iron-deselect="_onPageDeselected">
                 <hnk-nuevaencuesta-page
@@ -68,10 +69,11 @@
                 ></hnk-encuestas-page>
                 <hnk-encuestador-page
                     name="mi_perfil"
-                    vista="mi_perfil"
+                    vista="[[routeData.view]]"
                     usuario="[[usuario]]"
                     route="{{subroute}}"
                     cargando="{{mostrarSpinner}}"
+                    menu-acciones="{{menuAcciones.mi_perfil}}"
                 ></hnk-encuestador-page>
         </iron-pages>
         </hnk-page>
@@ -86,7 +88,15 @@
                 usuario: {
                     type: Object
                 },
-                url: String
+                url: String,
+                menuAcciones: {
+                    type: Object,
+                    value: function(){
+                        return {
+                            mi_perfil: []
+                        }
+                    }
+                }
             },
             ready: function() {
                 this.getUrl(this, 'usuarios')

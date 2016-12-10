@@ -15,8 +15,8 @@ module.exports = function(mongo) {
                     }).catch(reject);
             });
         },
-        updateUsuario: function(_id, encuesta) {
-            return mongo.updateObj('encuestas', _id, encuesta);
+        updateUsuario: function(_id, usuario) {
+            return mongo.updateObj('usuarios', _id, usuario);
         }
     };
 };

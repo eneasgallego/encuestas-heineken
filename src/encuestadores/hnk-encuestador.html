@@ -2,6 +2,7 @@
 
 <link rel="import" href="../iron-form/iron-form.html">
 <link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../gold-email-input/gold-email-input.html">
 <link rel="import" href="../paper-button/paper-button.html">
 
 <link rel="import" href="../ui/hnk-imagen.html">
@@ -30,7 +31,7 @@
                 border: none 0px;
                 padding: 0;
             }
-            paper-input {
+            paper-input, gold-email-input {
                 --paper-input-container-color: var(--disabled-text-color);
                 --paper-input-container-input-color: var(--disabled-text-color);
             }
@@ -47,9 +48,9 @@
                 mostrar-boton
             ></hnk-imagen>
             <fieldset>
-                <paper-input label="Nick" readOnly value="[[encuestador.nick]]"></paper-input>
-                <paper-input name="nombre" label="Nombre" value="{{encuestador.nombre}}"></paper-input>
-                <paper-input name="email" label="E-Mail" type="email" value="{{encuestador.email}}"></paper-input>
+                <paper-input label="Nick" readOnly value="[[encuestador.nick]]" required></paper-input>
+                <paper-input name="nombre" label="Nombre" value="{{encuestador.nombre}}" required></paper-input>
+                <gold-email-input name="email" label="E-Mail" auto-validate required value="{{encuestador.email}}"></gold-email-input>
                 <paper-input readOnly value="Cambiar contraseña"></paper-input>
                 <template is="dom-if" if="[[encuestador.supervisor]]">
                     <paper-input readOnly value="Supervisor"></paper-input>
@@ -70,8 +71,16 @@
                     notify: true
                 }
             },
+            _onSubmit: function(e) {
+                e.stopPropagation();
+            },
             _getTextoSupervisor: function(supervisor) {
                 return supervisor ? 'Supervisor' : '';
+            },
+            enviar: function() {
+                if (this.$.form.validate()) {
+                    this.fire('enviar');
+                }
             }
         });
     </script>
