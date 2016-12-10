@@ -3,7 +3,10 @@
 <link rel="import" href="../neon-animation/neon-animatable-behavior.html">
 
 <link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/image-icons.html">
 
 <link rel="import" href="../util/hnk-base.html">
 <link rel="import" href="../util/shared-styles.html">
@@ -17,28 +20,52 @@
             }
 
             iron-image {
-                --iron-image-placeholder: {
-                     @apply(--image-size);
-                     @apply(--hnk-image-size);
-                };
-                @apply(--image-size);
-                @apply(--hnk-image-size);
+                height: var(--hnk-image-size,--size-icono);
+                width: var(--hnk-image-size,--size-icono);
+            }
+            iron-icon {
+                --iron-icon-height: var(--hnk-image-size,--size-icono);
+                --iron-icon-width: var(--hnk-image-size,--size-icono);
+                --iron-icon-fill-color: var(--hnk-image-color);
             }
             h5 {
                 margin: 4px 0;
             }
+            paper-icon-button {
+                position: absolute;
+                bottom: -24px;
+                padding: 12px;
+                width: 48px;
+                height: 48px;
+                border-radius: 24px;
+                background-color: var(--primary-color);
+                color: var(--primary-text-color);
+            }
+            fieldset {
+                position: relative;
+                border: none;
+                margin: 0;
+                padding: 0;
+            }
         </style>
 
-        <div>
+        <fieldset on-tap="_onTap">
             <h5>[[texto]]</h5>
             <div>[[imageValue]]</div>
-            <iron-image
-                src="[[imagen]]"
-                sizing="contain"
-                placeholder="[[imagenDefecto]]"
-                preload
-                on-tap="_onTap"
-            ></iron-image>
+            <template is="dom-if" if="[[_igual(imagen,'')]]">
+                <iron-icon
+                    icon="[[imagenDefecto]]"
+                ></iron-icon>
+            </template>
+            <template is="dom-if" if="[[!_igual(imagen,'')]]">
+                <iron-image
+                    src="[[imagen]]"
+                    sizing="contain"
+                ></iron-image>
+            </template>
+            <template is="dom-if" if="[[_mostrarBoton(editable,mostrarBoton)]]">
+                <paper-icon-button icon="image:add-a-photo"></paper-icon-button>
+            </template>
             <paper-input
                 id="input"
                 class="hidden"
@@ -47,7 +74,7 @@
                 accept="image/*"
                 on-change="_onChange"
             ></paper-input>
-        </div>
+        </fieldset>
 
     </template>
 
@@ -64,10 +91,13 @@
                 },
                 imagenDefecto: {
                     type: String,
-                    value: '/images/heineken-mini.png',
-                    notify: true
+                    value: 'image:add-a-photo'
                 },
-                editable: Boolean
+                editable: Boolean,
+                mostrarBoton: Boolean
+            },
+            _mostrarBoton: function(editable, mostrarBoton) {
+                return editable && mostrarBoton;
             },
             _onTap: function() {
                 this.editable && this.$.input.$.input.click();

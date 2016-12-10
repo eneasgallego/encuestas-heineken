@@ -10,20 +10,25 @@
 <link rel="import" href="../util/hnk-spinner.html">
 <link rel="import" href="../util/shared-styles.html">
 
+<link rel="import" href="../iron-icons/social-icons.html">
+
 <dom-module id="hnk-encuestador">
     <template>
         <style include="shared-styles">
             :host {
                 display: block;
             }
+            hnk-imagen {
+                --hnk-image-size: 128px;
+                text-align: center;
+                background-color: var(--google-grey-300);
+                --hnk-image-color: var(--google-grey-500);
+                padding: 0;
+            }
             fieldset {
                 margin-left: 20%;
                 border: none 0px;
                 padding: 0;
-            }
-            h5 {
-                margin: 0;
-                @apply(--mixin-texto);
             }
             paper-input {
                 --paper-input-container-color: var(--disabled-text-color);
@@ -37,7 +42,9 @@
         <form is="iron-form" id="form" class="form" on-iron-form-submit="_onSubmit">
             <hnk-imagen
                 imagen="{{encuestador.foto}}"
+                imagen-defecto="social:person"
                 editable
+                mostrar-boton
             ></hnk-imagen>
             <fieldset>
                 <paper-input label="Nick" readOnly value="[[encuestador.nick]]"></paper-input>
