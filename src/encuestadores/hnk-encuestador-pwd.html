@@ -80,6 +80,7 @@
             },
             _onSubmit: function(e) {
                 e.stopPropagation();
+                e.preventDefaut();
             },
             enviar: function() {
                 if (this.$.form.validate()) {

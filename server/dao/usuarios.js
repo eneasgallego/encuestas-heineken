@@ -1,4 +1,5 @@
 module.exports = function(mongo) {
+    var md5 = require('md5');
     return {
         getUsuarios: function() {
             return mongo.getData('usuarios');
@@ -32,8 +33,8 @@ module.exports = function(mongo) {
                 this.getPwd(_id)
                     .then(function(pwd) {
                         if (nueva == repetir) {
-                            if (pwd == antigua) {
-                                this.updatePwd(_id, nueva)
+                            if (pwd == md5(antigua)) {
+                                this.updatePwd(_id, md5(nueva))
                                     .then(resolve);
                             } else {
                                 reject({
