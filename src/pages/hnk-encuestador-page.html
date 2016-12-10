@@ -1,10 +1,12 @@
 <link rel="import" href="../polymer/polymer.html">
 
 <link rel="import" href="../app-route/app-route.html">
+<link rel="import" href="../iron-pages/iron-pages.html">
 
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 
 <link rel="import" href="../encuestadores/hnk-encuestador.html">
+<link rel="import" href="../encuestadores/hnk-encuestador-pwd.html">
 
 <link rel="import" href="hnk-page.html">
 
@@ -22,15 +24,22 @@
         </style>
 
         <app-route
-                route="{{route}}"
-                pattern="/:_id"
-                data="{{routeData}}"
-                tail="{{subroute}}"></app-route>
+            route="{{route}}"
+            pattern="/:_id"
+            data="{{routeData}}"
+            tail="{{subroute}}"
+        ></app-route>
+
+        <app-route
+            route="{{subroute}}"
+            pattern="/:vista"
+            data="{{subrouteData}}"
+        ></app-route>
 
         <iron-ajax
             method="get"
             url="[[urlEncuestador]]"
-            content-type="application/json"
+            content-type="application/json".base
             last-response="{{encuestador}}"
             auto
         ></iron-ajax>
@@ -44,14 +53,33 @@
             loading="{{_cargando.put}}"
             on-response="_onResponseEncuestador"
         ></iron-ajax>
+        <iron-ajax
+            id="ajaxPwd"
+            method="get"
+            url="[[urlPwd]]"
+            headers="[[_getHeadersPwd(pwd.*,encuestador)]]"
+            loading="{{_cargando.pwd}}"
+            on-response="_onResponsePwd"
+        ></iron-ajax>
 
-        <hnk-encuestador
-            id="encuestador"
-            encuestador="{{encuestador}}"
-            cargando="{{_cargando.encuestador}}"
-            on-enviar="_onEnviar"
-        ></hnk-encuestador>
-
+        <iron-pages selected="[[subrouteData.vista]]" attr-for-selected="name">
+            <hnk-encuestador
+                id="datos"
+                name="datos"
+                encuestador="{{encuestador}}"
+                cargando="{{_cargando.encuestador}}"
+                on-enviar="_onEnviar"
+                on-pwd="_onTapPwd"
+            ></hnk-encuestador>
+            <hnk-encuestador-pwd
+                id="pwd"
+                name="pwd"
+                antigua="{{pwd.a}}"
+                nueva="{{pwd.n}}"
+                repetir="{{pwd.r}}"
+                on-enviar="_onEnviarPwd"
+            ></hnk-encuestador-pwd>
+        </iron-pages>
     </template>
 
     <script>
@@ -60,56 +88,65 @@
                 is: 'hnk-encuestador-page',
                 behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior, hnk.SpinnerBehavior],
                 properties: {
-                    vista: String,
                     usuario: Object,
                     urlEncuestador: String,
+                    urlPwd: String,
                     encuestador: Object,
+                    pwd: Object,
                     menuAcciones: {
                         type: Array,
                         value: function(){return[]},
                         notify: true
                     }
                 },
-                observers: ['_observerEncuestador(encuestador)','_observerRouteData(routeData,vista,usuario)'],
+                observers: ['_observerEncuestador(encuestador)','_observerRouteData(routeData.*,usuario)','_observerVista(subrouteData.vista)'],
                 _observerEncuestador: function(encuestador) {
                     this.set('_cargando.get', false);
                 },
-                _observerRouteData: function(routeData, vista, usuario) {
-                    console.log(this.vista)
-                    var _id;
-                    if (vista == 'mi_perfil') {
-                        _id = usuario._id;
-                    } else {
-                        _id = routeData._id;
-                    }
+                _observerRouteData: function(routeData, usuario) {
+                    var _id = routeData.base._id == 'mi_perfil' ? usuario._id : routeData.base._id;
+
                     if (_id) {
-                        //this.cargando = true;
                         this.set('_cargando.get', true);
                         this.getUrl(this, 'encuestador', _id)
                                 .then(function(urlEncuestador) {
                                     this.set('_cargando.get', false);
                                     this.urlEncuestador = urlEncuestador;
                                 }.bind(this));
+                        this.getUrl(this, 'pwd', _id)
+                                .then(function(urlPwd) {
+                                    this.urlPwd = urlPwd;
+                                }.bind(this));
                     }
-                    this.menuAcciones = [{
-                        icono: 'save',
-                        accion: this._guardar.bind(this)
-                    }];
                 },
                 _observerVista: function(vista) {
-                    if (vista == 'mi_perfil') {
-                        this.encuestador = this.usuario;
-                    }
+                    vista && this.set('menuAcciones', this.$[vista].menuAcciones);
+                    this.pwd = {a: '',n: '',r: ''};
+                },
+                _getHeadersPwd: function(pwd,encuestador) {
+                    return {
+                        authorization: 'Basic ' + btoa([encuestador._id,pwd.base.a,pwd.base.n,pwd.base.r].join(' '))
+                    };
                 },
                 _onEnviar: function() {
                     this.$.ajaxEncuestador.generateRequest();
                 },
-                _guardar: function() {
-                    this.$.encuestador.enviar();
+                _onEnviarPwd: function() {
+                    this.$.ajaxPwd.generateRequest();
                 },
                 _onResponseEncuestador: function(e) {
                     this.encuestador = e.detail.response;
                     window.location.href = '';
+                },
+                _onResponsePwd: function(e) {
+                    var arr = window.location.hash.split('/');
+                    arr[arr.length - 1] = 'datos';
+                    window.location.hash = arr.join('/');
+                },
+                _onTapPwd: function() {
+                    var arr = window.location.hash.split('/');
+                    arr[arr.length - 1] = 'pwd';
+                    window.location.hash = arr.join('/');
                 }
             });
         })();

@@ -1,0 +1,91 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-form/iron-form.html">
+<link rel="import" href="../paper-input/paper-input.html">
+
+<link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/hnk-spinner.html">
+<link rel="import" href="../util/form-styles.html">
+
+<dom-module id="hnk-encuestador-pwd">
+    <template>
+        <style include="form-styles">
+            :host {
+                display: block;
+            }
+        </style>
+
+        <form is="iron-form" id="form" class="form" on-iron-form-submit="_onSubmit">
+            <fieldset>
+                <paper-input
+                    type="password"
+                    name="antigua"
+                    label="Contraseña antigua"
+                    value="{{antigua}}"
+                    error-message="No puede estar vacía."
+                    required
+                ></paper-input>
+                <paper-input
+                    type="password"
+                    name="nueva"
+                    label="Contraseña nueva"
+                    value="{{nueva}}"
+                    pattern="^\S+$"
+                    error-message="No puede estar vacía ni tener espacios."
+                    required
+                ></paper-input>
+                <paper-input
+                    type="password"
+                    name="repetir"
+                    label="Repetir contraseña"
+                    value="{{repetir}}"
+                    pattern="[[nueva]]"
+                    error-message="No puede estar vacía y debe ser igual que la Nueva."
+                    required
+                ></paper-input>
+            </fieldset>
+        </form>
+
+        </form>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'hnk-encuestador-pwd',
+            behaviors: [hnk.BaseBehavior, hnk.SpinnerBehavior],
+            properties: {
+                antigua: {
+                    type: String,
+                    notify: true
+                },
+                nueva: {
+                    type: String,
+                    notify: true
+                },
+                repetir: {
+                    type: String,
+                    notify: true
+                },
+                menuAcciones: {
+                    type: Array,
+                    value: function(){return[]},
+                    notify: true
+                }
+            },
+            ready: function() {
+                this.menuAcciones = [{
+                    icono: 'save',
+                    accion: this.enviar.bind(this)
+                }]
+            },
+            _onSubmit: function(e) {
+                e.stopPropagation();
+            },
+            enviar: function() {
+                if (this.$.form.validate()) {
+                    this.fire('enviar');
+                }
+            }
+        });
+    </script>
+</dom-module>

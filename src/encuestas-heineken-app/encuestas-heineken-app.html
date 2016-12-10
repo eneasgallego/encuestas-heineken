@@ -35,11 +35,12 @@
 
         <!-- this app-route manages the top-level routes -->
         <app-route
-                id="router"
-                route="{{route}}"
-                pattern="/:view"
-                data="{{routeData}}"
-                tail="{{subroute}}"></app-route>
+            id="router"
+            route="{{route}}"
+            pattern="/:view"
+            data="{{routeData}}"
+            tail="{{subroute}}"
+        ></app-route>
 
         <iron-ajax id="ajaxConfig" url="/config" handle-as="json" last-response="{{config}}" auto></iron-ajax>
         <iron-ajax id="ajaxUsuario" url="[[url]]" handle-as="json" on-response="_onResponseUsuarios" auto></iron-ajax>
@@ -68,12 +69,11 @@
                     cargando="{{mostrarSpinner}}"
                 ></hnk-encuestas-page>
                 <hnk-encuestador-page
-                    name="mi_perfil"
-                    vista="[[routeData.view]]"
+                    name="encuestador"
                     usuario="[[usuario]]"
                     route="{{subroute}}"
                     cargando="{{mostrarSpinner}}"
-                    menu-acciones="{{menuAcciones.mi_perfil}}"
+                    menu-acciones="{{menuAcciones.encuestador}}"
                 ></hnk-encuestador-page>
         </iron-pages>
         </hnk-page>
@@ -93,7 +93,7 @@
                     type: Object,
                     value: function(){
                         return {
-                            mi_perfil: []
+                            encuestador: []
                         }
                     }
                 }

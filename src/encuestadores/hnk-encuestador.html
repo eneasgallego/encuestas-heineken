@@ -3,19 +3,18 @@
 <link rel="import" href="../iron-form/iron-form.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../gold-email-input/gold-email-input.html">
-<link rel="import" href="../paper-button/paper-button.html">
 
 <link rel="import" href="../ui/hnk-imagen.html">
 
 <link rel="import" href="../util/hnk-base.html">
 <link rel="import" href="../util/hnk-spinner.html">
-<link rel="import" href="../util/shared-styles.html">
+<link rel="import" href="../util/form-styles.html">
 
 <link rel="import" href="../iron-icons/social-icons.html">
 
 <dom-module id="hnk-encuestador">
     <template>
-        <style include="shared-styles">
+        <style include="form-styles">
             :host {
                 display: block;
             }
@@ -25,18 +24,6 @@
                 background-color: var(--google-grey-300);
                 --hnk-image-color: var(--google-grey-500);
                 padding: 0;
-            }
-            fieldset {
-                margin-left: 20%;
-                border: none 0px;
-                padding: 0;
-            }
-            paper-input, gold-email-input {
-                --paper-input-container-color: var(--disabled-text-color);
-                --paper-input-container-input-color: var(--disabled-text-color);
-            }
-            paper-input[readOnly] {
-                --paper-input-container-input-color: var(--secondary-text-color);
             }
         </style>
 
@@ -49,9 +36,22 @@
             ></hnk-imagen>
             <fieldset>
                 <paper-input label="Nick" readOnly value="[[encuestador.nick]]" required></paper-input>
-                <paper-input name="nombre" label="Nombre" value="{{encuestador.nombre}}" required></paper-input>
-                <gold-email-input name="email" label="E-Mail" auto-validate required value="{{encuestador.email}}"></gold-email-input>
-                <paper-input readOnly value="Cambiar contraseña"></paper-input>
+                <paper-input
+                    name="nombre"
+                    label="Nombre"
+                    value="{{encuestador.nombre}}"
+                    error-message="No puede estar vacío."
+                    required
+                ></paper-input>
+                <gold-email-input
+                    name="email"
+                    label="E-Mail"
+                    auto-validate
+                    value="{{encuestador.email}}"
+                    error-message="El formato del E-Mail es incorrecto."
+                    required
+                ></gold-email-input>
+                <paper-input readOnly value="Cambiar contraseña" on-tap="_onTapPwd"></paper-input>
                 <template is="dom-if" if="[[encuestador.supervisor]]">
                     <paper-input readOnly value="Supervisor"></paper-input>
                 </template>
@@ -69,13 +69,27 @@
                 encuestador: {
                     type: Object,
                     notify: true
+                },
+                menuAcciones: {
+                    type: Array,
+                    value: function(){return[]},
+                    notify: true
                 }
+            },
+            ready: function() {
+                this.menuAcciones = [{
+                    icono: 'save',
+                    accion: this.enviar.bind(this)
+                }]
+            },
+            _getTextoSupervisor: function(supervisor) {
+                return supervisor ? 'Supervisor' : '';
             },
             _onSubmit: function(e) {
                 e.stopPropagation();
             },
-            _getTextoSupervisor: function(supervisor) {
-                return supervisor ? 'Supervisor' : '';
+            _onTapPwd: function() {
+                this.fire('pwd');
             },
             enviar: function() {
                 if (this.$.form.validate()) {

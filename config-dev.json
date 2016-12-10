@@ -6,7 +6,8 @@
     "preguntas"   : "preguntas",
     "encuestas"   : "encuestas",
     "encuesta"    : "encuestas/####",
-    "encuestador" : "usuarios/####"
+    "encuestador" : "usuarios/####",
+    "pwd"         : "usuarios/####/pwd"
   },
   "menu": [{
     "texto": "Inicio",
@@ -24,7 +25,7 @@
   },{
     "texto": "Mi perfil",
     "icono": "social:person",
-    "href": "#/mi_perfil"
+    "href": "#/encuestador/mi_perfil/datos"
   },{
     "texto": "Estadísticas",
     "supervisor": true,

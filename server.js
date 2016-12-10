@@ -23,6 +23,7 @@ mongo.conectar().then(function(){
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
         next();
     });
+    app.disable('x-powered-by');
 /*
     app.use(function(req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
