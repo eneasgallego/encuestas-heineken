@@ -1,6 +1,8 @@
 // importar
 var express = require('express');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
 var path = require('path');
 var config = require('./dirs.json');
 //console.log(config);
@@ -14,6 +16,14 @@ mongo.conectar().then(function(){
     // instanciar
     var app = express();
 
+    //app.use(cookieParser());
+    app.use(session({
+        secret: 'keyboard cat',
+        resave: false,
+        saveUninitialized: true,
+        cookie: { secure: false }
+    }));
+
     // permitir cors
     app.all('*', function(req, res, next) {
         var origin = req.get('origin');
@@ -21,17 +31,42 @@ mongo.conectar().then(function(){
         res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
         res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-        next();
+
+        var comprobarUrl = function(a) {
+            var ret = false;
+            if (a instanceof Array) {
+                for (var i = 0 ; i < a.length ; i++) {
+                    ret = comprobarUrl(a[i]);
+                    if (ret) {
+                        break;
+                    }
+                }
+            } else {
+                ret = !!~req.originalUrl.indexOf(a);
+            }
+
+            return ret;
+        };
+        var permitir = req.originalUrl != '/' && comprobarUrl([config.distDir, 'login', config.config]);
+        //console.log('permitir ' + req.originalUrl, permitir);
+        if (permitir) {
+            next();
+        } else {
+            if (req.session.usuario) {
+                next();
+            } else {
+                if (req.xhr) {
+                    res.status(403).send('Necesita estar logado.');
+                } else {
+                    var login = __dirname + config.destDir + '/' + config.login;
+                    res.sendFile(login);
+                    //next();
+                }
+            }
+        }
     });
     app.disable('x-powered-by');
-/*
-    app.use(function(req, res, next) {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        next();
-    });
-*/
+
     // parse application/x-www-form-urlencoded
     app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -40,33 +75,36 @@ mongo.conectar().then(function(){
 
     // ruteo estatico
     app.use('/', express.static(path.join(__dirname, config.destDir)));
-    app.use('/', express.static(path.join(__dirname, config.destDir + '/' + config.distDir)));
-    app.use('/uploads', express.static(path.join(__dirname, './uploads')));
-    app.get('/config', function(req, res){
+    app.use('/' + config.distDir, express.static(path.join(__dirname, config.destDir + '/' + config.distDir)));
+    app.use('/' + config.uploads, express.static(path.join(__dirname, './uploads')));
+    app.get('/' + config.config, function(req, res){
         res.sendFile(__dirname + config.destDir + '/' + config.configDist);
     });
 
     //ruteo dinámico
     var methods = ['_get','_post','_put','_delete'];
     var createApi = function(obj, path) {
-        //console.log('path', path);
-        if (!path) {
-            path = '';
-        }
-        //console.log('obj', obj);
-        path += '/' + obj._path;
-        for (var i = 0 ; i < methods.length ; i++) {
-            var method = methods[i];
-            var fn = obj[method];
-            if (typeof(fn) === 'function') {
-                console.log('se crea ' + method + ' para ' + path);
-                app[method.substring(1)](path, fn);
+        if (obj instanceof Array) {
+            for (var i = 0 ; i < obj.length ; i++) {
+                createApi(obj[i], path);
             }
-        }
-        for (var key in obj) {
-            if (key !== '_path' && !~methods.indexOf(key)) {
-                //console.log('createApi', key);
-                createApi(obj[key], path);
+        } else {
+            if (!path) {
+                path = '';
+            }
+            path += '/' + obj._path;
+            for (var i = 0 ; i < methods.length ; i++) {
+                var method = methods[i];
+                var fn = obj[method];
+                if (typeof(fn) === 'function') {
+                    console.log('se crea ' + method + ' para ' + path);
+                    app[method.substring(1)](path, fn);
+                }
+            }
+            for (var key in obj) {
+                if (key !== '_path' && !~methods.indexOf(key)) {
+                    createApi(obj[key], path);
+                }
             }
         }
     }

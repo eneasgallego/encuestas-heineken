@@ -2,10 +2,12 @@
   "titulo": "Encuestas Heineken",
   "urlBase": "/api",
   "endpoints": {
-    "usuarios"    : "usuarios",
     "preguntas"   : "preguntas",
     "encuestas"   : "encuestas",
     "encuesta"    : "encuestas/####",
+    "login"       : "login",
+    "usuario"     : "usuario",
+    "usuarios"    : "usuarios",
     "encuestador" : "usuarios/####",
     "pwd"         : "usuarios/####/pwd"
   },

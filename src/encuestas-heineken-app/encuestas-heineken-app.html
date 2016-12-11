@@ -43,7 +43,7 @@
         ></app-route>
 
         <iron-ajax id="ajaxConfig" url="/config" handle-as="json" last-response="{{config}}" auto></iron-ajax>
-        <iron-ajax id="ajaxUsuario" url="[[url]]" handle-as="json" on-response="_onResponseUsuarios" auto></iron-ajax>
+        <iron-ajax id="ajaxUsuario" url="[[url]]" handle-as="json" last-response="{{usuario}}" auto></iron-ajax>
 
         <hnk-page
             id="pagina"
@@ -85,9 +85,7 @@
             is: 'encuestas-heineken-app',
             behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior],
             properties: {
-                usuario: {
-                    type: Object
-                },
+                usuario: Object,
                 url: String,
                 menuAcciones: {
                     type: Object,
@@ -99,7 +97,7 @@
                 }
             },
             ready: function() {
-                this.getUrl(this, 'usuarios')
+                this.getUrl(this, 'usuario')
                         .then(function(url) {
                             this.url = url;
                         }.bind(this));
@@ -110,9 +108,6 @@
             },
             _onPageDeselected: function() {
                 this.$.pagina.reiniciar();
-            },
-            _onResponseUsuarios: function(e, detail) {
-                this.usuario = e.detail.response[0];
             }
         });
     </script>

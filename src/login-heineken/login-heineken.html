@@ -1,0 +1,101 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<link rel="import" href="../paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../iron-form/iron-form.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../paper-button/paper-button.html">
+
+<link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/hnk-config.html">
+<link rel="import" href="../util/hnk-spinner.html">
+<link rel="import" href="../util/form-styles.html">
+
+<dom-module id="login-heineken">
+    <template>
+        <style include="form-styles">
+            :host {
+                display: block;
+            }
+            .title {
+                padding: 4px;
+            }
+        </style>
+
+        <iron-ajax id="ajaxConfig" url="/config" handle-as="json" last-response="{{config}}" auto></iron-ajax>
+        <iron-ajax
+            id="ajax"
+            method="get"
+            url="[[url]]"
+            headers="[[_getHeaders(usr,pwd)]]"
+            loading="{{_cargando.pwd}}"
+            on-response="_onResponseLogin"
+        ></iron-ajax>
+
+        <paper-toolbar class="tall">
+            <span class="bottom title">Login</span>
+        </paper-toolbar>
+        <form
+            is="iron-form"
+            id="form"
+            class="form"
+            on-iron-form-presubmit="_onSubmit"
+        >
+            <fieldset>
+                <paper-input
+                    name="usr"
+                    label="Usuario"
+                    value="{{usr}}"
+                ></paper-input>
+                <paper-input
+                    type="password"
+                    name="pwd"
+                    label="Contraseña"
+                    value="{{pwd}}"
+                ></paper-input>
+                <paper-checkbox
+                    name="recordar"
+                    checked="{{recordar}}"
+                >Recordar contraseña</paper-checkbox>
+                <paper-button on-tap="_onTapOlvido">¿Has olvidado la contraseña?</paper-button>
+            </fieldset>
+            <paper-button class="primary" on-tap="_onTapLogin">Login</paper-button>
+        </form>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'login-heineken',
+            behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior, hnk.SpinnerBehavior],
+            properties: {
+                url: String,
+                usr: String,
+                pwd: String,
+                recordar: Boolean
+            },
+            _getHeaders: function(usr,pwd) {
+                return {
+                    authorization: 'Basic ' + btoa([usr,pwd].join(' '))
+                };
+            },
+            _onSubmit: function(e) {
+                e.preventDefault();
+                this.$.ajax.generateRequest();
+            },
+            _onTapLogin: function() {
+                this.$.form.submit();
+            },
+            _onResponseLogin: function(e) {
+                window.location.reload();
+            },
+            ready: function() {
+                this.getUrl(this, 'login')
+                        .then(function(url) {
+                            this.url = url;
+                        }.bind(this));
+            }
+        });
+    </script>
+</dom-module>

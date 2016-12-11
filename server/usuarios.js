@@ -3,7 +3,7 @@
 
     module.exports = function(mongo) {
         var usuariosDao = require('./dao/usuarios.js')(mongo);
-        return {
+        return [{
             _path: 'usuarios',
             _get: function(req, res) {
                 console.log('get usuarios');
@@ -28,19 +28,12 @@
                 cambiarPwd: {
                     _path: 'pwd',
                     _get: function(req, res) {
-                        console.log('header', req.headers.authorization);
                         var authorization = req.headers.authorization.substring(6);
-                        console.log('authorization', authorization);
                         var pwd = new Buffer(authorization, 'base64').toString().split(' ');
-                        console.log('pwd', pwd);
                         var u = pwd[0];
-                        console.log('u', u);
                         var a = pwd[1];
-                        console.log('a', a);
                         var n = pwd[2];
-                        console.log('n', n);
                         var r = pwd[3];
-                        console.log('r', r);
                         usuariosDao.cambiarPwd(u,a,n,r).then(function(){
                             res.send();
                         }).catch(function(err){
@@ -50,6 +43,27 @@
                     }
                 }
             }
-        };
+        },{
+            _path: 'login',
+            _get: function(req, res) {
+                var authorization = req.headers.authorization.substring(6);
+                var pwd = new Buffer(authorization, 'base64').toString().split(' ');
+                var u = pwd[0];
+                var p = pwd[1];
+                usuariosDao.login(u,p).then(function(usuario){
+                    req.session.usuario = usuario;
+                    req.session.save();
+                    res.send();
+                }).catch(function(err){
+                    res.status(401).send('Usuario o contraseña incorrectos.');
+                })
+
+            }
+        },{
+            _path: 'usuario',
+            _get: function(req, res) {
+                res.send(req.session.usuario);
+            }
+        }];
     };
 })();

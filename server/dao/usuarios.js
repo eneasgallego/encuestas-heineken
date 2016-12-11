@@ -6,7 +6,7 @@ module.exports = function(mongo) {
         },
         getUsuario: function(_id) {
             return new Promise(function(resolve, reject) {
-                mongo.getData('usuarios', {_id: mongo.ObjectID.createFromHexString(_id)})
+                mongo.getData('usuarios', typeof(_id) === 'object' ? _id : {_id: mongo.ObjectID.createFromHexString(_id)})
                     .then(function(usuarios) {
                         if (usuarios.length) {
                             resolve(usuarios[0]);
@@ -18,7 +18,7 @@ module.exports = function(mongo) {
         },
         getPwd: function(_id) {
             return new Promise(function(resolve, reject) {
-                mongo.getData('pwd', {usuario:_id})
+                mongo.getData('pwd', {usuario:_id+''})
                     .then(function(usuarios) {
                         if (usuarios.length) {
                             resolve(usuarios[0].pwd);
@@ -54,6 +54,19 @@ module.exports = function(mongo) {
                             text: 'Usuario o contraseña no válidos.'
                         })
                     });
+            }.bind(this));
+        },
+        login: function(nick, p) {
+            return new Promise(function(resolve, reject) {
+                this.getUsuario({nick:nick})
+                    .then(function(usuario) {
+                        this.getPwd(usuario._id)
+                            .then(function(pwd) {
+                                pwd == md5(p) ? resolve(usuario) : reject();
+                            }.bind(this))
+                            .catch(reject);
+                    }.bind(this))
+                    .catch(reject);
             }.bind(this));
         },
         updateUsuario: function(_id, usuario) {
