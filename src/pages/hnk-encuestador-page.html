@@ -99,29 +99,33 @@
                         notify: true
                     }
                 },
-                observers: ['_observerEncuestador(encuestador)','_observerRouteData(routeData.*,usuario)','_observerVista(subrouteData.vista)'],
+                observers: ['_observerEncuestador(encuestador)','_observerRouteData(route.prefix, routeData.*,usuario)','_observerVista(route.prefix, subrouteData.vista)'],
                 _observerEncuestador: function(encuestador) {
                     this.set('_cargando.get', false);
                 },
-                _observerRouteData: function(routeData, usuario) {
+                _observerRouteData: function(page, routeData, usuario) {
                     var _id = routeData.base._id == 'mi_perfil' ? usuario._id : routeData.base._id;
 
-                    if (_id) {
-                        this.set('_cargando.get', true);
-                        this.getUrl(this, 'encuestador', _id)
-                                .then(function(urlEncuestador) {
-                                    this.set('_cargando.get', false);
-                                    this.urlEncuestador = urlEncuestador;
-                                }.bind(this));
-                        this.getUrl(this, 'pwd', _id)
-                                .then(function(urlPwd) {
-                                    this.urlPwd = urlPwd;
-                                }.bind(this));
+                    if (page == '/encuestador') {
+                        if (_id) {
+                            this.set('_cargando.get', true);
+                            this.getUrl(this, 'encuestador', _id)
+                                    .then(function (urlEncuestador) {
+                                        this.set('_cargando.get', false);
+                                        this.urlEncuestador = urlEncuestador;
+                                    }.bind(this));
+                            this.getUrl(this, 'pwd', _id)
+                                    .then(function (urlPwd) {
+                                        this.urlPwd = urlPwd;
+                                    }.bind(this));
+                        }
                     }
                 },
-                _observerVista: function(vista) {
-                    vista && this.set('menuAcciones', this.$[vista].menuAcciones);
-                    this.pwd = {a: '',n: '',r: ''};
+                _observerVista: function(page, vista) {
+                    if (page == '/encuestador') {
+                        vista && this.set('menuAcciones', this.$[vista].menuAcciones);
+                        this.pwd = {a: '', n: '', r: ''};
+                    }
                 },
                 _getHeadersPwd: function(pwd,encuestador) {
                     return {

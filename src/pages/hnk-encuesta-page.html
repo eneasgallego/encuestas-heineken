@@ -78,16 +78,18 @@
                     urlEncuesta: String,
                     encuesta: Object
                 },
-                observers: ['_observerRouteData(routeData)'],
-                _observerRouteData: function(routeData) {
-                    this.cargando = true;
-                    if (routeData._id) {
-                        this._cargando.get = true;
-                        this.getUrl(this, 'encuesta', routeData._id)
-                                .then(function(urlEncuesta) {
-                                    this._cargando.get = false;
-                                    this.urlEncuesta = urlEncuesta;
-                                }.bind(this));
+                observers: ['_observerRouteData(route.prefix, routeData)'],
+                _observerRouteData: function(page, routeData) {
+                    if (page == '/encuesta') {
+                        //this.cargando = true;
+                        if (routeData._id) {
+                            this.set('_cargando.get', true);
+                            this.getUrl(this, 'encuesta', routeData._id)
+                                    .then(function(urlEncuesta) {
+                                        this.set('_cargando.get', false);
+                                        this.urlEncuesta = urlEncuesta;
+                                    }.bind(this));
+                        }
                     }
                 },
                 _getParams: function(vista) {

@@ -5,18 +5,26 @@
         var usuariosDao = require('./dao/usuarios.js')(mongo);
         return [{
             _path: 'usuarios',
-            _get: function(req, res) {
-                console.log('get usuarios');
-                usuariosDao.getUsuarios().then(function(usuarios){
-                    res.send(usuarios);
-                });
+            _get: {
+                supervisor: true,
+                fn: function(req, res) {
+                    usuariosDao.getUsuarios().then(function(usuarios){
+                        res.send(usuarios);
+                    })
+                    .catch(function(err){
+                        res.status(500).send(err);
+                    });
+                }
             },
             usuario: {
                 _path: ':_id',
                 _get: function(req, res) {
                     usuariosDao.getUsuario(req.params._id).then(function(usuario){
                         res.send(usuario);
-                    });
+                    })
+                        .catch(function(err){
+                            res.status(500).send(err);
+                        });
                 },
                 _put: function(req, res) {
                     usuariosDao.updateUsuario(req.params._id, req.body).then(function(usuario){

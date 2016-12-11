@@ -25,7 +25,7 @@ module.exports = function(mongo) {
                         var prom = _parseEncuesta(encuestas, usuarios);
                         prom.then(function(usuarios) {
                             resolve(usuarios);
-                        });
+                        }).catch(reject);
                     }).catch(reject);
             }
         });
@@ -43,15 +43,27 @@ module.exports = function(mongo) {
             encuestasDao.getEncuestas().then(function(encuestas){
                 _parseEncuesta(encuestas).then(function(encuestas) {
                     res.send(encuestas);
+                })
+                    .catch(function(err){
+                        res.status(500).send(err);
+                    });
+            })
+                .catch(function(err){
+                    res.status(500).send(err);
                 });
-            });
         },
         _post: function(req, res) {
             encuestasDao.createEncuesta(_invertParseEncuesta(req.body)).then(function(encuesta){
                 _parseEncuesta(encuesta).then(function(encuesta) {
                     res.send(encuesta);
+                })
+                    .catch(function(err){
+                        res.status(500).send(err);
+                    });
+            })
+                .catch(function(err){
+                    res.status(500).send(err);
                 });
-            });
         },
         encuesta: {
             _path: ':_id',
@@ -59,14 +71,23 @@ module.exports = function(mongo) {
                 encuestasDao.getEncuesta(req.params._id).then(function(encuesta){
                     _parseEncuesta(encuesta).then(function(encuesta) {
                         res.send(encuesta);
+                    })
+                        .catch(function(err){
+                            res.status(500).send(err);
+                        });
+                })
+                    .catch(function(err){
+                        res.status(500).send(err);
                     });
-                });
             },
             _put: function(req, res) {
                 encuestasDao.updateEncuesta(req.params._id, _invertParseEncuesta(req.body), req.query.cambio).then(function(encuesta){
                     _parseEncuesta(encuesta).then(function(encuesta) {
                         res.send(encuesta);
-                    });
+                    })
+                        .catch(function(err){
+                            res.status(500).send(err);
+                        });
                 }).catch(function(obj){
                     res.status(500).send(obj);
                 });

@@ -93,13 +93,27 @@ mongo.conectar().then(function(){
                 path = '';
             }
             path += '/' + obj._path;
-            for (var i = 0 ; i < methods.length ; i++) {
-                var method = methods[i];
-                var fn = obj[method];
+            var createEndpoint = function(fn, method) {
                 if (typeof(fn) === 'function') {
                     console.log('se crea ' + method + ' para ' + path);
                     app[method.substring(1)](path, fn);
+                } else if (typeof(fn) === 'object') {
+                    if (fn.supervisor) {
+                        app.use(path, function(req, res, next) {
+                            console.log('supervisor en ' + path, !req.session.usuario.supervisor)
+                            console.log(req.baseUrl)
+                            if (req.session.usuario.supervisor) {
+                                next();
+                            } else {
+                                res.status(403).send('Debe ser supervisor.')
+                            }
+                        });
+                        createEndpoint(fn.fn, method);
+                    }
                 }
+            };
+            for (var i = 0 ; i < methods.length ; i++) {
+                createEndpoint(obj[methods[i]], methods[i]);
             }
             for (var key in obj) {
                 if (key !== '_path' && !~methods.indexOf(key)) {

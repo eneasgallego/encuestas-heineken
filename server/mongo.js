@@ -48,7 +48,7 @@ module.exports = function(config) {
                     .then(function() {
                         this.getData(collection, find).then(function(data) {
                             resolve(data[0]);
-                        })
+                        }).catch(reject);
                     }.bind(this)).catch(reject);
             }.bind(this));
         },
