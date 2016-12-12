@@ -72,6 +72,14 @@
             _get: function(req, res) {
                 res.send(req.session.usuario);
             }
+        },{
+            _path: 'salir',
+            _get: function(req, res) {
+                console.log('salir', req.session.usuario)
+                req.session.usuario = null;
+                req.session.save();
+                res.send();
+            }
         }];
     };
 })();

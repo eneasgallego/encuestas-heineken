@@ -6,6 +6,7 @@
     "encuestas"   : "encuestas",
     "encuesta"    : "encuestas/####",
     "login"       : "login",
+    "salir"       : "salir",
     "usuario"     : "usuario",
     "usuarios"    : "usuarios",
     "encuestador" : "usuarios/####",
@@ -43,5 +44,9 @@
     "supervisor": true,
     "icono": "vaadin-icons:file-o",
     "href": "#/encuestas"
+  },{
+    "texto": "Salir",
+    "icono": "exit-to-app",
+    "href": "#/salir"
   }]
 }

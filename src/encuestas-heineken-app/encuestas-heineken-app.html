@@ -18,6 +18,7 @@
 <link rel="import" href="../pages/hnk-encuesta-page.html">
 <link rel="import" href="../pages/hnk-encuestas-page.html">
 <link rel="import" href="../pages/hnk-encuestador-page.html">
+<link rel="import" href="../pages/hnk-salir.html">
 
 <dom-module id="encuestas-heineken-app">
     <template>
@@ -75,6 +76,9 @@
                     cargando="{{mostrarSpinner}}"
                     menu-acciones="{{menuAcciones.encuestador}}"
                 ></hnk-encuestador-page>
+                <hnk-salir
+                    auto="[[_igual(routeData.view,'salir')]]"
+                ></hnk-salir>
         </iron-pages>
         </hnk-page>
     </template>

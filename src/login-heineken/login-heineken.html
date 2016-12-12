@@ -3,9 +3,10 @@
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 
 <link rel="import" href="../paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-form/iron-form.html">
 <link rel="import" href="../paper-input/paper-input.html">
-<link rel="import" href="../paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../paper-button/paper-button.html">
 
 <link rel="import" href="../util/hnk-base.html">
@@ -18,9 +19,30 @@
         <style include="form-styles">
             :host {
                 display: block;
+                --iron-icon-width: 128px;
+                --iron-icon-height: 128px;
+                --iron-icon-fill-color: #f00008;
             }
             .title {
                 padding: 4px;
+            }
+            .imagen {
+                margin: 0 auto;
+            }
+            .titulo {
+                color: var(--titulo-color);
+                padding-top: 10%;
+                padding-left: 10%;
+                @apply(--mixin-texto);
+            }
+            paper-button{
+                color: var(--disabled-text-color);
+                font-size: 0.5rem;
+                display: block;
+                text-align: right;
+            }
+            paper-button.primary{
+                font-size: 1rem;
             }
         </style>
 
@@ -35,7 +57,9 @@
         ></iron-ajax>
 
         <paper-toolbar class="tall">
-            <span class="bottom title">Login</span>
+            <span class="middle imagen">
+                <iron-icon icon="star"></iron-icon>
+            </span>
         </paper-toolbar>
         <form
             is="iron-form"
@@ -43,6 +67,7 @@
             class="form"
             on-iron-form-presubmit="_onSubmit"
         >
+            <div class="titulo">REGÍSTRATE</div>
             <fieldset>
                 <paper-input
                     name="usr"
@@ -55,10 +80,6 @@
                     label="Contraseña"
                     value="{{pwd}}"
                 ></paper-input>
-                <paper-checkbox
-                    name="recordar"
-                    checked="{{recordar}}"
-                >Recordar contraseña</paper-checkbox>
                 <paper-button on-tap="_onTapOlvido">¿Has olvidado la contraseña?</paper-button>
             </fieldset>
             <paper-button class="primary" on-tap="_onTapLogin">Login</paper-button>

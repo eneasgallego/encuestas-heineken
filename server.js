@@ -53,6 +53,7 @@ mongo.conectar().then(function(){
             next();
         } else {
             if (req.session.usuario) {
+                console.log('session.usuario', req.session.usuario)
                 next();
             } else {
                 if (req.xhr) {

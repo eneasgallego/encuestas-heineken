@@ -1,0 +1,40 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/hnk-config.html">
+
+<dom-module id="hnk-salir">
+    <template>
+        <iron-ajax
+            method="get"
+            url="[[url]]"
+            content-type="application/json"
+            on-response="_onResponse"
+            auto="[[auto]]"
+        ></iron-ajax>
+    </template>
+
+    <script>
+        (function(){
+            Polymer({
+                is: 'hnk-salir',
+                behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior],
+                properties: {
+                    url: String,
+                    auto: Boolean
+                },
+                ready: function() {
+                    this.getUrl(this, 'salir')
+                            .then(function(url) {
+                                this.url = url;
+                            }.bind(this));
+                },
+                _onResponse: function() {
+                    window.location.href = '/';
+                }
+            });
+        })();
+    </script>
+</dom-module>
