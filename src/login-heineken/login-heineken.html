@@ -9,6 +9,8 @@
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-button/paper-button.html">
 
+<link rel="import" href="../ui/hnk-dialog.html">
+
 <link rel="import" href="../util/hnk-base.html">
 <link rel="import" href="../util/hnk-config.html">
 <link rel="import" href="../util/hnk-spinner.html">
@@ -55,6 +57,14 @@
             loading="{{_cargando.pwd}}"
             on-response="_onResponseLogin"
         ></iron-ajax>
+        <iron-ajax
+            id="ajaxOlvido"
+            method="post"
+            url="[[urlOlvido]]"
+            content-type="application/json"
+            body="[[_getBodyOlvido(usr)]]"
+            loading="{{_cargando.olvido}}"
+        ></iron-ajax>
 
         <paper-toolbar class="tall">
             <span class="middle imagen">
@@ -84,6 +94,14 @@
             </fieldset>
             <paper-button class="primary" on-tap="_onTapLogin">Login</paper-button>
         </form>
+        <hnk-dialog
+            id="pwdDialog"
+            tipo="aviso"
+            modal
+            on-aceptar="_onAceptarOlvido"
+        >
+            Te enviamos una nueva contraseña al email que tenemos registrado para el usuario <b>[[usr]]</b>. Recuerda que podrás cambiarla si lo deseas en "Mi perfil".
+        </hnk-dialog>
     </template>
 
     <script>
@@ -92,6 +110,7 @@
             behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior, hnk.SpinnerBehavior],
             properties: {
                 url: String,
+                urlOlvido: String,
                 usr: String,
                 pwd: String,
                 recordar: Boolean
@@ -100,6 +119,18 @@
                 return {
                     authorization: 'Basic ' + btoa([usr,pwd].join(' '))
                 };
+            },
+            _getBodyOlvido: function(usr) {
+                return {
+                    usr: usr
+                };
+            },
+            _onTapOlvido: function() {
+                this.$.pwdDialog.abrir();
+            },
+            _onAceptarOlvido: function(){
+                this.$.pwdDialog.cerrar();
+                this.$.ajaxOlvido.generateRequest();
             },
             _onSubmit: function(e) {
                 e.preventDefault();
@@ -112,9 +143,10 @@
                 window.location.reload();
             },
             ready: function() {
-                this.getUrl(this, 'login')
-                        .then(function(url) {
-                            this.url = url;
+                this.getUrl(this, ['login', 'olvidoPwd'])
+                        .then(function(params) {
+                            this.url = params[0];
+                            this.urlOlvido = params[1];
                         }.bind(this));
             }
         });

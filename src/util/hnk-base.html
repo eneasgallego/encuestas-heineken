@@ -16,20 +16,30 @@
         getUrl: function (config, tag) {
             var args = Array.prototype.slice.call(arguments, 2);
             return new Promise(function(resolve, reject) {
-                config.getConfig('urlBase').then(function(urlBase) {
-                    config.getConfig('endpoints.' + tag).then(function(endpoint) {
-                        if (endpoint) {
-                            var url = urlBase + '/' + endpoint;
-                            for (var i = 0 ; i < args.length ; i++) {
-                                url = url.replace('####', args[i]);
-                            }
-
-                            resolve(url);
-                        } else {
-                            reject();
+                var params = ['urlBase'];
+                var _getEndpoint = function(tag) {
+                    return 'endpoints.' + tag;
+                }
+                if (tag instanceof Array) {
+                    for (var i = 0 ; i < tag.length ; i++) {
+                        params.push(_getEndpoint(tag[i]));
+                    }
+                } else {
+                    params.push(_getEndpoint(tag));
+                }
+                config.getConfig(params).then(function(params) {
+                    var _getEndpoint = function(endpoint) {
+                        var url = params[0] + '/' + endpoint;
+                        for (var i = 0 ; i < args.length ; i++) {
+                            url = url.replace('####', args[i]);
                         }
-                    }.bind(this))
-                    .catch(reject);
+                        return url;
+                    }
+                    var ret = [];
+                    for (var i = 1 ; i < params.length ; i++) {
+                        ret.push(_getEndpoint(params[i]));
+                    }
+                    resolve(ret);
                 }.bind(this))
                 .catch(reject);
             }.bind(this));

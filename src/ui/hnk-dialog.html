@@ -1,0 +1,70 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-button/paper-button.html">
+
+<link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/shared-styles.html">
+
+<dom-module id="hnk-dialog">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+            paper-dialog {
+                color: var(--disabled-text-color);
+            }
+            paper-dialog p{
+                text-align: center;
+            }
+            paper-button {
+                color: var(--titulo-color);
+            }
+        </style>
+
+        <paper-dialog id="dialog" modal="[[modal]]">
+            <h2>[[_getTitulo(tipo)]]</h2>
+            <p><content></content></p>
+
+            <template is="dom-if" if="[[_igual(tipo,'aviso')]]">
+                <div class="buttons">
+                    <paper-button
+                        tag="aceptar"
+                        dialog-confirm
+                        autofocus
+                        on-tap="_onTap"
+                    >Aceptar</paper-button>
+                </div>
+            </template>
+        </paper-dialog>
+
+    </template>
+
+    <script>
+        Polymer({
+
+            is: 'hnk-dialog',
+            behaviors: [hnk.BaseBehavior],
+            properties: {
+                modal: Boolean,
+                alerta: Boolean
+            },
+            _getTitulo: function(tipo) {
+                if (tipo == 'aviso') {
+                    return 'Aviso';
+                }
+            },
+            _onTap: function(e) {
+                e.stopPropagation();
+                this.fire(e.currentTarget.getAttribute('tag'));
+            },
+            abrir: function() {
+                this.$.dialog.open();
+            },
+            cerrar: function() {
+                this.$.dialog.close();
+            }
+        });
+    </script>
+</dom-module>

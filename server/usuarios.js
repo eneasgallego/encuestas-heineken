@@ -3,6 +3,13 @@
 
     module.exports = function(mongo) {
         var usuariosDao = require('./dao/usuarios.js')(mongo);
+        var _parseAuthorization = function(authorization) {
+            var pwd = new Buffer(authorization.substring(6), 'base64').toString().split(' ');
+            return {
+                usr: pwd[0],
+                pwd: pwd[1]
+            };
+        };
         return [{
             _path: 'usuarios',
             _get: {
@@ -54,16 +61,24 @@
         },{
             _path: 'login',
             _get: function(req, res) {
-                var authorization = req.headers.authorization.substring(6);
-                var pwd = new Buffer(authorization, 'base64').toString().split(' ');
-                var u = pwd[0];
-                var p = pwd[1];
-                usuariosDao.login(u,p).then(function(usuario){
+                var auth = _parseAuthorization(req.headers.authorization);
+                usuariosDao.login(auth.usr,auth.pwd).then(function(usuario){
                     req.session.usuario = usuario;
                     req.session.save();
                     res.send();
                 }).catch(function(err){
                     res.status(401).send('Usuario o contraseña incorrectos.');
+                })
+
+            }
+        },{
+            _path: 'olvido',
+            _post: function(req, res) {
+                usuariosDao.olvido(req.body.usr).then(function(usuario, pwd){
+                    //enviar email con la nueva contraseña
+                    res.send();
+                }).catch(function(err){
+                    res.status(500).send(err);
                 })
 
             }

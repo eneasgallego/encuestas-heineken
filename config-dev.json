@@ -6,6 +6,7 @@
     "encuestas"   : "encuestas",
     "encuesta"    : "encuestas/####",
     "login"       : "login",
+    "olvidoPwd"   : "olvido",
     "salir"       : "salir",
     "usuario"     : "usuario",
     "usuarios"    : "usuarios",

@@ -42,11 +42,23 @@
                     var t = setInterval(function(){
                         if (_config.loaded) {
                             clearInterval(t);
-                            var arrPath = path.split('.');
-                            var ret = _config;
+                            var _getConfig = function(path) {
+                                var arrPath = path.split('.');
+                                var ret = _config;
 
-                            for (var i = 0 ; i < arrPath.length ; i++) {
-                                ret = ret[arrPath[i]];
+                                for (var i = 0 ; i < arrPath.length ; i++) {
+                                    ret = ret[arrPath[i]];
+                                }
+
+                                return ret;
+                            };
+                            var ret = [];
+                            if (path instanceof Array) {
+                                for (var i = 0 ; i < path.length ; i++) {
+                                    ret.push(_getConfig(path[i]));
+                                }
+                            } else {
+                                ret.push(_getConfig(path));
                             }
 
                             resolve(ret);

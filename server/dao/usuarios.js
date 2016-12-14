@@ -69,6 +69,17 @@ module.exports = function(mongo) {
                     .catch(reject);
             }.bind(this));
         },
+        olvido: function(nick) {
+            return new Promise(function(resolve, reject) {
+                this.getUsuario({nick:nick})
+                    .then(function(usuario) {
+                        //generar contraseña
+                        //almacenar contraseña
+                        //devolver usuario y contraseña
+                    })
+                    .catch(resolve);
+            }.bind(this));
+        },
         updateUsuario: function(_id, usuario) {
             return mongo.updateObj('usuarios', _id, usuario);
         },

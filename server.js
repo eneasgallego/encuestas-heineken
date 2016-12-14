@@ -47,7 +47,7 @@ mongo.conectar().then(function(){
 
             return ret;
         };
-        var permitir = req.originalUrl != '/' && comprobarUrl([config.distDir, 'login', config.config]);
+        var permitir = req.originalUrl != '/' && comprobarUrl([config.distDir, 'login', 'olvido', config.config]);
         //console.log('permitir ' + req.originalUrl, permitir);
         if (permitir) {
             next();

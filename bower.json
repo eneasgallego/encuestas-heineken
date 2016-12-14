@@ -11,7 +11,7 @@
     "paper-radio-group": "^1.2.1",
     "app-route": "PolymerElements/app-route#^0.9.3",
     "iron-pages": "PolymerElements/iron-pages#^1.0.8",
-    "paper-dialog": "PolymerElements/paper-dialog#^1.1.0",
+    "paper-dialog": "^1.1.0",
     "iron-image": "PolymerElements/iron-image#^1.2.5",
     "neon-animation": "PolymerElements/neon-animation#^1.2.4",
     "vaadin-icons": "^2.0.0",
