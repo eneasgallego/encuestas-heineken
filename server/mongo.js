@@ -29,13 +29,17 @@ module.exports = function(config) {
         },
         getData: function(collection, find) {
             var ret = _db.collection(collection).find(find);
-            return ret.toArray();
+            return ret.toArray().catch(function(err){
+                console.error(err);
+            });
         },
         createData: function(collection, data) {
             return new Promise(function(resolve, reject) {
                 _db.collection(collection).insert(data)
                     .then(function(obj) {
                         resolve(obj.ops[0]);
+                    }).catch(function(err){
+                        console.error(err);
                     }).catch(reject);
             });
         },
@@ -49,7 +53,10 @@ module.exports = function(config) {
                         this.getData(collection, find).then(function(data) {
                             resolve(data[0]);
                         }).catch(reject);
-                    }.bind(this)).catch(reject);
+                    }.bind(this))
+                    .catch(function(err){
+                        console.error(err);
+                    }).catch(reject);
             }.bind(this));
         },
         updateData: function(collection, find, data) {
@@ -57,6 +64,8 @@ module.exports = function(config) {
                 _db.collection(collection).update(find, data)
                     .then(function(obj) {
                         resolve(obj);
+                    }).catch(function(err){
+                        console.error(err);
                     }).catch(reject);
             });
         }

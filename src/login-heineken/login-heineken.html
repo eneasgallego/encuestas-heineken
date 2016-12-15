@@ -7,6 +7,7 @@
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-form/iron-form.html">
 <link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../paper-button/paper-button.html">
 
 <link rel="import" href="../ui/hnk-dialog.html">
@@ -63,6 +64,7 @@
             method="get"
             url="[[url]]"
             headers="[[_getHeaders(usr,pwd)]]"
+            params="[[_getParams(noCerrarSesion)]]"
             loading="{{_cargando.pwd}}"
             on-response="_onResponseLogin"
         ></iron-ajax>
@@ -98,6 +100,7 @@
                     label="Contraseña"
                     value="{{pwd}}"
                 ></paper-input>
+                <paper-checkbox checked="{{noCerrarSesion}}">No cerrar sesión</paper-checkbox>
                 <paper-button on-tap="_onTapOlvido">¿Has olvidado la contraseña?</paper-button>
             </fieldset>
             <div>
@@ -123,11 +126,16 @@
                 urlOlvido: String,
                 usr: String,
                 pwd: String,
-                recordar: Boolean
+                noCerrarSesion: Boolean
             },
             _getHeaders: function(usr,pwd) {
                 return {
                     authorization: 'Basic ' + btoa([usr,pwd].join(' '))
+                };
+            },
+            _getParams: function(noCerrarSesion) {
+                return {
+                    ncs: ~~noCerrarSesion
                 };
             },
             _getBodyOlvido: function(usr) {

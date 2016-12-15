@@ -18,6 +18,20 @@
         paper-input[readOnly] {
             --paper-input-container-input-color: var(--secondary-text-color);
         }
+        paper-checkbox {
+            --paper-checkbox-label-color: var(--disabled-text-color);
+            --paper-checkbox-unchecked-color: var(--disabled-text-color);
+            --paper-checkbox-unchecked-ink-color: var(--disabled-text-color);
+            width: 100%;
+            margin-top: 28px;
+            margin-bottom: 8px;
+            border-bottom: solid 1px;
+            border-bottom-color: var(--disabled-text-color);
+            --paper-checkbox-label: {
+                 line-height: 24px;
+            };
+        }
+
     </style>
   </template>
 </dom-module>

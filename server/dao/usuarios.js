@@ -1,5 +1,10 @@
 module.exports = function(mongo) {
     var md5 = require('md5');
+    var tablas = {
+        sesiones: 'sesiones',
+        usuarios: 'usuarios',
+        pwd: 'pwd'
+    };
 
     var aleatorio = function(min, max) {
         return Math.floor(Math.random() * (max - min + 1) + min);
@@ -14,11 +19,11 @@ module.exports = function(mongo) {
     };
     return {
         getUsuarios: function() {
-            return mongo.getData('usuarios');
+            return mongo.getData(tabla.usuarios);
         },
         getUsuario: function(_id) {
             return new Promise(function(resolve, reject) {
-                mongo.getData('usuarios', typeof(_id) === 'object' ? _id : {_id: mongo.ObjectID.createFromHexString(_id)})
+                mongo.getData(tablas.usuarios, typeof(_id) === 'object' ? _id : {_id: mongo.ObjectID.createFromHexString(_id)})
                     .then(function(usuarios) {
                         if (usuarios.length) {
                             resolve(usuarios[0]);
@@ -30,7 +35,7 @@ module.exports = function(mongo) {
         },
         getPwd: function(_id) {
             return new Promise(function(resolve, reject) {
-                mongo.getData('pwd', {usuario:_id+''})
+                mongo.getData(tablas.pwd, {usuario:_id+''})
                     .then(function(usuarios) {
                         if (usuarios.length) {
                             resolve(usuarios[0].pwd);
@@ -72,7 +77,7 @@ module.exports = function(mongo) {
             return new Promise(function(resolve, reject) {
                 this.getUsuario({nick:nick})
                     .then(function(usuario) {
-                        this.getPwd(usuario._id)
+                        this.getPwd(usuario._id+'')
                             .then(function(pwd) {
                                 pwd == md5(p) ? resolve(usuario) : reject();
                             }.bind(this))
@@ -99,10 +104,40 @@ module.exports = function(mongo) {
             }.bind(this));
         },
         updateUsuario: function(_id, usuario) {
-            return mongo.updateObj('usuarios', _id, usuario);
+            return mongo.updateObj(tablas.usuarios, _id, usuario);
         },
         updatePwd: function(_id, pwd) {
-            return mongo.updateData('pwd', {usuario:_id}, {usuario:_id, pwd:pwd});
+            return mongo.updateData(tablas.pwd, {usuario:_id}, {usuario:_id, pwd:pwd});
+        },
+        getSesion: function(usuario) {
+            return new Promise(function(resolve, reject) {
+                console.log('getSesion.usuario', usuario)
+                mongo.getData(tablas.sesiones, {usuario:usuario+''})
+                    .then(function(sesiones) {
+                        console.log('getSesion.sesiones', sesiones)
+                        if (sesiones.length) {
+                            resolve(sesiones[0]);
+                        } else {
+                            resolve();
+                        }
+                    }).catch(reject);
+            });
+        },
+        saveSesion: function(usuario) {
+            return new Promise(function(resolve, reject) {
+                console.log('saveSesion.usuario', usuario)
+                this.getSesion(usuario)
+                    .then(function(sesion) {
+                        console.log('saveSesion.sesion', sesion)
+                        if (sesion) {
+                            resolve(sesion);
+                        } else {
+                            console.log('saveSesion.createData', usuario)
+                            mongo.createData(tablas.sesiones, {usuario:usuario+''})
+                                .then(resolve);
+                        }
+                    }).catch(reject);
+            }.bind(this));
         }
     };
 };
