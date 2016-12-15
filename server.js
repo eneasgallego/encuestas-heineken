@@ -13,8 +13,8 @@ var imagen = require('./server/imagen.js');
 var comprobarNCS = function(req){
     return new Promise(function(resolve, reject) {
         var ncs = req.cookies.ncs;
-        console.log('ncs',ncs);
         if (ncs) {
+            console.log('ncs',ncs);
             var usuariosDao = require('./server/dao/usuarios.js')(mongo);
             usuariosDao.getSesion({_id:mongo.ObjectID.createFromHexString(ncs+'')})
                 .then(function(sesion){
@@ -26,6 +26,8 @@ var comprobarNCS = function(req){
                         });
                 })
                 .catch(resolve);
+        } else {
+            resolve()
         }
     });
 };

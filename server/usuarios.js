@@ -156,9 +156,13 @@
             _path: 'salir',
             _get: function(req, res) {
                 console.log('salir', req.session.usuario)
-                req.session.usuario = null;
-                req.session.save();
-                res.send();
+                usuariosDao.removeSesion(req.session.usuario._id)
+                    .then(function(){
+                        res.clearCookie('ncs');
+                        req.session.usuario = null;
+                        req.session.save();
+                        res.send();
+                    });
             }
         }];
     };
