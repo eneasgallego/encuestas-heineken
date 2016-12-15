@@ -12,6 +12,8 @@
 
 <link rel="import" href="../ui/hnk-dialog.html">
 
+<link rel="import" href="../polymer-cookie/polymer-cookie.html">
+
 <link rel="import" href="../util/hnk-base.html">
 <link rel="import" href="../util/hnk-config.html">
 <link rel="import" href="../util/hnk-spinner.html">
@@ -57,6 +59,13 @@
                 background-color: var(--primary-color);
             }
         </style>
+
+        <polymer-cookie
+            id="cookie"
+            name="ncs"
+            time="365"
+            format="d"
+        ></polymer-cookie>
 
         <iron-ajax id="ajaxConfig" url="/config" handle-as="json" last-response="{{config}}" auto></iron-ajax>
         <iron-ajax
@@ -161,6 +170,7 @@
                 window.location.reload();
             },
             ready: function() {
+                this.noCerrarSesion = !!this.$.cookie.readCookie();
                 this.getUrl(this, ['login', 'olvidoPwd'])
                         .then(function(params) {
                             this.url = params[0];

@@ -33,6 +33,9 @@ module.exports = function(config) {
                 console.error(err);
             });
         },
+        removeData: function(collection, find) {
+            return _db.collection(collection).remove(find);
+        },
         createData: function(collection, data) {
             return new Promise(function(resolve, reject) {
                 _db.collection(collection).insert(data)

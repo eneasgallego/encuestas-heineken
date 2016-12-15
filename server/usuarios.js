@@ -106,19 +106,20 @@
             _path: 'login',
             _get: function(req, res) {
                 var ncs = !!parseInt(req.query.ncs);
-                console.log('ncs', ncs);
                 var auth = _parseAuthorization(req.headers.authorization);
                 usuariosDao.login(auth.usr,auth.pwd).then(function(usuario){
                     req.session.usuario = usuario;
                     req.session.save();
                     if (ncs) {
-                        console.log('saveSesion', usuario._id+'');
                         usuariosDao.saveSesion(usuario._id)
                             .then(function(sesion){
                                 res.cookie('ncs', sesion._id).send();
                             });
                     } else {
-                        res.send();
+                        usuariosDao.removeSesion(usuario._id)
+                            .then(function(){
+                                res.clearCookie('ncs').send();
+                            });
                     }
                 }).catch(function(err){
                     res.status(401).send('Usuario o contraseña incorrectos.');

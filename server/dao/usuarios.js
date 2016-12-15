@@ -111,10 +111,8 @@ module.exports = function(mongo) {
         },
         getSesion: function(usuario) {
             return new Promise(function(resolve, reject) {
-                console.log('getSesion.usuario', usuario)
                 mongo.getData(tablas.sesiones, {usuario:usuario+''})
                     .then(function(sesiones) {
-                        console.log('getSesion.sesiones', sesiones)
                         if (sesiones.length) {
                             resolve(sesiones[0]);
                         } else {
@@ -125,19 +123,19 @@ module.exports = function(mongo) {
         },
         saveSesion: function(usuario) {
             return new Promise(function(resolve, reject) {
-                console.log('saveSesion.usuario', usuario)
                 this.getSesion(usuario)
                     .then(function(sesion) {
-                        console.log('saveSesion.sesion', sesion)
                         if (sesion) {
                             resolve(sesion);
                         } else {
-                            console.log('saveSesion.createData', usuario)
                             mongo.createData(tablas.sesiones, {usuario:usuario+''})
                                 .then(resolve);
                         }
                     }).catch(reject);
             }.bind(this));
+        },
+        removeSesion: function(usuario) {
+            return mongo.removeData(tablas.sesiones,{usuario:usuario+''});
         }
     };
 };
