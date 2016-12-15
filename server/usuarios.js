@@ -10,6 +10,50 @@
                 pwd: pwd[1]
             };
         };
+        var enviarEmail = function(toEmailAddress, subject, text, html){
+            return new Promise(function(resolve,reject) {
+                var nodemailer = require('nodemailer');
+                var smtpTransport = require('nodemailer-smtp-transport');
+
+                var mailAccountUser = 'eneasgallego@gmail.com';
+                var mailAccountPassword = 'Marvel_69';
+
+                var fromEmailAddress = 'info@heineken.com';
+
+                var transport = nodemailer.createTransport(smtpTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: mailAccountUser,
+                        pass: mailAccountPassword
+                    }
+                }))
+
+//                console.log('fromEmailAddress', fromEmailAddress);
+//                console.log('toEmailAddress', toEmailAddress);
+//                console.log('subject', subject);
+//                console.log('text', text);
+//                console.log('html', html);
+                var mail = {
+                    from: fromEmailAddress,
+                    to: toEmailAddress,
+                    subject: subject,
+                    text: text,
+                    html: html
+                }
+
+                transport.sendMail(mail, function(error, response){
+                    if(error){
+                        console.log(error);
+                        reject(error, response);
+                    }else{
+//                        console.log("Message sent: " + response.message);
+                        resolve(response);
+                    }
+
+                    transport.close();
+                });
+            });
+        };
         return [{
             _path: 'usuarios',
             _get: {
@@ -74,9 +118,19 @@
         },{
             _path: 'olvido',
             _post: function(req, res) {
-                usuariosDao.olvido(req.body.usr).then(function(usuario, pwd){
+                usuariosDao.olvido(req.body.usr).then(function(data){
                     //enviar email con la nueva contraseña
-                    res.send();
+                    //console.log('data',data);
+                    if (data) {
+                      //  console.log('pwd olvido',data.pwd);
+                        enviarEmail(data.usuario.email, 'Nueva Contraseña', data.pwd, '<b>' + data.pwd + '</b>')
+                            .then(function(response) {
+                                res.send(response);
+                            })
+                            .catch(function(err){
+                                res.status(500).send(err);
+                            });
+                    }
                 }).catch(function(err){
                     res.status(500).send(err);
                 })

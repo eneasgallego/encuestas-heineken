@@ -54,7 +54,7 @@ module.exports = function(config) {
         },
         updateData: function(collection, find, data) {
             return new Promise(function(resolve, reject) {
-                _db.collection(collection).update(find, data, false, true)
+                _db.collection(collection).update(find, data)
                     .then(function(obj) {
                         resolve(obj);
                     }).catch(reject);

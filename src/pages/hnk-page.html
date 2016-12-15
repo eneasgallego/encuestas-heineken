@@ -135,17 +135,11 @@
                 e.model.item.accion && e.model.item.accion();
             },
             ready: function() {
-                this.getConfig('menu')
-                        .then(function(menu) {
-                            this.menu = menu;
+                this.getConfig(['menu','titulo'])
+                        .then(function(res) {
+                            this.menu = res[0];
+                            this.titulo = res[1];
                         }.bind(this))
-                        .catch(function() {
-                            console.error('No hay menú')
-                        }.bind(this));
-                this.getConfig('titulo')
-                        .then(function(titulo) {
-                            this.titulo = titulo;
-                        }.bind(this));
             },
             reiniciar: function() {
                 (!this.$.drawer.persistent) && this.$.drawer.close();

@@ -1,5 +1,17 @@
 module.exports = function(mongo) {
     var md5 = require('md5');
+
+    var aleatorio = function(min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    };
+    var createPwd = function() {
+        var length = aleatorio(8,10);
+        var ret = '';
+        for (var i = 0 ; i < length ; i++) {
+            ret += String.fromCharCode(aleatorio(33, 126));
+        }
+        return ret;
+    };
     return {
         getUsuarios: function() {
             return mongo.getData('usuarios');
@@ -73,11 +85,17 @@ module.exports = function(mongo) {
             return new Promise(function(resolve, reject) {
                 this.getUsuario({nick:nick})
                     .then(function(usuario) {
-                        //generar contraseña
-                        //almacenar contraseña
-                        //devolver usuario y contraseña
-                    })
-                    .catch(resolve);
+                        var pwd = createPwd();
+                        this.updatePwd(usuario._id + '', md5(pwd))
+                            .then(function(){
+                                resolve({
+                                    usuario: usuario,
+                                    pwd: pwd
+                                });
+                            })
+                            .catch(reject);
+                    }.bind(this))
+                    .catch(reject);
             }.bind(this));
         },
         updateUsuario: function(_id, usuario) {
