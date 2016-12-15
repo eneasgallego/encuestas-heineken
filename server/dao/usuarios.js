@@ -19,7 +19,7 @@ module.exports = function(mongo) {
     };
     return {
         getUsuarios: function() {
-            return mongo.getData(tabla.usuarios);
+            return mongo.getData(tablas.usuarios);
         },
         getUsuario: function(_id) {
             return new Promise(function(resolve, reject) {

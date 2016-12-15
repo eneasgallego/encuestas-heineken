@@ -40,14 +40,18 @@ module.exports = function(mongo) {
     return {
         _path: 'encuestas',
         _get: function(req, res) {
-            encuestasDao.getEncuestas().then(function(encuestas){
-                _parseEncuesta(encuestas).then(function(encuestas) {
-                    res.send(encuestas);
+            encuestasDao.getEncuestas()
+                .then(function(encuestas){
+                    _parseEncuesta(encuestas)
+                        .then(function(encuestas) {
+                            console.log('encuestas 1',arguments);
+                            res.send(encuestas);
+                        })
+                        .catch(function(err){
+                            console.log('encuestas 2',arguments);
+                            res.status(500).send(err);
+                        });
                 })
-                    .catch(function(err){
-                        res.status(500).send(err);
-                    });
-            })
                 .catch(function(err){
                     res.status(500).send(err);
                 });

@@ -12,22 +12,26 @@ var imagen = require('./server/imagen.js');
 
 var comprobarNCS = function(req){
     return new Promise(function(resolve, reject) {
-        var ncs = req.cookies.ncs;
-        if (ncs) {
-            console.log('ncs',ncs);
-            var usuariosDao = require('./server/dao/usuarios.js')(mongo);
-            usuariosDao.getSesion({_id:mongo.ObjectID.createFromHexString(ncs+'')})
-                .then(function(sesion){
-                    usuariosDao.getUsuario(sesion.usuario)
-                        .then(function(usuario){
-                            req.session.usuario = usuario;
-                            req.session.save();
-                            resolve();
-                        });
-                })
-                .catch(resolve);
-        } else {
+        if (req.session.usuario) {
             resolve()
+        } else {
+            var ncs = req.cookies.ncs;
+            if (ncs) {
+                console.log('ncs',ncs);
+                var usuariosDao = require('./server/dao/usuarios.js')(mongo);
+                usuariosDao.getSesion({_id:mongo.ObjectID.createFromHexString(ncs+'')})
+                    .then(function(sesion){
+                        usuariosDao.getUsuario(sesion.usuario)
+                            .then(function(usuario){
+                                req.session.usuario = usuario;
+                                req.session.save();
+                                resolve();
+                            });
+                    })
+                    .catch(resolve);
+            } else {
+                resolve()
+            }
         }
     });
 };
@@ -71,8 +75,8 @@ mongo.conectar().then(function(){
 
             return ret;
         };
-        var permitir = req.originalUrl != '/' && comprobarUrl([config.distDir, 'login', 'olvido', config.config]);
-        //console.log('permitir ' + req.originalUrl, permitir);
+        var permitir = req.originalUrl != '/' && comprobarUrl([config.distDir, 'login', 'olvido', 'manifest', config.config]);
+        console.log('permitir ' + req.originalUrl, permitir);
         if (permitir) {
             next();
         } else {
@@ -102,6 +106,7 @@ mongo.conectar().then(function(){
 
     // ruteo estatico
     app.use('/', express.static(path.join(__dirname, config.destDir)));
+    app.use('/manifest.json', express.static(path.join(__dirname, 'manifest.json')));
     app.use('/' + config.distDir, express.static(path.join(__dirname, config.destDir + '/' + config.distDir)));
     app.use('/' + config.uploads, express.static(path.join(__dirname, './uploads')));
     app.get('/' + config.config, function(req, res){
