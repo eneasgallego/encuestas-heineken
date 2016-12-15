@@ -10,6 +10,26 @@ var mongo = require('./server/mongo')(config.db);
 var api = require('./server/api.js')(mongo);
 var imagen = require('./server/imagen.js');
 
+var comprobarNCS = function(req){
+    return new Promise(function(resolve, reject) {
+        var ncs = req.cookies.ncs;
+        console.log('ncs',ncs);
+        if (ncs) {
+            var usuariosDao = require('./server/dao/usuarios.js')(mongo);
+            usuariosDao.getSesion({_id:mongo.ObjectID.createFromHexString(ncs+'')})
+                .then(function(sesion){
+                    usuariosDao.getUsuario(sesion.usuario)
+                        .then(function(usuario){
+                            req.session.usuario = usuario;
+                            req.session.save();
+                            resolve();
+                        });
+                })
+                .catch(resolve);
+        }
+    });
+};
+
 mongo.conectar().then(function(){
     //mongo.getData('usuarios').then(console.log);
 
@@ -17,6 +37,8 @@ mongo.conectar().then(function(){
     var app = express();
 
     //app.use(cookieParser());
+    console.log('express.cookieParser', cookieParser);
+    app.use(cookieParser());
     app.use(session({
         secret: 'keyboard cat',
         resave: false,
@@ -52,18 +74,20 @@ mongo.conectar().then(function(){
         if (permitir) {
             next();
         } else {
-            if (req.session.usuario) {
-                //console.log('session.usuario', req.session.usuario)
-                next();
-            } else {
-                if (req.xhr) {
-                    res.status(403).send('Necesita estar logado.');
+            comprobarNCS(req).then(function(){
+                if (req.session.usuario) {
+                    //console.log('session.usuario', req.session.usuario)
+                    next();
                 } else {
-                    var login = __dirname + config.destDir + '/' + config.login;
-                    res.sendFile(login);
-                    //next();
+                    if (req.xhr) {
+                        res.status(403).send('Necesita estar logado.');
+                    } else {
+                        var login = __dirname + config.destDir + '/' + config.login;
+                        res.sendFile(login);
+                        //next();
+                    }
                 }
-            }
+            });
         }
     });
     app.disable('x-powered-by');

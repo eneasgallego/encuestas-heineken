@@ -109,9 +109,9 @@ module.exports = function(mongo) {
         updatePwd: function(_id, pwd) {
             return mongo.updateData(tablas.pwd, {usuario:_id}, {usuario:_id, pwd:pwd});
         },
-        getSesion: function(usuario) {
+        getSesion: function(find) {
             return new Promise(function(resolve, reject) {
-                mongo.getData(tablas.sesiones, {usuario:usuario+''})
+                mongo.getData(tablas.sesiones, find)
                     .then(function(sesiones) {
                         if (sesiones.length) {
                             resolve(sesiones[0]);
@@ -123,7 +123,7 @@ module.exports = function(mongo) {
         },
         saveSesion: function(usuario) {
             return new Promise(function(resolve, reject) {
-                this.getSesion(usuario)
+                this.getSesion({usuario:usuario+''})
                     .then(function(sesion) {
                         if (sesion) {
                             resolve(sesion);
