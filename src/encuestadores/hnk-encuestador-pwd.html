@@ -3,6 +3,8 @@
 <link rel="import" href="../iron-form/iron-form.html">
 <link rel="import" href="../paper-input/paper-input.html">
 
+<link rel="import" href="hnk-encuestador-foto.html">
+
 <link rel="import" href="../util/hnk-base.html">
 <link rel="import" href="../util/hnk-spinner.html">
 <link rel="import" href="../util/form-styles.html">
@@ -16,6 +18,7 @@
         </style>
 
         <form is="iron-form" id="form" class="form" on-iron-form-submit="_onSubmit">
+            <hnk-encuestador-foto foto="[[encuestador.foto]]"></hnk-encuestador-foto>
             <fieldset>
                 <paper-input
                     type="password"
@@ -52,6 +55,7 @@
             is: 'hnk-encuestador-pwd',
             behaviors: [hnk.BaseBehavior, hnk.SpinnerBehavior],
             properties: {
+                encuestador: Object,
                 antigua: {
                     type: String,
                     notify: true

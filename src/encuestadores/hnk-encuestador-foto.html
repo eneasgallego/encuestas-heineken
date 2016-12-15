@@ -1,0 +1,46 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../ui/hnk-imagen.html">
+
+<link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/form-styles.html">
+
+<link rel="import" href="../iron-icons/social-icons.html">
+
+<dom-module id="hnk-encuestador-foto">
+    <template>
+        <style include="form-styles">
+            :host {
+                display: block;
+            }
+            hnk-imagen {
+                --hnk-image-size: 192px;
+                text-align: center;
+                background-color: var(--google-grey-300);
+                --hnk-image-color: var(--google-grey-500);
+                padding: 0;
+            }
+        </style>
+
+        <hnk-imagen
+            imagen="{{foto}}"
+            imagen-defecto="social:person"
+            editable="[[editable]]"
+            mostrar-boton="[[editable]]"
+        ></hnk-imagen>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'hnk-encuestador-foto',
+            behaviors: [hnk.BaseBehavior],
+            properties: {
+                foto: {
+                    type: String,
+                    notify: true
+                },
+                editable: Boolean
+            }
+        });
+    </script>
+</dom-module>
