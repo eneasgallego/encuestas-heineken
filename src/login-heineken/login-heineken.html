@@ -21,6 +21,7 @@
         <style include="form-styles">
             :host {
                 display: block;
+                height: 100%;
                 --iron-icon-width: 128px;
                 --iron-icon-height: 128px;
                 --iron-icon-fill-color: #f00008;
@@ -31,20 +32,28 @@
             .imagen {
                 margin: 0 auto;
             }
-            .titulo {
-                color: var(--titulo-color);
-                padding-top: 10%;
-                padding-left: 10%;
-                @apply(--mixin-texto);
+            form {
+                height: calc(100% - (56px * 3));
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
             }
             paper-button{
                 color: var(--disabled-text-color);
                 font-size: 0.5rem;
                 display: block;
                 text-align: right;
+                margin-top: 12px;
+            }
+            form>div {
+                text-align: center;
             }
             paper-button.primary{
                 font-size: 1rem;
+                display: inline-flex;
+                text-align: center;
+                color: var(--primary-text-color);
+                background-color: var(--primary-color);
             }
         </style>
 
@@ -77,7 +86,6 @@
             class="form"
             on-iron-form-presubmit="_onSubmit"
         >
-            <div class="titulo">REGÍSTRATE</div>
             <fieldset>
                 <paper-input
                     name="usr"
@@ -92,7 +100,9 @@
                 ></paper-input>
                 <paper-button on-tap="_onTapOlvido">¿Has olvidado la contraseña?</paper-button>
             </fieldset>
-            <paper-button class="primary" on-tap="_onTapLogin">Login</paper-button>
+            <div>
+                <paper-button class="primary" raised on-tap="_onTapLogin">Login</paper-button>
+            </div>
         </form>
         <hnk-dialog
             id="pwdDialog"
