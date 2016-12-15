@@ -31,6 +31,10 @@
     "icono": "social:person",
     "href": "#/encuestador/mi_perfil/datos"
   },{
+    "texto": "Cambiar Contraseña",
+    "ocultar": true,
+    "href": "#/encuestador/mi_perfil/pwd"
+  },{
     "texto": "Estadísticas",
     "supervisor": true,
     "icono": "editor:insert-chart",

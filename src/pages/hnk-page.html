@@ -124,8 +124,8 @@
             },
             _getMostrar: function(usuario) {
                 return function(item) {
-                    return (!item.supervisor) ||
-                            (item.supervisor && usuario.supervisor);
+                    return (!item.ocultar) && ((!item.supervisor) ||
+                            (item.supervisor && usuario.supervisor));
                 }.bind(this);
             },
             _getTitulo: function(titulo,menuSeleccionado) {
