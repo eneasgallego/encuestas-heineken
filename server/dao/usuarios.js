@@ -73,9 +73,9 @@ module.exports = function(mongo) {
                     });
             }.bind(this));
         },
-        login: function(nick, p) {
+        login: function(email, p) {
             return new Promise(function(resolve, reject) {
-                this.getUsuario({nick:nick})
+                this.getUsuario({email:email})
                     .then(function(usuario) {
                         this.getPwd(usuario._id+'')
                             .then(function(pwd) {
@@ -86,9 +86,9 @@ module.exports = function(mongo) {
                     .catch(reject);
             }.bind(this));
         },
-        olvido: function(nick) {
+        olvido: function(email) {
             return new Promise(function(resolve, reject) {
-                this.getUsuario({nick:nick})
+                this.getUsuario({email:email})
                     .then(function(usuario) {
                         var pwd = createPwd();
                         this.updatePwd(usuario._id + '', md5(pwd))
