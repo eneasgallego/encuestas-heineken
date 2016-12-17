@@ -41,7 +41,9 @@
                     error-message="El formato del E-Mail es incorrecto."
                     required
                 ></gold-email-input>
-                <paper-input readOnly value="Cambiar contraseña" on-tap="_onTapPwd"></paper-input>
+                <template is="dom-if" if="[[mostrarPwd]]">
+                    <paper-input readOnly value="Cambiar contraseña" on-tap="_onTapPwd"></paper-input>
+                </template>
                 <template is="dom-if" if="[[encuestador.supervisor]]">
                     <paper-input readOnly value="Supervisor"></paper-input>
                 </template>
@@ -54,6 +56,7 @@
             is: 'hnk-encuestador',
             behaviors: [hnk.BaseBehavior, hnk.SpinnerBehavior],
             properties: {
+                mostrarPwd: Boolean,
                 encuestador: {
                     type: Object,
                     notify: true

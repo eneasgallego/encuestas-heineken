@@ -67,19 +67,22 @@
                 id="datos"
                 name="datos"
                 encuestador="{{encuestador}}"
+                mostrar-pwd="[[esMiPerfil]]"
                 cargando="{{_cargando.encuestador}}"
                 on-enviar="_onEnviar"
                 on-pwd="_onTapPwd"
             ></hnk-encuestador>
-            <hnk-encuestador-pwd
-                id="pwd"
-                name="pwd"
-                encuestador="[[encuestador]]"
-                antigua="{{pwd.a}}"
-                nueva="{{pwd.n}}"
-                repetir="{{pwd.r}}"
-                on-enviar="_onEnviarPwd"
-            ></hnk-encuestador-pwd>
+            <template is="dom-if" if="[[esMiPerfil]]">
+                <hnk-encuestador-pwd
+                    id="pwd"
+                    name="pwd"
+                    encuestador="[[encuestador]]"
+                    antigua="{{pwd.a}}"
+                    nueva="{{pwd.n}}"
+                    repetir="{{pwd.r}}"
+                    on-enviar="_onEnviarPwd"
+                ></hnk-encuestador-pwd>
+            </template>
         </iron-pages>
     </template>
 
@@ -98,6 +101,10 @@
                         type: Array,
                         value: function(){return[]},
                         notify: true
+                    },
+                    esMiPerfil: {
+                        type: Boolean,
+                        computed: "_igual(routeData._id,'mi_perfil')"
                     }
                 },
                 observers: ['_observerEncuestador(encuestador)','_observerRouteData(route.prefix, routeData.*,usuario)','_observerVista(route.prefix, subrouteData.vista)'],
@@ -105,7 +112,7 @@
                     this.set('_cargando.get', false);
                 },
                 _observerRouteData: function(page, routeData, usuario) {
-                    var _id = routeData.base._id == 'mi_perfil' ? usuario._id : routeData.base._id;
+                    var _id = this.esMiPerfil ? usuario._id : routeData.base._id;
 
                     if (page == '/encuestador') {
                         if (_id) {
