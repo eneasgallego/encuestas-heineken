@@ -1,0 +1,117 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<link rel="import" href="../ui/hnk-lista.html">
+
+<link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/hnk-config.html">
+<link rel="import" href="../util/hnk-spinner.html">
+<link rel="import" href="../util/shared-styles.html">
+
+<dom-module id="hnk-lista-page">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+        </style>
+
+        <iron-ajax
+            id="ajax"
+            method="get"
+            url="[[url]]"
+            content-type="application/json"
+            last-response="{{datos}}"
+            auto
+        ></iron-ajax>
+
+        <hnk-lista
+            class="panel"
+            items="[[datosLista]]"
+            item-seleccionado="{{item}}"
+            cargando="{{_cargando.lista}}"
+        ></hnk-lista>
+
+    </template>
+
+    <script>
+        (function(){
+            Polymer({
+                is: 'hnk-lista-page',
+                behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior, hnk.SpinnerBehavior],
+                properties: {
+                    url: String,
+                    tagUrl: {
+                        type: String,
+                        observer: '_observerTag'
+                    },
+                    urlItem: String,
+                    datos: Array,
+                    datosLista: {
+                        type: Array,
+                        computed: '_getDatosLista(datos.splices)'
+                    },
+                    item: {
+                        type: Object,
+                        observer: '_observerItem',
+                        notify: true
+                    },
+                    tituloField: Object,
+                    imagenField: Object,
+                    textoField: Object
+                },
+                _observerTag: function(tag, oldTag) {
+                    if (tag && tag != oldTag) {
+                        this.set('_cargando.get', true);
+                        this.getUrl(this, tag)
+                                .then(function(url) {
+                                    this.set('_cargando.get', false);
+                                    this.url = url;
+                                }.bind(this));
+                    }
+                },
+                _getDatosLista: function(datos, tituloField, imagenField, textoField) {
+                    var ret = [];
+
+                    if (this.datos) {
+                        var _parse = function(item, field) {
+                            var ret = item;
+
+                            if (typeof(field) === 'function') {
+                                ret = field(item);
+                            } else {
+                                var fields = field.split('.');
+                                for (var i = 0 ; i < fields.length ; i++) {
+                                    ret = ret[fields[i]];
+                                }
+                            }
+
+                            return ret;
+                        };
+                        for (var i = 0 ; i < this.datos.length ; i++) {
+                            ret.push({
+                                titulo: _parse(this.datos[i], this.tituloField),
+                                imagen: _parse(this.datos[i], this.imagenField),
+                                texto: _parse(this.datos[i], this.textoField),
+                                raw: this.datos[i]
+                            });
+                        }
+                    }
+
+                    return ret;
+                },
+                _observerItem: function(item) {
+                    if (item) {
+                        this.item = null;
+                        window.location.hash = this.urlItem.replace('####', item._id);
+                    }
+                },
+                reiniciar: function() {
+                    this.cargando = true;
+                    this.$.ajax.generateRequest();
+                }
+            });
+        })();
+    </script>
+</dom-module>

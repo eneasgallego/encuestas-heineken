@@ -118,7 +118,19 @@
             _observerRoute: function(route,menu) {
                 var path = '#' + route.path;
                 var item = this.menu.find(function(a) {
-                    return a.href == path;
+                    var href = a.href;
+                    if (!!~href.indexOf('####')) {
+                        var arrA = href.split('/');
+                        var arrB = path.split('/');
+
+                        if (arrA.length == arrB.length) {
+                            for (var i = 0 ; i < arrA.length ; i++) {
+                                arrA[i] = arrA[i] == '####' ? arrB[i] : arrA[i]
+                            }
+                            href = arrA.join('/');
+                        }
+                    }
+                    return href == path;
                 });
                 this.menuSeleccionado = item || null;
             },

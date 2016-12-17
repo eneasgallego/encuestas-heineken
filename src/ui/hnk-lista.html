@@ -6,11 +6,11 @@
 <link rel="import" href="hnk-imagen.html">
 
 <link rel="import" href="../util/hnk-base.html">
-<link rel="import" href="../util/shared-styles.html">
+<link rel="import" href="../util/form-styles.html">
 
 <dom-module id="hnk-lista">
     <template>
-        <style include="shared-styles">
+        <style include="form-styles">
             :host {
                 display: block;
 
@@ -19,6 +19,9 @@
             }
             paper-item {
                 display: flex;
+            }
+            .imagen {
+                min-width: var(--size-icono);
             }
             .texto-cont {
                 display: flex;

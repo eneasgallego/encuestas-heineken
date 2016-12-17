@@ -45,6 +45,10 @@
     "icono": "social:people",
     "href": "#/encuestadores"
   },{
+    "texto": "Encuestador",
+    "ocultar": true,
+    "href": "#/encuestador/####/datos"
+  },{
     "texto": "Encuestas",
     "supervisor": true,
     "icono": "vaadin-icons:file-o",

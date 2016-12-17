@@ -7,7 +7,7 @@
 <link rel="import" href="../util/hnk-spinner.html">
 <link rel="import" href="../util/shared-styles.html">
 
-<dom-module id="hnk-encuestas-page">
+<dom-module id="hnk-encuestadores-page">
     <template>
         <style include="shared-styles">
             :host {
@@ -17,29 +17,22 @@
 
         <hnk-lista-page
             id="lista"
-            titulo-field="datos.local"
-            imagen-field="datos.fotoLocal"
+            titulo-field="nombre"
+            imagen-field="foto"
             texto-field="[[_getFunctionTextoField()]]"
-            url-item="#/encuesta/####/datos"
-            tag-url="encuestas"
+            url-item="#/encuestador/####/datos"
+            tag-url="usuarios"
         ></hnk-lista-page>
     </template>
 
     <script>
         (function(){
             Polymer({
-                is: 'hnk-encuestas-page',
+                is: 'hnk-encuestadores-page',
                 behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior, hnk.SpinnerBehavior],
                 _getFunctionTextoField: function() {
                     return function(item) {
-                        var _getFecha = function(encuesta) {
-                            var fechaDatos = new Date(encuesta.datos.fechaDatos);
-                            var fechaTest = new Date(encuesta.datos.fechaTest);
-                            var fecha = fechaDatos > fechaTest ? fechaDatos : fechaTest;
-
-                            return fecha.getDate() + '/' + (fecha.getMonth() + 1) + '/' + fecha.getFullYear() + ' ' + fecha.getHours() + ':' + fecha.getMinutes();
-                        };
-                        return item.usuario.nombre + ' (' + _getFecha(item) + ')';
+                        return item.supervisor ? 'Supervisor' : '';
                     };
                 },
                 reiniciar: function() {
