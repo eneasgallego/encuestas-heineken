@@ -1,0 +1,78 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<link rel="import" href="../encuestadores/hnk-encuestador.html">
+
+<link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/hnk-config.html">
+<link rel="import" href="../util/hnk-spinner.html">
+<link rel="import" href="../util/shared-styles.html">
+
+<link rel="import" href="../data-behaviors/hnk-data-encuestador-behavior.html">
+
+<dom-module id="hnk-nuevoencuestador-page">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+        </style>
+
+        <hnk-encuestador
+            id="encuestador"
+            name="datos"
+            encuestador="{{encuestador}}"
+            mostrar-chk
+            cargando="{{_cargando.encuestador}}"
+            menu-acciones="{{menuAcciones}}"
+            on-enviar="_onEnviar"
+        ></hnk-encuestador>
+
+        <iron-ajax
+            id="ajaxEncuesta"
+            method="post"
+            url="[[urlEncuestador]]"
+            content-type="application/json"
+            body="[[encuestador]]"
+            loading="{{_cargando.encuestador}}"
+            on-response="_onResponseEncuestador"
+        ></iron-ajax>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'hnk-nuevoencuestador-page',
+            behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior, hnk.data.DataEncuestadorBehavior, hnk.SpinnerBehavior],
+            properties: {
+                menuAcciones: {
+                    type: Array,
+                    value: function(){return[]},
+                    notify: true
+                },
+                usuario: Object,
+                encuestador: Object,
+                url: String
+            },
+            ready: function() {
+                this.set('_cargando.encuestador', true);
+                this.encuestador = this._crearEncuestador();
+                this.getUrl(this, 'encuestador')
+                        .then(function(url) {
+                            this.set('_cargando.encuestador', false);
+                            this.url = url;
+                        }.bind(this));
+            },
+            _onEnviar: function() {
+                this.$.ajaxEncuestador.generateRequest();
+            },
+            _onResponseEncuestador: function(e) {
+                window.location.hash = '#/encuestador/' + e.detail.response._id + '/datos';
+            },
+            reiniciar: function() {
+                this.$.encuestador.reiniciar();
+            }
+        });
+    </script>
+</dom-module>

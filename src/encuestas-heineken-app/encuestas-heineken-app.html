@@ -19,6 +19,7 @@
 <link rel="import" href="../pages/hnk-encuestas-page.html">
 <link rel="import" href="../pages/hnk-encuestador-page.html">
 <link rel="import" href="../pages/hnk-encuestadores-page.html">
+<link rel="import" href="../pages/hnk-nuevoencuestador-page.html">
 <link rel="import" href="../pages/hnk-salir.html">
 
 <dom-module id="encuestas-heineken-app">
@@ -77,10 +78,19 @@
                     cargando="{{mostrarSpinner}}"
                     menu-acciones="{{menuAcciones.encuestador}}"
                 ></hnk-encuestador-page>
-                <hnk-encuestadores-page
-                    name="encuestadores"
-                    cargando="{{mostrarSpinner}}"
-                ></hnk-encuestadores-page>
+                <template is="dom-if" if="[[usuario.supervisor]]">
+                    <hnk-encuestadores-page
+                        name="encuestadores"
+                        menu-acciones="{{menuAcciones.encuestadores}}"
+                        cargando="{{mostrarSpinner}}"
+                    ></hnk-encuestadores-page>
+                    <hnk-nuevoencuestador-page
+                        name="nuevo_encuestador"
+                        usuario="[[usuario]]"
+                        menu-acciones="{{menuAcciones.nuevo_encuestador}}"
+                        cargando="{{mostrarSpinner}}"
+                    ></hnk-nuevoencuestador-page>
+                </template>
                 <hnk-salir
                     auto="[[_igual(routeData.view,'salir')]]"
                 ></hnk-salir>
@@ -100,7 +110,9 @@
                     type: Object,
                     value: function(){
                         return {
-                            encuestador: []
+                            encuestadores: [],
+                            encuestador: [],
+                            nuevo_encuestador: []
                         }
                     }
                 }

@@ -30,12 +30,32 @@
             Polymer({
                 is: 'hnk-encuestadores-page',
                 behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior, hnk.SpinnerBehavior],
+                properties: {
+                    menuAcciones: {
+                        type: Array,
+                        value: function(){return[]},
+                        notify: true
+                    }
+                },
                 _getFunctionTextoField: function() {
                     return function(item) {
                         return item.supervisor ? 'Supervisor' : '';
                     };
                 },
+                _setMenu: function() {
+                    this.menuAcciones = [{
+                        icono: 'add',
+                        accion: this._nuevo.bind(this)
+                    }];
+                },
+                _nuevo: function() {
+                    window.location.href = '#/nuevo_encuestador';
+                },
+                ready: function() {
+                    this._setMenu();
+                },
                 reiniciar: function() {
+                    this._setMenu();
                     this.$.lista.reiniciar();
                 }
             });

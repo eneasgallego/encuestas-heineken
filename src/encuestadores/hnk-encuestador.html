@@ -77,10 +77,14 @@
             },
             observers: ['_observerBloquear(encuestador.*,bloquear)'],
             _observerBloquear: function(encuestador, bloquear) {
+                this._setMenuAcciones(encuestador.base, bloquear);
+            },
+            _setMenuAcciones: function(encuestador, bloquear) {
+                console.log('_setMenuAcciones')
                 var menu = [];
 
                 if (bloquear) {
-                    if (encuestador.bloqueado) {
+                    if (encuestador && encuestador.bloqueado) {
                         menu.push({
                             icono: 'check',
                             accion: this._desbloquear.bind(this)
@@ -120,6 +124,10 @@
                 if (this.$.form.validate()) {
                     this.fire('enviar');
                 }
+            },
+            reiniciar: function() {
+                this._setMenuAcciones(this.encuestador, this.bloquear);
+                this.$.form.reset();
             }
         });
     </script>
