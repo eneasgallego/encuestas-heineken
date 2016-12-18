@@ -2,6 +2,7 @@
 
 <link rel="import" href="../iron-form/iron-form.html">
 <link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../gold-email-input/gold-email-input.html">
 
 <link rel="import" href="hnk-encuestador-foto.html">
@@ -44,8 +45,13 @@
                 <template is="dom-if" if="[[mostrarPwd]]">
                     <paper-input readOnly value="Cambiar contraseña" on-tap="_onTapPwd"></paper-input>
                 </template>
-                <template is="dom-if" if="[[encuestador.supervisor]]">
-                    <paper-input readOnly value="Supervisor"></paper-input>
+                <template is="dom-if" if="[[mostrarChk]]">
+                    <paper-checkbox checked="{{encuestador.supervisor}}">Supervisor</paper-checkbox>
+                </template>
+                <template is="dom-if" if="[[!mostrarChk]]">
+                    <template is="dom-if" if="[[encuestador.supervisor]]">
+                        <paper-input readOnly value="Supervisor"></paper-input>
+                    </template>
                 </template>
             </fieldset>
         </form>
@@ -57,6 +63,7 @@
             behaviors: [hnk.BaseBehavior, hnk.SpinnerBehavior],
             properties: {
                 mostrarPwd: Boolean,
+                mostrarChk: Boolean,
                 encuestador: {
                     type: Object,
                     notify: true
