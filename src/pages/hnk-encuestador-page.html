@@ -10,6 +10,8 @@
 
 <link rel="import" href="hnk-page.html">
 
+<link rel="import" href="../ui/hnk-dialog.html">
+
 <link rel="import" href="../util/hnk-base.html">
 <link rel="import" href="../util/hnk-config.html">
 <link rel="import" href="../util/hnk-spinner.html">
@@ -61,6 +63,14 @@
             loading="{{_cargando.pwd}}"
             on-response="_onResponsePwd"
         ></iron-ajax>
+        <iron-ajax
+            id="ajaxBloquear"
+            method="delete"
+            url="[[urlEncuestador]]"
+            content-type="application/json"
+            loading="{{_cargando.bloquear}}"
+            on-response="_onResponseBloquear"
+        ></iron-ajax>
 
         <iron-pages selected="[[subrouteData.vista]]" attr-for-selected="name">
             <hnk-encuestador
@@ -69,8 +79,11 @@
                 encuestador="{{encuestador}}"
                 mostrar-pwd="[[esMiPerfil]]"
                 mostrar-chk="[[!esMiPerfil]]"
+                bloquear="[[!esMiPerfil]]"
                 cargando="{{_cargando.encuestador}}"
                 on-enviar="_onEnviar"
+                on-bloquear="_onBloquear"
+                on-desbloquear="_onDesbloquear"
                 on-pwd="_onTapPwd"
             ></hnk-encuestador>
             <template is="dom-if" if="[[esMiPerfil]]">
@@ -85,6 +98,14 @@
                 ></hnk-encuestador-pwd>
             </template>
         </iron-pages>
+        <hnk-dialog
+                id="bloquearDialog"
+                tipo="aviso"
+                modal
+                on-aceptar="_onAceptarBloquear"
+                >
+            El usuario ha sido bloqueado con éxito.
+        </hnk-dialog>
     </template>
 
     <script>
@@ -141,6 +162,13 @@
                         authorization: 'Basic ' + btoa([encuestador._id,pwd.base.a,pwd.base.n,pwd.base.r].join(' '))
                     };
                 },
+                _onBloquear: function() {
+                    this.$.ajaxBloquear.generateRequest();
+                },
+                _onDesbloquear: function() {
+                    this.encuestador.bloqueado = false;
+                    this.$.ajaxEncuestador.generateRequest();
+                },
                 _onEnviar: function() {
                     this.$.ajaxEncuestador.generateRequest();
                 },
@@ -150,6 +178,10 @@
                 _onResponseEncuestador: function(e) {
                     this.encuestador = e.detail.response;
                     window.location.href = '';
+                },
+                _onResponseBloquear: function(e) {
+                    this.encuestador = e.detail.response;
+                    this.$.bloquearDialog.abrir();
                 },
                 _onResponsePwd: function(e) {
                     var arr = window.location.hash.split('/');

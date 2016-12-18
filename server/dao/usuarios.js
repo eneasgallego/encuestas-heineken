@@ -77,11 +77,15 @@ module.exports = function(mongo) {
             return new Promise(function(resolve, reject) {
                 this.getUsuario({email:email})
                     .then(function(usuario) {
-                        this.getPwd(usuario._id+'')
-                            .then(function(pwd) {
-                                pwd == md5(p) ? resolve(usuario) : reject();
-                            }.bind(this))
-                            .catch(reject);
+                        if (!usuario.bloqueado) {
+                            this.getPwd(usuario._id+'')
+                                .then(function(pwd) {
+                                    pwd == md5(p) ? resolve(usuario) : reject();
+                                }.bind(this))
+                                .catch(reject);
+                        } else {
+                            reject();
+                        }
                     }.bind(this))
                     .catch(reject);
             }.bind(this));

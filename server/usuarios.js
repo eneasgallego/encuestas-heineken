@@ -77,6 +77,19 @@
                             res.status(500).send(err);
                         });
                 },
+                _delete: function(req, res) {
+                    usuariosDao.getUsuario(req.params._id).then(function(usuario){
+                        usuario.bloqueado = true;
+                        usuariosDao.updateUsuario(req.params._id, usuario).then(function(usuario){
+                            res.send(usuario);
+                        }).catch(function(obj){
+                            res.status(500).send(obj);
+                        });
+                    })
+                    .catch(function(err){
+                        res.status(500).send(err);
+                    });
+                },
                 _put: function(req, res) {
                     usuariosDao.updateUsuario(req.params._id, req.body).then(function(usuario){
                         res.send(usuario);

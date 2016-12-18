@@ -64,6 +64,7 @@
             properties: {
                 mostrarPwd: Boolean,
                 mostrarChk: Boolean,
+                bloquear: Boolean,
                 encuestador: {
                     type: Object,
                     notify: true
@@ -74,11 +75,30 @@
                     notify: true
                 }
             },
-            ready: function() {
-                this.menuAcciones = [{
+            observers: ['_observerBloquear(encuestador.*,bloquear)'],
+            _observerBloquear: function(encuestador, bloquear) {
+                var menu = [];
+
+                if (bloquear) {
+                    if (encuestador.bloqueado) {
+                        menu.push({
+                            icono: 'check',
+                            accion: this._desbloquear.bind(this)
+                        });
+                    } else {
+                        menu.push({
+                            icono: 'block',
+                            accion: this._bloquear.bind(this)
+                        });
+                    }
+                }
+
+                menu.push({
                     icono: 'save',
                     accion: this.enviar.bind(this)
-                }]
+                });
+
+                this.menuAcciones = menu;
             },
             _getTextoSupervisor: function(supervisor) {
                 return supervisor ? 'Supervisor' : '';
@@ -89,6 +109,12 @@
             },
             _onTapPwd: function() {
                 this.fire('pwd');
+            },
+            _bloquear: function() {
+                this.fire('bloquear');
+            },
+            _desbloquear: function() {
+                this.fire('desbloquear');
             },
             enviar: function() {
                 if (this.$.form.validate()) {
