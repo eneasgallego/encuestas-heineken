@@ -21,9 +21,12 @@
             paper-button {
                 color: var(--titulo-color);
             }
+            .error h2 {
+                color: red;
+            }
         </style>
 
-        <paper-dialog id="dialog" modal="[[modal]]">
+        <paper-dialog id="dialog" modal="[[modal]]" class$="[[tipo]]">
             <h2>[[_getTitulo(tipo)]]</h2>
             <p><content></content></p>
 
@@ -43,7 +46,6 @@
 
     <script>
         Polymer({
-
             is: 'hnk-dialog',
             behaviors: [hnk.BaseBehavior],
             properties: {
@@ -53,6 +55,8 @@
             _getTitulo: function(tipo) {
                 if (tipo == 'aviso') {
                     return 'Aviso';
+                } else if (tipo == 'error') {
+                    return 'Error';
                 }
             },
             _onTap: function(e) {

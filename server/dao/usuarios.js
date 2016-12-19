@@ -33,6 +33,11 @@ module.exports = function(mongo) {
                     }).catch(reject);
             });
         },
+        createUsuario: function(usuario) {
+            //CREAR USUARIO
+            //CREAR PWD
+            return mongo.createData(tablas.usuarios, usuario);
+        },
         getPwd: function(_id) {
             return new Promise(function(resolve, reject) {
                 mongo.getData(tablas.pwd, {usuario:_id+''})

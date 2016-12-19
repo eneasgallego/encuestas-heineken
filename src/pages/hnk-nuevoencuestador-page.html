@@ -1,9 +1,8 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<link rel="import" href="../iron-ajax/iron-ajax.html">
-
 <link rel="import" href="../encuestadores/hnk-encuestador.html">
 
+<link rel="import" href="../util/hnk-ajax.html">
 <link rel="import" href="../util/hnk-base.html">
 <link rel="import" href="../util/hnk-config.html">
 <link rel="import" href="../util/hnk-spinner.html">
@@ -29,15 +28,14 @@
             on-enviar="_onEnviar"
         ></hnk-encuestador>
 
-        <iron-ajax
-            id="ajaxEncuesta"
-            method="post"
-            url="[[urlEncuestador]]"
-            content-type="application/json"
+        <hnk-ajax
+            id="ajaxEncuestador"
+            metodo="post"
+            tag="encuestador"
             body="[[encuestador]]"
-            loading="{{_cargando.encuestador}}"
-            on-response="_onResponseEncuestador"
-        ></iron-ajax>
+            cargando="{{_cargando.encuestador}}"
+            on-cargado="_onCargadoEncuestador"
+        ></hnk-ajax>
 
     </template>
 
@@ -51,24 +49,16 @@
                     value: function(){return[]},
                     notify: true
                 },
-                usuario: Object,
-                encuestador: Object,
-                url: String
+                encuestador: Object
             },
             ready: function() {
-                this.set('_cargando.encuestador', true);
                 this.encuestador = this._crearEncuestador();
-                this.getUrl(this, 'encuestador')
-                        .then(function(url) {
-                            this.set('_cargando.encuestador', false);
-                            this.url = url;
-                        }.bind(this));
             },
             _onEnviar: function() {
-                this.$.ajaxEncuestador.generateRequest();
+                this.$.ajaxEncuestador.enviar();
             },
-            _onResponseEncuestador: function(e) {
-                window.location.hash = '#/encuestador/' + e.detail.response._id + '/datos';
+            _onCargadoEncuestador: function(e, encuestador) {
+                window.location.hash = '#/encuestador/' + encuestador._id + '/datos';
             },
             reiniciar: function() {
                 this.$.encuestador.reiniciar();

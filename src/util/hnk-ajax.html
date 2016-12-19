@@ -1,0 +1,77 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<link rel="import" href="../ui/hnk-dialog.html">
+
+<link rel="import" href="../util/hnk-base.html">
+<link rel="import" href="../util/hnk-config.html">
+<link rel="import" href="../util/hnk-spinner.html">
+<link rel="import" href="../util/shared-styles.html">
+
+<dom-module id="hnk-ajax">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+        </style>
+
+        <iron-ajax
+            id="ajax"
+            method="[[metodo]]"
+            url="[[url]]"
+            content-type="[[contentType]]"
+            body="[[body]]"
+            loading="{{cargando}}"
+            on-response="_onResponse"
+            on-error="_onError"
+        ></iron-ajax>
+        <hnk-dialog
+            id="errorDialog"
+            tipo="error"
+        >[[error]]</hnk-dialog>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'hnk-ajax',
+            behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior, hnk.SpinnerBehavior],
+            properties: {
+                metodo: String,
+                error: String,
+                tag: String,
+                body: Object,
+                cargando: {
+                    type: Boolean,
+                    notify: true
+                },
+                contentType: {
+                    type: String,
+                    value: 'application/json'
+                }
+            },
+            observers: ['_observerUrl(tag)'],
+            _observerUrl: function(tag) {
+                this.set('cargando', true);
+                this.getUrl(this, this.tag)
+                        .then(function(url) {
+                            this.set('cargando', false);
+                            this.url = url;
+                        }.bind(this));
+            },
+            _onResponse: function(e) {
+                e.stopPropagation();
+                this.fire('cargado', e.detail.response);
+            },
+            _onError: function(e) {
+                this.error = e.detail.error.message;
+                this.$.errorDialog.abrir();
+            },
+            enviar: function() {
+                this.$.ajax.generateRequest();
+            }
+        });
+    </script>
+</dom-module>

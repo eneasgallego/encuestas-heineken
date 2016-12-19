@@ -67,6 +67,15 @@
                     });
                 }
             },
+            _post: function(req, res) {
+                usuariosDao.createUsuario(req.body).then(function(usuario){
+                    //ENVIAR PWD POR EMAIL
+                    res.send(usuario);
+                })
+                .catch(function(err){
+                    res.status(500).send(err);
+                });
+            },
             usuario: {
                 _path: ':_id',
                 _get: function(req, res) {
