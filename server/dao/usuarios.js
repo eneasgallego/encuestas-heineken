@@ -34,9 +34,21 @@ module.exports = function(mongo) {
             });
         },
         createUsuario: function(usuario) {
-            //CREAR USUARIO
-            //CREAR PWD
-            return mongo.createData(tablas.usuarios, usuario);
+            return new Promise(function(resolve, reject) {
+                //CREAR USUARIO
+                mongo.createData(tablas.usuarios, usuario).then(function(usuario){
+                    //CREAR PWD
+                    var pwd = createPwd();
+                    //console.log('usuario._id', usuario._id)
+                    mongo.createData(tablas.pwd, {usuario: usuario._id+'', pwd:md5(pwd)}).then(function(){
+                        resolve({usuario: usuario, pwd: pwd});
+                    }).catch(function(err){
+                        mongo.removeData(tablas.pwd, {email:usuario.email}).then(function() {
+                           reject(err);
+                        }).catch(reject);
+                    });
+                }).catch(reject);
+            });
         },
         getPwd: function(_id) {
             return new Promise(function(resolve, reject) {

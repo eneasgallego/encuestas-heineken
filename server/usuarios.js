@@ -28,11 +28,6 @@
                     }
                 }))
 
-//                console.log('fromEmailAddress', fromEmailAddress);
-//                console.log('toEmailAddress', toEmailAddress);
-//                console.log('subject', subject);
-//                console.log('text', text);
-//                console.log('html', html);
                 var mail = {
                     from: fromEmailAddress,
                     to: toEmailAddress,
@@ -46,7 +41,7 @@
                         console.log(error);
                         reject(error, response);
                     }else{
-//                        console.log("Message sent: " + response.message);
+                        //console.log("Message sent: " + response.message);
                         resolve(response);
                     }
 
@@ -68,9 +63,15 @@
                 }
             },
             _post: function(req, res) {
-                usuariosDao.createUsuario(req.body).then(function(usuario){
+                usuariosDao.createUsuario(req.body).then(function(data){
                     //ENVIAR PWD POR EMAIL
-                    res.send(usuario);
+                    enviarEmail(data.usuario.email, 'Nuevo Usuario', data.pwd, '<b>' + data.pwd + '</b>')
+                        .then(function() {
+                            res.send(data.usuario);
+                        })
+                        .catch(function(err){
+                            res.status(500).send(err);
+                        });
                 })
                 .catch(function(err){
                     res.status(500).send(err);

@@ -45,7 +45,7 @@
             tail="{{subroute}}"
         ></app-route>
 
-        <iron-ajax id="ajaxConfig" url="/config" handle-as="json" last-response="{{config}}" auto></iron-ajax>
+        <iron-ajax id="ajaxConfig" url="[[configPath]]" handle-as="json" last-response="{{config}}" auto></iron-ajax>
         <iron-ajax id="ajaxUsuario" url="[[url]]" handle-as="json" last-response="{{usuario}}" auto></iron-ajax>
 
         <hnk-page
@@ -103,6 +103,7 @@
             is: 'encuestas-heineken-app',
             behaviors: [hnk.BaseBehavior, hnk.ConfigBehavior],
             properties: {
+                configPath: String,
                 usuario: Object,
                 url: String,
                 menuAcciones: {
